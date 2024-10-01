@@ -1,4 +1,7 @@
 package com.olegtoropoff.petcareappointment.repository;
 
-public interface VeterinarianRepository {
+import com.olegtoropoff.petcareappointment.model.Veterinarian;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long> {
 }
