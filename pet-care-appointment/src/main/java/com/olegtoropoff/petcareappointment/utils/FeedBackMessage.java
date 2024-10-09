@@ -1,8 +1,8 @@
 package com.olegtoropoff.petcareappointment.utils;
 
 public class FeedBackMessage {
-    public static final String SUCCESS = "User created successfully";
-    public static final String UPDATE_SUCCESS = "User updated successfully";
-    public static final String FOUND = "User found(s)";
-    public static final String DELETE_SUCCESS = "User deleted successfully";
+    public static final String SUCCESS = "Resource created successfully";
+    public static final String UPDATE_SUCCESS = "Resource updated successfully";
+    public static final String FOUND = "Resource found";
+    public static final String DELETE_SUCCESS = "Resource deleted successfully";
 }

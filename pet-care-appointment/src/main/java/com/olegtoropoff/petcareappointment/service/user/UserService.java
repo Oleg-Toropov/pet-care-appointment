@@ -38,6 +38,14 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> entityConverter.mapEntityToDto(user, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -49,13 +57,5 @@ public class UserService implements IUserService {
                 .ifPresentOrElse(userRepository::delete, () -> {
                     throw new ResourceNotFoundException("User not found");
                 });
-    }
-
-    @Override
-    public List<UserDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(user -> entityConverter.mapEntityToDto(user, UserDto.class))
-                .collect(Collectors.toList());
     }
 }

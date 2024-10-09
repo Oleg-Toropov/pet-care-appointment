@@ -52,6 +52,16 @@ public class UserController {
         }
     }
 
+    @GetMapping(UrlMapping.GET_ALL_USERS)
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        try {
+            List<UserDto> usersDto = userService.getAllUsers();
+            return ResponseEntity.status(FOUND).body(new ApiResponse(FeedBackMessage.FOUND, usersDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
     @GetMapping(UrlMapping.GET_USER_BY_ID)
     public ResponseEntity<ApiResponse> getById(@PathVariable Long userId) {
         try {
@@ -72,16 +82,6 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }
-    }
-
-    @GetMapping(UrlMapping.GET_ALL_USERS)
-    public ResponseEntity<ApiResponse> getAllUsers() {
-        try {
-            List<UserDto> usersDto = userService.getAllUsers();
-            return ResponseEntity.status(FOUND).body(new ApiResponse(FeedBackMessage.FOUND, usersDto));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }

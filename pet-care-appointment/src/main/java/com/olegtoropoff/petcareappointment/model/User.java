@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Setter
@@ -25,7 +27,8 @@ public class User {
     private String password;
     private String userType;
     private boolean isEnabled;
-
     @Transient
     private String specialization;
+    @Transient
+    List<Appointment> appointments;
 }
