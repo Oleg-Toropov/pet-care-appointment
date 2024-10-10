@@ -13,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -20,17 +21,20 @@ import java.util.Random;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"patient", "veterinarian"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "patient", "veterinarian"})
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String reason;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate appointmentDate;
+
     @JsonFormat(pattern = "HH:mm")
     private LocalTime appointmentTime;
     private String appointmentNo;
+
     @CreationTimestamp
     private LocalDate createdAt;
 
@@ -40,9 +44,15 @@ public class Appointment {
     @JoinColumn(name = "sender")
     @ManyToOne(fetch = FetchType.LAZY)
     private User patient;
+
     @JoinColumn(name = "recipient")
     @ManyToOne(fetch = FetchType.LAZY)
     private User veterinarian;
+
+    @OneToMany(mappedBy = "appointment", cascade =  CascadeType.ALL)
+    List<Pet> pets = new ArrayList<>();
+
+
 
     public void addPatient(User sender) {
         this.setPatient(sender);
