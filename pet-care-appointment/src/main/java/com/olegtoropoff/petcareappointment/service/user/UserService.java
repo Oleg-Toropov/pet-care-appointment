@@ -8,6 +8,7 @@ import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,14 +49,14 @@ public class UserService implements IUserService {
     @Override
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.NOT_FOUND));
     }
 
     @Override
     public void deleteById(Long userId) {
         userRepository.findById(userId)
                 .ifPresentOrElse(userRepository::delete, () -> {
-                    throw new ResourceNotFoundException("User not found");
+                    throw new ResourceNotFoundException(FeedBackMessage.NOT_FOUND);
                 });
     }
 }

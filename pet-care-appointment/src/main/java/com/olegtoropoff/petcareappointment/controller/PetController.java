@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class PetController {
     private final IPetService petService;
 
-    @PostMapping(UrlMapping.SAVE_PETS_FOR_APPOINTMENT)
+    @PostMapping(UrlMapping.SAVE_PETS_FOR_APPOINTMENT) //TODO
     public ResponseEntity<ApiResponse> savePets(@RequestBody List<Pet> pets) {
         try {
             List<Pet> savedPets = petService.savePetForAppointment(pets);
