@@ -45,24 +45,25 @@ public class PhotoService implements IPhotoService {
     @Override
     public Photo getPhotoById(Long id) {
         return photoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
     }
 
     @Transactional
     @Override
-    public void deletePhoto(Long id, Long userId) {
+    public Long deletePhoto(Long id, Long userId) {
         userRepository.findById(userId)
                 .ifPresentOrElse(User::removeUserPhoto, () -> {
-                    throw new ResourceNotFoundException(FeedBackMessage.NOT_FOUND);
+                    throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
                 });
-        photoRepository.findById(id)
+         photoRepository.findById(id)
                 .ifPresentOrElse(photoRepository::delete, () -> {
-                    throw new ResourceNotFoundException(FeedBackMessage.NOT_FOUND);
+                    throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
                 });
+        return id;
     }
 
     @Override
-    public void updatePhoto(Long id, MultipartFile file) throws SQLException, IOException {
+    public Long updatePhoto(Long id, MultipartFile file) throws SQLException, IOException {
         Photo photo = getPhotoById(id);
         byte[] photoBytes = file.getBytes();
         Blob photoBlob = new SerialBlob(photoBytes);
@@ -70,6 +71,7 @@ public class PhotoService implements IPhotoService {
         photo.setFileType(file.getContentType());
         photo.setFileName(file.getOriginalFilename());
         photoRepository.save(photo);
+        return photo.getId();
     }
 
     @Override

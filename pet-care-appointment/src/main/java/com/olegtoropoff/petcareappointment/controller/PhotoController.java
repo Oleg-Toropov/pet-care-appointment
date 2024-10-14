@@ -30,7 +30,7 @@ public class PhotoController {
             Long id = photoService.savePhoto(file, userId);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.CREATE_SUCCESS, id));
         } catch (IOException | SQLException e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
     }
 
@@ -41,34 +41,33 @@ public class PhotoController {
             byte[] photoBytes = photoService.getImageData(photo.getId());
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, photoBytes));
         } catch (ResourceNotFoundException | SQLException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(FeedBackMessage.NOT_FOUND, null));
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
     }
 
     @DeleteMapping(UrlMapping.DELETE_PHOTO)
     public ResponseEntity<ApiResponse> deletePhoto(@PathVariable Long photoId, @PathVariable Long userId) {
         try {
-            photoService.deletePhoto(photoId, userId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_SUCCESS, null)); //TODO RETURN ID INSTEAD NULL?
+            Long id = photoService.deletePhoto(photoId, userId);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_SUCCESS, id));
         } catch (ResourceNotFoundException | SQLException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(FeedBackMessage.NOT_FOUND, null));
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.UPDATE_PHOTO)
-    public ResponseEntity<ApiResponse> updatePhoto(@PathVariable Long photoId,
-                                                   @RequestBody MultipartFile file) throws SQLException {
+    public ResponseEntity<ApiResponse> updatePhoto(@PathVariable Long photoId, @RequestBody MultipartFile file) {
         try {
-            photoService.updatePhoto(photoId, file);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.UPDATE_SUCCESS, null));//TODO RETURN ID INSTEAD NULL?
-        } catch (ResourceNotFoundException | IOException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(FeedBackMessage.NOT_FOUND, null));
+            Long id = photoService.updatePhoto(photoId, file);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.UPDATE_SUCCESS, id));
+        } catch (ResourceNotFoundException | SQLException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
     }
 }

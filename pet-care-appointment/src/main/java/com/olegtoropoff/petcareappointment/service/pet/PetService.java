@@ -36,13 +36,13 @@ public class PetService implements IPetService {
         petRepository.findById(petId)
                 .ifPresentOrElse(petRepository::delete,
                         () -> {
-                            throw new ResourceNotFoundException(FeedBackMessage.NOT_FOUND);
+                            throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
                         });
     }
 
     @Override
     public Pet getPetById(Long petId) {
         return petRepository.findById(petId)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
     }
 }

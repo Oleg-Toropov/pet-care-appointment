@@ -11,9 +11,9 @@ public interface IPhotoService {
 
     Photo getPhotoById(Long id);
 
-    void deletePhoto(Long id, Long userId) throws SQLException;
+    Long deletePhoto(Long id, Long userId) throws SQLException;
 
-    void updatePhoto(Long id, MultipartFile file) throws SQLException, IOException;
+    Long updatePhoto(Long id, MultipartFile file) throws SQLException, IOException;
 
     byte[] getImageData(Long id) throws SQLException;
 }

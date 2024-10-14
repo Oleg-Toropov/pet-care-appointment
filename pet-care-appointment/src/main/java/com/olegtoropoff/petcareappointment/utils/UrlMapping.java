@@ -28,10 +28,21 @@ public class UrlMapping {
     /*============================ End Pet API ===================================*/
 
     /*============================ Start Photo API ===================================*/
-    public static final String PHOTOS = API+"/photos" ;
-    public static final String UPLOAD_PHOTO = "/photo/upload" ;
-    public static final String GET_PHOTO_BY_ID = "/photo/{photoId}/photo" ;
-    public static final String DELETE_PHOTO = "/photo/{photoId}/user/{userId}/delete" ;
-    public static final String UPDATE_PHOTO = "/photo/{photoId}/update"; ;
+    public static final String PHOTOS = API + "/photos";
+    public static final String UPLOAD_PHOTO = "/photo/upload";
+    public static final String GET_PHOTO_BY_ID = "/photo/{photoId}/photo";
+    public static final String DELETE_PHOTO = "/photo/{photoId}/user/{userId}/delete";
+    public static final String UPDATE_PHOTO = "/photo/{photoId}/update";
+    ;
     /*============================ End Photo API ===================================*/
+
+    /*============================ Start Review API ===================================*/
+    public static final String REVIEWS = API + "/reviews";
+    public static final String SUBMIT_REVIEW = "/submit-review";
+    public static final String GET_USER_REVIEWS = "/user/{userId}/reviews";
+    public static final String UPDATE_REVIEW = "/review/{reviewId}/update";
+    public static final String DELETE_REVIEW = "/review/{reviewId}/delete";
+    public static final String GET_AVERAGE_RATING = "/vet/{vetId}/get-average-rating";
+    /*============================ End Review API ===================================*/
+
 }

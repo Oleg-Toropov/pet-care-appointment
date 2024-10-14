@@ -4,6 +4,7 @@ import com.olegtoropoff.petcareappointment.exception.UserAlreadyExistsException;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class SimpleUserFactory implements UserFactory {
     @Override
     public User createUser(RegistrationRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("Oops! " + request.getEmail() + " already exists!");
+            throw new UserAlreadyExistsException(FeedBackMessage.USER_ALREADY_EXISTS);
         }
 
         switch (request.getUserType()) {
