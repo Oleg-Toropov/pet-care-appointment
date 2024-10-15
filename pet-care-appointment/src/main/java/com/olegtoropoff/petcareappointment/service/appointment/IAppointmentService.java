@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.service.appointment;
 
+import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
@@ -18,4 +19,6 @@ public interface IAppointmentService {
     Appointment getAppointmentByNo(String appointmentNo);
 
     void deleteAppointment(Long id);
+
+    List<AppointmentDto> getUserAppointments(Long userId);
 }

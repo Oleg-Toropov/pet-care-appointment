@@ -5,7 +5,7 @@ import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
-import com.olegtoropoff.petcareappointment.service.appointment.AppointmentService;
+import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.APPOINTMENTS)
 public class AppointmentController {
-    private final AppointmentService appointmentService;
+    private final IAppointmentService appointmentService;
 
     @PostMapping(UrlMapping.BOOK_APPOINTMENT)
     public ResponseEntity<ApiResponse> bookAppointment(

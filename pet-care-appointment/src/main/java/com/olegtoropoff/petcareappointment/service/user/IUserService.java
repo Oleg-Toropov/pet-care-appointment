@@ -5,6 +5,7 @@ import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IUserService {
@@ -13,4 +14,6 @@ public interface IUserService {
     List<UserDto> getAllUsers();
     User findById(Long userId);
     void deleteById(Long userId);
+
+    UserDto getUserWithDetails(Long userId) throws SQLException;
 }

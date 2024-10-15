@@ -2,6 +2,9 @@ package com.olegtoropoff.petcareappointment.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Data
 public class UserDto {
     private long id;
@@ -13,4 +16,10 @@ public class UserDto {
     private String userType;
     private boolean isEnabled;
     private String specialization;
+    private LocalDate createdAt;
+    private List<AppointmentDto> appointments;
+    private List<ReviewDto> reviews;
+    private long photoId;
+    private byte[] photo;
+    private double averageRating;
 }
