@@ -1,13 +1,17 @@
 package com.olegtoropoff.petcareappointment.utils;
 
 public class UrlMapping {
+
     public static final String API = "/api/v1";
+
+    /*========================== Start User API =================================*/
     public static final String USERS = API + "/users";
     public static final String REGISTER_USER = "/register";
     public static final String UPDATE_USER = "/update/{userId}";
     public static final String GET_ALL_USERS = "/all-users";
     public static final String GET_USER_BY_ID = "/user/{userId}";
     public static final String DELETE_USER_BY_ID = "/delete/{userId}";
+    /*========================= End User API ================================*/
 
     /*========================== Start Appointment API =================================*/
     public static final String APPOINTMENTS = API + "/appointments";
@@ -44,5 +48,10 @@ public class UrlMapping {
     public static final String DELETE_REVIEW = "/review/{reviewId}/delete";
     public static final String GET_AVERAGE_RATING = "/vet/{vetId}/get-average-rating";
     /*============================ End Review API ===================================*/
+
+    /*============================ Start Veterinarian API ===================================*/
+    public static final String VETERINARIANS = API + "/veterinarians";
+    public static final String GET_ALL_VETERINARIANS = "/get-all-veterinarians";
+    /*============================ End Veterinarian API ===================================*/
 
 }
