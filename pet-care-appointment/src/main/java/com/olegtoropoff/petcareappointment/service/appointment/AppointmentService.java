@@ -39,7 +39,6 @@ public class AppointmentService implements IAppointmentService {
         Optional<User> sender = userRepository.findById(senderId);
         Optional<User> recipient = userRepository.findById(recipientId);
         if (sender.isPresent() && recipient.isPresent()) {
-
             Appointment appointment = request.getAppointment();
             List<Pet> pets = request.getPets();
             pets.forEach(pet -> pet.setAppointment(appointment));

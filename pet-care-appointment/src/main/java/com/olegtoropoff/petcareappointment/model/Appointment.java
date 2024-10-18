@@ -28,13 +28,14 @@ public class Appointment {
     private Long id;
     private String reason;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate appointmentDate;
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime appointmentTime;
     private String appointmentNo;
 
+    @JsonFormat(pattern = "dd.MM.yyyy")
     @CreationTimestamp
     private LocalDate createdAt;
 
