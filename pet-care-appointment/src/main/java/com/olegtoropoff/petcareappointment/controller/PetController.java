@@ -15,6 +15,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+@CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.PETS)
@@ -66,4 +67,32 @@ public class PetController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
     }
+
+    @GetMapping(UrlMapping.GET_PET_TYPES)
+    public ResponseEntity<ApiResponse> getAllPetTypes() {
+        try {
+            return  ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetTypes()));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @GetMapping(UrlMapping.GET_PET_COLORS)
+    public ResponseEntity<ApiResponse> getAllPetColors() {
+        try {
+            return  ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetColors()));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @GetMapping(UrlMapping.GET_PET_BREEDS)
+    public ResponseEntity<ApiResponse> getAllPetBreeds(@RequestParam String petType) {
+        try {
+            return  ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetBreeds(petType)));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
 }

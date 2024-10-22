@@ -17,6 +17,7 @@ import java.util.List;
 import static org.apache.tomcat.websocket.Constants.FOUND;
 import static org.springframework.http.HttpStatus.*;
 
+@CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.APPOINTMENTS)
