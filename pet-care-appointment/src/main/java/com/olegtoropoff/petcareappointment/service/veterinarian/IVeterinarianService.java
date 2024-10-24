@@ -10,6 +10,8 @@ import java.util.List;
 public interface IVeterinarianService {
     List<UserDto> getAllVeterinariansWithDetails();
 
+    List<String> getSpecializations();
+
     List<UserDto> findAvailableVeterinariansForAppointments(String specialization, LocalDate date, LocalTime time);
 
     List<Veterinarian> getVeterinariansBySpecialization(String specialization);

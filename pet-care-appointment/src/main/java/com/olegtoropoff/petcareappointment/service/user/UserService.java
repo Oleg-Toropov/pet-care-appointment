@@ -8,6 +8,7 @@ import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.factory.UserFactory;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
@@ -32,6 +33,7 @@ public class UserService implements IUserService {
     private final IPhotoService photoService;
     private final IReviewService reviewService;
     private final EntityConverter<User, UserDto> entityConverter;
+    private final ReviewRepository reviewRepository;
 
     @Override
     public User register(RegistrationRequest request) {
@@ -75,6 +77,7 @@ public class UserService implements IUserService {
     public UserDto getUserWithDetails(Long userId) throws SQLException {
         User user = findById(userId);
         UserDto userDto = entityConverter.mapEntityToDto(user, UserDto.class);
+        userDto.setTotalReviewers(reviewRepository.countByVeterinarianId(userId));
         setUserAppointments(userDto);
         setUserPhoto(userDto, user);
         setUserReviews(userDto, userId);

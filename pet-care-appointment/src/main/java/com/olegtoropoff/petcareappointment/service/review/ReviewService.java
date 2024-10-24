@@ -33,19 +33,19 @@ public class ReviewService implements IReviewService {
             throw new IllegalArgumentException(FeedBackMessage.CANNOT_REVIEW);
         }
         //2. Check if the reviewer has previously submitted a review for this doctor.
-        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
-        if (existingReview.isPresent()) {
-            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
-        }
+//        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
+//        if (existingReview.isPresent()) {
+//            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
+//        }// TODO uncomment
         //3.Get the veterinarian  from the database
         User veterinarian = userRepository.findById(veterinarianId).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
         //3. Get the patient from the database
         User patient = userRepository.findById(reviewerId).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
         //4.Check if the reviewer has gotten a completed appointment with this doctor.
-        boolean hadCompletedAppointments = appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
-        if (!hadCompletedAppointments) {
-            throw new IllegalStateException(FeedBackMessage.NOT_ALLOWED);
-        }
+//        boolean hadCompletedAppointments = appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
+//        if (!hadCompletedAppointments) {
+//            throw new IllegalStateException(FeedBackMessage.NOT_ALLOWED);
+//        } // TODO uncomment
         // 5. Set both to the review
         review.setVeterinarian(veterinarian);
         review.setPatient(patient);

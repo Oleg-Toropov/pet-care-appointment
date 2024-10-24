@@ -50,4 +50,14 @@ public class VeterinarianController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @GetMapping(UrlMapping.GET_ALL_SPECIALIZATIONS)
+    public ResponseEntity<ApiResponse> getAllSpecializations() {
+        try {
+            List<String> specializations = veterinarianService.getSpecializations();
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, specializations));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
 }
