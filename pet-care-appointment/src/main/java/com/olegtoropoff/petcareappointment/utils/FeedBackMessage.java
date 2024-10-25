@@ -16,4 +16,9 @@ public class FeedBackMessage {
     public static final String SERVER_ERROR = "Внутренняя ошибка сервера";
     public static final String NO_VETS_AVAILABLE = "Нет доступных ветеринаров на запрашиваемые дату и время";
     public static final String SPECIALIZATION_NOT_FOUND = "В системе не найден ветеринар со специализацией '%s'";
+    public static final String  USER_NOT_FOUND = "Пользователь не найден";
+    public static final String  CURRENT_PASSWORD_WRONG = "Текущий пароль указан неверно";
+    public static final String  ALL_FIELDS_REQUIRED = "Все поля должны быть заполнены";
+    public static final String  NEW_PASSWORD_MUST_DIFFER = "Новый пароль должен отличаться от текущего";
+    public static final String  PASSWORDS_MUST_MATCH = "Пароль и подтверждение пароля должны совпадать";
 }

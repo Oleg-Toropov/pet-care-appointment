@@ -5,9 +5,11 @@ import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.exception.UserAlreadyExistsException;
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.service.password.IChangePasswordService;
 import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
@@ -26,6 +28,7 @@ import static org.springframework.http.HttpStatus.*;
 public class UserController {
     private final IUserService userService;
     private final EntityConverter<User, UserDto> entityConverter;
+    private final IChangePasswordService changePasswordService;
 
     @PostMapping(UrlMapping.REGISTER_USER)
     public ResponseEntity<ApiResponse> register(@RequestBody RegistrationRequest request) {
@@ -77,9 +80,24 @@ public class UserController {
 
     @DeleteMapping(UrlMapping.DELETE_USER_BY_ID)
     public ResponseEntity<ApiResponse> deleteById(@PathVariable Long userId) {
-        try{
+        try {
             userService.deleteById(userId);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_SUCCESS, null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @PutMapping(UrlMapping.CHANGE_PASSWORD)
+    public ResponseEntity<ApiResponse> changePassword(@PathVariable Long userId,
+                                                      @RequestBody ChangePasswordRequest request) {
+        try {
+            changePasswordService.changePassword(userId, request);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.CREATE_SUCCESS, null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {

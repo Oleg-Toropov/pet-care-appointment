@@ -59,4 +59,8 @@ public class UrlMapping {
     public static final String GET_ALL_SPECIALIZATIONS = "/vet/get-all-specialization";
     /*============================ End Veterinarian API ===================================*/
 
+    /*============================ Start Change Password API ===================================*/
+    public static final String CHANGE_PASSWORD = "/user/{userId}/change-password";
+    /*============================ End Change Password API ===================================*/
+
 }
