@@ -11,5 +11,4 @@ public class AppointmentUpdateRequest {
     private String appointmentDate;
     private String appointmentTime;
     private String reason;
-
 }

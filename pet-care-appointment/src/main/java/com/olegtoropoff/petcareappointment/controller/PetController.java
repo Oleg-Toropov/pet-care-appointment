@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Pet;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
@@ -12,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
@@ -51,6 +51,8 @@ public class PetController {
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (PetDeletionNotAllowedException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
@@ -71,7 +73,7 @@ public class PetController {
     @GetMapping(UrlMapping.GET_PET_TYPES)
     public ResponseEntity<ApiResponse> getAllPetTypes() {
         try {
-            return  ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetTypes()));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetTypes()));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
@@ -80,7 +82,7 @@ public class PetController {
     @GetMapping(UrlMapping.GET_PET_COLORS)
     public ResponseEntity<ApiResponse> getAllPetColors() {
         try {
-            return  ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetColors()));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetColors()));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
@@ -89,7 +91,7 @@ public class PetController {
     @GetMapping(UrlMapping.GET_PET_BREEDS)
     public ResponseEntity<ApiResponse> getAllPetBreeds(@RequestParam String petType) {
         try {
-            return  ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetBreeds(petType)));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetBreeds(petType)));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }

@@ -1,11 +1,14 @@
 package com.olegtoropoff.petcareappointment.service.pet;
 
+import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
+import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Pet;
 import com.olegtoropoff.petcareappointment.repository.PetRepository;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +23,11 @@ public class PetService implements IPetService {
     }
 
     @Override
+    public Pet savePetForAppointment(Pet pet) {
+        return petRepository.save(pet);
+    }
+
+    @Override
     public Pet updatePet(Pet pet, Long petId) {
         Pet existingPet = getPetById(petId);
         existingPet.setName(pet.getName());
@@ -31,13 +39,21 @@ public class PetService implements IPetService {
         return petRepository.save(existingPet);
     }
 
+    @Transactional
     @Override
     public void deletePet(Long petId) {
-        petRepository.findById(petId)
-                .ifPresentOrElse(petRepository::delete,
-                        () -> {
-                            throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
-                        });
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+
+        Appointment appointment = pet.getAppointment();
+
+        if (appointment.getPets().size() > 1) {
+            appointment.getPets().remove(pet);
+            petRepository.delete(pet);
+        }
+        else {
+            throw new PetDeletionNotAllowedException(FeedBackMessage.NOT_ALLOWED_TO_DELETE_LAST_PET);
+        }
     }
 
     @Override

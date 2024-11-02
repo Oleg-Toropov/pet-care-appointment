@@ -67,6 +67,19 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
+    public Appointment addPetForAppointment(Long id, Pet pet) {
+        Appointment existingAppointment = getAppointmentById(id);
+        if (!Objects.equals(existingAppointment.getStatus(), AppointmentStatus.WAITING_FOR_APPROVAL)) {
+            throw new IllegalStateException(FeedBackMessage.ALREADY_APPROVED);
+        }
+
+        pet.setAppointment(existingAppointment);
+        Pet savedPet = petService.savePetForAppointment(pet);
+        existingAppointment.getPets().add(savedPet);
+        return appointmentRepository.save(existingAppointment);
+    }
+
+    @Override
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
@@ -103,4 +116,35 @@ public class AppointmentService implements IAppointmentService {
                     return appointmentDto;
                 }).toList();
     }
+
+    @Override
+    public Appointment cancelAppointment(Long appointmentId) {
+        return appointmentRepository.findById(appointmentId)
+                .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
+                .map(appointment -> {
+                    appointment.setStatus(AppointmentStatus.CANCELLED);
+                    return appointmentRepository.saveAndFlush(appointment);
+                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_CANNOT_BE_CANCELLED));
+    }
+
+    @Override
+    public Appointment approveAppointment(Long appointmentId) {
+        return appointmentRepository.findById(appointmentId)
+                .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
+                .map(appointment -> {
+                    appointment.setStatus(AppointmentStatus.APPROVED);
+                    return appointmentRepository.saveAndFlush(appointment);
+                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_ALREADY_APPROVED));
+    }
+
+    @Override
+    public Appointment declineAppointment(Long appointmentId) {
+        return appointmentRepository.findById(appointmentId)
+                .map(appointment -> {
+                    appointment.setStatus(AppointmentStatus.NOT_APPROVED);
+                    return appointmentRepository.saveAndFlush(appointment);
+                }).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+    }
+
+
 }

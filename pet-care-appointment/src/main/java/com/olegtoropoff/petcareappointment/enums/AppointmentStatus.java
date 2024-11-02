@@ -9,4 +9,5 @@ public enum AppointmentStatus {
     WAITING_FOR_APPROVAL,
     PENDING,
     COMPLETED
+
 }

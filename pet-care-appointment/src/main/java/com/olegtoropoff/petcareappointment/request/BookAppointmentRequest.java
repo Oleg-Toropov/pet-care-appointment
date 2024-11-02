@@ -12,5 +12,4 @@ import java.util.List;
 public class BookAppointmentRequest {
     private Appointment appointment;
     private List<Pet> pets;
-
 }

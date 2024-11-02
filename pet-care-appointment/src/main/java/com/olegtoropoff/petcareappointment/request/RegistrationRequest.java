@@ -1,6 +1,5 @@
 package com.olegtoropoff.petcareappointment.request;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data

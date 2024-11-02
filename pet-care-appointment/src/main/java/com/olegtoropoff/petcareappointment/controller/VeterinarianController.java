@@ -7,7 +7,6 @@ import com.olegtoropoff.petcareappointment.service.veterinarian.IVeterinarianSer
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +36,7 @@ public class VeterinarianController {
 
     @GetMapping(UrlMapping.SEARCH_VETERINARIAN_FOR_APPOINTMENT)
     public ResponseEntity<ApiResponse> searchVeterinariansForAppointment(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate date,
+            @RequestParam(required = false) LocalDate date,
             @RequestParam(required = false) LocalTime time,
             @RequestParam String specialization) {
         try {

@@ -6,8 +6,10 @@ import com.olegtoropoff.petcareappointment.dto.ReviewDto;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.factory.UserFactory;
+import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,7 @@ public class UserService implements IUserService {
     private final IReviewService reviewService;
     private final EntityConverter<User, UserDto> entityConverter;
     private final ReviewRepository reviewRepository;
+    private final AppointmentRepository appointmentRepository;
 
     @Override
     public User register(RegistrationRequest request) {
@@ -68,9 +72,13 @@ public class UserService implements IUserService {
     @Override
     public void deleteById(Long userId) {
         userRepository.findById(userId)
-                .ifPresentOrElse(userRepository::delete, () -> {
-                    throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
-                });
+                .ifPresentOrElse(userToDelete -> {
+                    List<Review> reviews = new ArrayList<>(reviewRepository.findAllByUserId(userId));
+                    reviewRepository.deleteAll(reviews);
+                    List<Appointment> appointments = new ArrayList<>(appointmentRepository.findAllByUserId(userId));
+                    appointmentRepository.deleteAll(appointments);
+                    userRepository.deleteById(userId);
+                }, () -> { throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);});
     }
 
     @Override

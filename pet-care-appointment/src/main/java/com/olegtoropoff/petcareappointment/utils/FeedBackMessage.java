@@ -21,4 +21,7 @@ public class FeedBackMessage {
     public static final String  ALL_FIELDS_REQUIRED = "Все поля должны быть заполнены";
     public static final String  NEW_PASSWORD_MUST_DIFFER = "Новый пароль должен отличаться от текущего";
     public static final String  PASSWORDS_MUST_MATCH = "Пароль и подтверждение пароля должны совпадать";
+    public static final String  NOT_ALLOWED_TO_DELETE_LAST_PET = "Единственный питомец не может быть удален, если необходимо отмените прием";
+    public static final String APPOINTMENT_CANNOT_BE_CANCELLED = "Данный прием не может быть отменен";
+    public static final String APPOINTMENT_ALREADY_APPROVED = "Прием уже подтвержден";
 }

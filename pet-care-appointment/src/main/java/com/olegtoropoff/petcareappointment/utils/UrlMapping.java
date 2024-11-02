@@ -7,20 +7,24 @@ public class UrlMapping {
     /*========================== Start User API =================================*/
     public static final String USERS = API + "/users";
     public static final String REGISTER_USER = "/register";
-    public static final String UPDATE_USER = "/update/{userId}";
+    public static final String UPDATE_USER = "/user/{userId}/update";
     public static final String GET_ALL_USERS = "/all-users";
     public static final String GET_USER_BY_ID = "/user/{userId}";
-    public static final String DELETE_USER_BY_ID = "/delete/{userId}";
+    public static final String DELETE_USER_BY_ID = "/user/{userId}/delete";
     /*========================= End User API ================================*/
 
     /*========================== Start Appointment API =================================*/
     public static final String APPOINTMENTS = API + "/appointments";
     public static final String BOOK_APPOINTMENT = "/book-appointment";
     public static final String UPDATE_APPOINTMENT = "/appointment/{id}/update";
+    public static final String ADD_PET_APPOINTMENT = "/appointment/{id}/add-pet";
     public static final String ALL_APPOINTMENT = "/all";
-    public static final String GET_APPOINTMENT_BY_ID = "/appointment/{id}";
+    public static final String GET_APPOINTMENT_BY_ID = "/appointment/{id}/fetch/appointment";
     public static final String GET_APPOINTMENT_BY_NO = "/appointment/{appointmentNo}/appointment";
     public static final String DELETE_APPOINTMENT = "/appointment/{id}/delete";
+    public static final String CANCEL_APPOINTMENT = "appointment/{id}/cancel";
+    public static final String APPROVE_APPOINTMENT = "/appointment/{id}/approve";
+    public static final String DECLINE_APPOINTMENT = "/appointment/{id}/decline";
     /*========================= End Appointment API ================================*/
 
     /*============================ Start Pet API ===================================*/
@@ -29,7 +33,7 @@ public class UrlMapping {
     public static final String GET_PET_BY_ID = "/pet/{petId}/pet";
     public static final String DELETE_PET_BY_ID = "/pet/{petId}/delete";
     public static final String UPDATE_PET = "/pet/{petId}/update";
-    public static final String GET_PET_TYPES = "/get-pet-types";
+    public static final String GET_PET_TYPES = "/get-types";
     public static final String GET_PET_COLORS = "/get-pet-colors";
     public static final String GET_PET_BREEDS = "/get-pet-breeds";
     /*============================ End Pet API ===================================*/
@@ -38,9 +42,8 @@ public class UrlMapping {
     public static final String PHOTOS = API + "/photos";
     public static final String UPLOAD_PHOTO = "/photo/upload";
     public static final String GET_PHOTO_BY_ID = "/photo/{photoId}/photo";
-    public static final String DELETE_PHOTO = "/photo/{photoId}/user/{userId}/delete";
+    public static final String DELETE_PHOTO = "/photo/{photoId}/{userId}/delete";
     public static final String UPDATE_PHOTO = "/photo/{photoId}/update";
-    ;
     /*============================ End Photo API ===================================*/
 
     /*============================ Start Review API ===================================*/

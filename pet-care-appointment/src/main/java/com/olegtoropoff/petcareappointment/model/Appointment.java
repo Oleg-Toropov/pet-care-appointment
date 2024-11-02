@@ -1,6 +1,5 @@
 package com.olegtoropoff.petcareappointment.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
 import jakarta.persistence.*;
@@ -27,15 +26,10 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String reason;
-
-    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate appointmentDate;
-
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime appointmentTime;
     private String appointmentNo;
 
-    @JsonFormat(pattern = "dd.MM.yyyy")
     @CreationTimestamp
     private LocalDate createdAt;
 
@@ -50,10 +44,8 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User veterinarian;
 
-    @OneToMany(mappedBy = "appointment", cascade =  CascadeType.ALL)
+    @OneToMany(mappedBy = "appointment", cascade =  CascadeType.ALL, orphanRemoval = true)
     List<Pet> pets = new ArrayList<>();
-
-
 
     public void addPatient(User sender) {
         this.setPatient(sender);

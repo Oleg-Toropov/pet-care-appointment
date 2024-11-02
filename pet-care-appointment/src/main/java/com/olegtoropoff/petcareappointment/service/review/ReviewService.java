@@ -1,7 +1,5 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
-import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
-import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
