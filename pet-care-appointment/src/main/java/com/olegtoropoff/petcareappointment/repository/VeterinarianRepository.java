@@ -13,4 +13,7 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long
 
     @Query("SELECT DISTINCT v.specialization FROM Veterinarian v")
     List<String> getSpecializations();
+
+    @Query("SELECT v.specialization AS specialization, COUNT(v) AS count FROM Veterinarian  v GROUP BY v.specialization")
+    List<Object[]> countVetsBySpecialization();
 }

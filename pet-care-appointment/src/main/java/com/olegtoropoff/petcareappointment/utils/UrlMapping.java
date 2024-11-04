@@ -11,6 +11,14 @@ public class UrlMapping {
     public static final String GET_ALL_USERS = "/all-users";
     public static final String GET_USER_BY_ID = "/user/{userId}";
     public static final String DELETE_USER_BY_ID = "/user/{userId}/delete";
+    public static final String COUNT_ALL_USERS = "/count/users";
+    public static final String COUNT_ALL_VETERINARIANS = "/count/veterinarians";
+    public static final String COUNT_ALL_PATIENTS = "/count/patients";
+    public static final String AGGREGATE_USERS = "/aggregated-users";
+    public static final String AGGREGATE_USERS_BY_STATUS = "/account/aggregated-by-status";
+    public static final String LOCK_USER_ACCOUNT = "/account/{userId}/lock-user-account";
+    public static final String UNLOCK_USER_ACCOUNT = "/account/{userId}/unLock-user-account";
+
     /*========================= End User API ================================*/
 
     /*========================== Start Appointment API =================================*/
@@ -25,6 +33,8 @@ public class UrlMapping {
     public static final String CANCEL_APPOINTMENT = "appointment/{id}/cancel";
     public static final String APPROVE_APPOINTMENT = "/appointment/{id}/approve";
     public static final String DECLINE_APPOINTMENT = "/appointment/{id}/decline";
+    public static final String COUNT_APPOINTMENT = "/count/appointments";
+    public static final String APPOINTMENT_SUMMARY = "/summary/appointments-summary";
     /*========================= End Appointment API ================================*/
 
     /*============================ Start Pet API ===================================*/
@@ -60,10 +70,15 @@ public class UrlMapping {
     public static final String GET_ALL_VETERINARIANS = "/get-all-veterinarians";
     public static final String SEARCH_VETERINARIAN_FOR_APPOINTMENT = "/search-veterinarian";
     public static final String GET_ALL_SPECIALIZATIONS = "/vet/get-all-specialization";
+    public static final String AGGREGATE_VETERINARIANS_BY_SPECIALIZATION = "/vet/get-by-specialization";
     /*============================ End Veterinarian API ===================================*/
 
     /*============================ Start Change Password API ===================================*/
     public static final String CHANGE_PASSWORD = "/user/{userId}/change-password";
     /*============================ End Change Password API ===================================*/
 
+    /*============================ Start Patient ===================================*/
+    public static final String PATIENTS = API + "/patients";
+    public static final String GET_ALL_PATIENTS = "/get-all-patients";
+    /*============================ End Patient ===================================*/
 }

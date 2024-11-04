@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -150,6 +151,22 @@ public class AppointmentController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @GetMapping(UrlMapping.COUNT_APPOINTMENT)
+    public long countAppointments() {
+        return appointmentService.countAppointments();
+    }
+
+    @GetMapping(UrlMapping.APPOINTMENT_SUMMARY)
+    public ResponseEntity<ApiResponse> getAppointmentSummary() {
+        try {
+            List<Map<String, Object>> summary = appointmentService.getAppointmentSummary();
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_SUMMARY_SUCCESS_MESSAGE, summary));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(FeedBackMessage.APPOINTMENT_SUMMARY_ERROR_MESSAGE + e.getMessage(), null));
         }
     }
 }

@@ -23,8 +23,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,7 +82,9 @@ public class UserService implements IUserService {
                     List<Appointment> appointments = new ArrayList<>(appointmentRepository.findAllByUserId(userId));
                     appointmentRepository.deleteAll(appointments);
                     userRepository.deleteById(userId);
-                }, () -> { throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);});
+                }, () -> {
+                    throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
+                });
     }
 
     @Override
@@ -164,5 +170,48 @@ public class UserService implements IUserService {
         } else {
             reviewDto.setVeterinarianImage(null);
         }
+    }
+
+    @Override
+    public long countVeterinarians() {
+        return userRepository.countByUserType("VET");
+    }
+
+    @Override
+    public long countPatients() {
+        return userRepository.countByUserType("PATIENT");
+    }
+
+    @Override
+    public long countAllUsers() {
+        return userRepository.count();
+    }
+
+    @Override
+    public Map<String, Map<String, Long>> aggregateUsersByMonthAndType() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .collect(Collectors.groupingBy(user -> Month.of(user.getCreatedAt().getMonthValue())
+                                .getDisplayName(TextStyle.FULL, Locale.ENGLISH),
+                        Collectors.groupingBy(User::getUserType, Collectors.counting())
+                ));
+    }
+
+    @Override
+    public Map<String, Map<String, Long>> aggregateUsersByEnabledStatusAndType(){
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .collect(Collectors.groupingBy(user -> user.isEnabled()? "Enabled" : "Non-Enabled",
+                        Collectors.groupingBy(User :: getUserType, Collectors.counting())));
+    }
+
+    @Override
+    public void lockUserAccount(Long userId) {
+        userRepository.updateUserEnabledStatus(userId, false);
+    }
+
+    @Override
+    public void unLockUserAccount(Long userId) {
+        userRepository.updateUserEnabledStatus(userId, true);
     }
 }

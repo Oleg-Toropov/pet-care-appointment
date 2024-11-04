@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -104,4 +105,60 @@ public class UserController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
         }
     }
+
+    @GetMapping(UrlMapping.COUNT_ALL_VETERINARIANS)
+    public long countVeterinarians() {
+        return  userService.countVeterinarians();
+    }
+
+    @GetMapping(UrlMapping.COUNT_ALL_PATIENTS)
+    public long countPatients() {
+        return  userService.countPatients();
+    }
+
+    @GetMapping(UrlMapping.COUNT_ALL_USERS)
+    public long countUsers() {
+        return  userService.countAllUsers();
+    }
+
+    @GetMapping(UrlMapping.AGGREGATE_USERS)
+    public ResponseEntity<ApiResponse> aggregateUserByMonthAndType() {
+        try {
+            Map<String, Map<String, Long>> aggregateUsers = userService.aggregateUsersByMonthAndType();
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, aggregateUsers));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @GetMapping(UrlMapping.AGGREGATE_USERS_BY_STATUS)
+    public ResponseEntity<ApiResponse> getAggregateUsersByEnabledStatus() {
+        try {
+            Map<String, Map<String, Long>> aggregateData = userService.aggregateUsersByEnabledStatusAndType();
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, aggregateData));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @PutMapping(UrlMapping.LOCK_USER_ACCOUNT)
+    public  ResponseEntity<ApiResponse> lockUserAccount(@PathVariable Long userId) {
+        try {
+            userService.lockUserAccount(userId);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.USER_ACCOUNT_LOCKED_SUCCESSFULLY, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
+    @PutMapping(UrlMapping.UNLOCK_USER_ACCOUNT)
+    public  ResponseEntity<ApiResponse> unLockUserAccount(@PathVariable Long userId) {
+        try {
+            userService.unLockUserAccount(userId);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.USER_ACCOUNT_UNLOCKED_SUCCESSFULLY, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+        }
+    }
+
 }

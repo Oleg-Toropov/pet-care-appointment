@@ -24,4 +24,8 @@ public class FeedBackMessage {
     public static final String  NOT_ALLOWED_TO_DELETE_LAST_PET = "Единственный питомец не может быть удален, если необходимо отмените прием";
     public static final String APPOINTMENT_CANNOT_BE_CANCELLED = "Данный прием не может быть отменен";
     public static final String APPOINTMENT_ALREADY_APPROVED = "Прием уже подтвержден";
+    public static final String APPOINTMENT_SUMMARY_SUCCESS_MESSAGE = "Сводка по приемам успешно получена";
+    public static final String APPOINTMENT_SUMMARY_ERROR_MESSAGE = "Ошибка при получении сводки по приемам: ";
+    public static final String USER_ACCOUNT_LOCKED_SUCCESSFULLY = "Учетная запись пользователя успешно заблокирована";
+    public static final String USER_ACCOUNT_UNLOCKED_SUCCESSFULLY = "Учетная запись пользователя успешно разблокирована";
 }

@@ -7,6 +7,7 @@ import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAppointmentService {
     Appointment createAppointment(BookAppointmentRequest request, Long sender, Long recipient);
@@ -30,4 +31,8 @@ public interface IAppointmentService {
     Appointment approveAppointment(Long appointmentId);
 
     Appointment declineAppointment(Long appointmentId);
+
+    long countAppointments();
+
+    List<Map<String, Object>> getAppointmentSummary();
 }
