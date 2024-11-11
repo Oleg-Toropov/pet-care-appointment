@@ -26,9 +26,9 @@ public class PetController {
     public ResponseEntity<ApiResponse> savePets(@RequestBody List<Pet> pets) {
         try {
             List<Pet> savedPets = petService.savePetForAppointment(pets);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.CREATE_SUCCESS, savedPets));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_ADDED_SUCCESS, savedPets));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
@@ -36,11 +36,11 @@ public class PetController {
     public ResponseEntity<ApiResponse> getPetById(@PathVariable Long petId) {
         try {
             Pet pet = petService.getPetById(petId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, pet));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_FOUND, pet));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
@@ -48,13 +48,13 @@ public class PetController {
     public ResponseEntity<ApiResponse> deletePetById(@PathVariable Long petId) {
         try {
             petService.deletePet(petId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_SUCCESS, null));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_DELETE_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (PetDeletionNotAllowedException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
@@ -62,38 +62,38 @@ public class PetController {
     public ResponseEntity<ApiResponse> updatePetById(@PathVariable Long petId, @RequestBody Pet pet) {
         try {
             Pet thePet = petService.updatePet(pet, petId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.UPDATE_SUCCESS, thePet));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_UPDATE_SUCCESS, thePet));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.GET_PET_TYPES)
     public ResponseEntity<ApiResponse> getAllPetTypes() {
         try {
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetTypes()));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_FOUND, petService.getPetTypes()));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.GET_PET_COLORS)
     public ResponseEntity<ApiResponse> getAllPetColors() {
         try {
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetColors()));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_FOUND, petService.getPetColors()));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.GET_PET_BREEDS)
     public ResponseEntity<ApiResponse> getAllPetBreeds(@RequestParam String petType) {
         try {
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, petService.getPetBreeds(petType)));
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_FOUND, petService.getPetBreeds(petType)));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.SERVER_ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 

@@ -70,7 +70,7 @@ public class UserService implements IUserService {
     @Override
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class UserService implements IUserService {
                     appointmentRepository.deleteAll(appointments);
                     userRepository.deleteById(userId);
                 }, () -> {
-                    throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
+                    throw new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND);
                 });
     }
 

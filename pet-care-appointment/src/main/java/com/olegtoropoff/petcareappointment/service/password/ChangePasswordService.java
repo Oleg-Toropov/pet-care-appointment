@@ -23,7 +23,7 @@ public class ChangePasswordService implements IChangePasswordService {
         }
 
         if (request.getCurrentPassword().isEmpty()  || request.getNewPassword().isEmpty()) {
-            throw new IllegalArgumentException(FeedBackMessage.ALL_FIELDS_REQUIRED);
+            throw new IllegalArgumentException(FeedBackMessage.EMPTY_PASSWORD);
         }
 
         if (Objects.equals(request.getCurrentPassword(), request.getNewPassword())) {
@@ -31,7 +31,7 @@ public class ChangePasswordService implements IChangePasswordService {
         }
 
         if (!Objects.equals(request.getNewPassword(), request.getConfirmNewPassword())) {
-            throw new IllegalArgumentException(FeedBackMessage.PASSWORDS_MUST_MATCH);
+            throw new IllegalArgumentException(FeedBackMessage.PASSWORD_MISMATCH);
         }
         user.setPassword(request.getNewPassword());
         userRepository.save(user);

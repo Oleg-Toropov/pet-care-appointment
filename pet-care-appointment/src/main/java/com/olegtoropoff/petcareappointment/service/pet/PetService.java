@@ -43,7 +43,7 @@ public class PetService implements IPetService {
     @Override
     public void deletePet(Long petId) {
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
 
         Appointment appointment = pet.getAppointment();
 
@@ -59,7 +59,7 @@ public class PetService implements IPetService {
     @Override
     public Pet getPetById(Long petId) {
         return petRepository.findById(petId)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
     }
 
     @Override

@@ -13,6 +13,10 @@ target/
 .springBeans
 .sts4-cache
 
+### The .env file is used to store local confidential data ###
+.env
+/src/main/resources/application.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -43,3 +47,5 @@ Thumbs.db
 
 ### Java ###
 *.class
+
+

@@ -1,5 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
+import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
+import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,45 +28,47 @@ public class ReviewService implements IReviewService {
 
     @Override
     public Review saveReview(Review review, Long reviewerId, Long veterinarianId) {
-        // 1. Check if the reviewer is same as the doctor being reviewed
         if (veterinarianId.equals(reviewerId)) {
             throw new IllegalArgumentException(FeedBackMessage.CANNOT_REVIEW);
         }
-        //2. Check if the reviewer has previously submitted a review for this doctor.
-//        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
-//        if (existingReview.isPresent()) {
-//            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
-//        }// TODO uncomment
-        //3.Get the veterinarian  from the database
-        User veterinarian = userRepository.findById(veterinarianId).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
-        //3. Get the patient from the database
-        User patient = userRepository.findById(reviewerId).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
-        //4.Check if the reviewer has gotten a completed appointment with this doctor.
-//        boolean hadCompletedAppointments = appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
-//        if (!hadCompletedAppointments) {
-//            throw new IllegalStateException(FeedBackMessage.NOT_ALLOWED);
-//        } // TODO uncomment
-        // 5. Set both to the review
+
+        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
+        if (existingReview.isPresent()) {
+            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
+        }
+
+        User veterinarian = userRepository.findById(veterinarianId).orElseThrow(() ->
+                new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
+
+        User patient = userRepository.findById(reviewerId).orElseThrow(() ->
+                new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
+
+        boolean hadCompletedAppointments =
+                appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
+        if (!hadCompletedAppointments) {
+            throw new IllegalStateException(FeedBackMessage.REVIEW_NOT_ALLOWED);
+        }
+
         review.setVeterinarian(veterinarian);
         review.setPatient(patient);
-        // 6. Save the review
+
         return reviewRepository.save(review);
     }
 
     @Override
-    public Review updateReview(Long reviewId, ReviewUpdateRequest review) { // TODO check reviewer's id?
+    public Review updateReview(Long reviewId, ReviewUpdateRequest review) {
         return reviewRepository.findById(reviewId)
                 .map(existingReview -> {
                     existingReview.setStars(review.getStars());
                     existingReview.setFeedback(review.getFeedback());
                     return reviewRepository.save(existingReview);
-                }).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                }).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.REVIEW_NOT_FOUND));
     }
 
     @Override
-    public void deleteReview(Long reviewId) { // TODO check reviewer's id?
+    public void deleteReview(Long reviewId) {
         reviewRepository.findById(reviewId).ifPresentOrElse(Review::removeRelationShip, () -> {
-            throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
+            throw new ResourceNotFoundException(FeedBackMessage.REVIEW_NOT_FOUND);
         });
         reviewRepository.deleteById(reviewId);
     }

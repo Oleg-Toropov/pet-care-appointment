@@ -81,4 +81,21 @@ public class UrlMapping {
     public static final String PATIENTS = API + "/patients";
     public static final String GET_ALL_PATIENTS = "/get-all-patients";
     /*============================ End Patient ===================================*/
+
+    /*============================ Start Auth ===================================*/
+    public static final String AUTH = API + "/auth";
+    public static final String LOGIN = "/login";
+
+    /*============================ End Auth ===================================*/
+
+    /*============================ Start Verification token ===================================*/
+    public static final String TOKEN_VERIFICATION = API + "/verification";
+    public static final String VALIDATE_TOKEN = "/validate-token";
+    public static final String CHECK_TOKEN_EXPIRATION = "/check-token-expiration";
+    public static final String SAVE_TOKEN = "/user/save-token" ;
+    public static final String GENERATE_NEW_TOKEN_FOR_USER = "/generate-new-token";
+    public static final String DELETE_TOKEN = "/delete-token";
+    public static final String VERIFY_EMAIL = "/verify-your-email";
+    public static final String RESEND_VERIFICATION_TOKEN = "/resend-verification-token";
+    /*============================ End Verification token ===================================*/
 }

@@ -6,6 +6,7 @@ import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,22 +16,25 @@ public class SimpleUserFactory implements UserFactory {
     private final AdminFactory adminFactory;
     private final VeterinarianFactory veterinarianFactory;
     private final PatientFactory patientFactory;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User createUser(RegistrationRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+    public User createUser(RegistrationRequest registrationRequest) {
+        if (userRepository.existsByEmail(registrationRequest.getEmail())) {
             throw new UserAlreadyExistsException(FeedBackMessage.USER_ALREADY_EXISTS);
         }
 
-        switch (request.getUserType()) {
+        registrationRequest.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+
+        switch (registrationRequest.getUserType()) {
             case "VET" -> {
-                return veterinarianFactory.createVeterinarian(request);
+                return veterinarianFactory.createVeterinarian(registrationRequest);
             }
             case "PATIENT" -> {
-                return patientFactory.createPatient(request);
+                return patientFactory.createPatient(registrationRequest);
             }
             case "ADMIN" -> {
-                return adminFactory.createAdmin(request);
+                return adminFactory.createAdmin(registrationRequest);
             }
             default -> {
                 return null;

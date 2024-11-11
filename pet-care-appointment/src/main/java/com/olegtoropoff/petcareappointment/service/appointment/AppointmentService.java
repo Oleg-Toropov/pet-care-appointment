@@ -57,7 +57,7 @@ public class AppointmentService implements IAppointmentService {
     public Appointment updateAppointment(Long id, AppointmentUpdateRequest request) {
         Appointment existingAppointment = getAppointmentById(id);
         if (!Objects.equals(existingAppointment.getStatus(), AppointmentStatus.WAITING_FOR_APPROVAL)) {
-            throw new IllegalStateException(FeedBackMessage.ALREADY_APPROVED);
+            throw new IllegalStateException(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED);
         }
         existingAppointment.setAppointmentDate(LocalDate.parse(request.getAppointmentDate()));
         existingAppointment.setAppointmentTime(LocalTime.parse(request.getAppointmentTime()));
@@ -69,7 +69,7 @@ public class AppointmentService implements IAppointmentService {
     public Appointment addPetForAppointment(Long id, Pet pet) {
         Appointment existingAppointment = getAppointmentById(id);
         if (!Objects.equals(existingAppointment.getStatus(), AppointmentStatus.WAITING_FOR_APPROVAL)) {
-            throw new IllegalStateException(FeedBackMessage.ALREADY_APPROVED);
+            throw new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED);
         }
 
         pet.setAppointment(existingAppointment);
@@ -86,20 +86,20 @@ public class AppointmentService implements IAppointmentService {
     @Override
     public Appointment getAppointmentById(Long id) {
         return appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.APPOINTMENT_NOT_FOUND));
     }
 
     @Override
     public Appointment getAppointmentByNo(String appointmentNo) {
         return appointmentRepository.findByAppointmentNo(appointmentNo)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.APPOINTMENT_NOT_FOUND));
     }
 
     @Override
     public void deleteAppointment(Long id) {
         appointmentRepository.findById(id)
                 .ifPresentOrElse(appointmentRepository::delete, () -> {
-                    throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
+                    throw new ResourceNotFoundException(FeedBackMessage.APPOINTMENT_NOT_FOUND);
                 });
     }
 
@@ -123,7 +123,7 @@ public class AppointmentService implements IAppointmentService {
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.CANCELLED);
                     return appointmentRepository.saveAndFlush(appointment);
-                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_CANNOT_BE_CANCELLED));
+                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED));
     }
 
     @Override
@@ -133,7 +133,7 @@ public class AppointmentService implements IAppointmentService {
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.APPROVED);
                     return appointmentRepository.saveAndFlush(appointment);
-                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_ALREADY_APPROVED));
+                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class AppointmentService implements IAppointmentService {
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.NOT_APPROVED);
                     return appointmentRepository.saveAndFlush(appointment);
-                }).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+                }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED));
     }
 
     @Override
