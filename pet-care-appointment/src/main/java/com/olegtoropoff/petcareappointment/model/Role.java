@@ -21,7 +21,7 @@ public class Role {
    @NaturalId
     private String name;
 
-   @ManyToMany
+   @ManyToMany(mappedBy = "roles")
    private Collection<User> users = new HashSet<>();
 
    public Role(String name) {
@@ -31,4 +31,9 @@ public class Role {
    public String getName() {
        return (name != null) ? name : "";
    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

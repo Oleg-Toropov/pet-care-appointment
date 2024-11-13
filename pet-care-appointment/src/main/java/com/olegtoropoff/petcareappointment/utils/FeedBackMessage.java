@@ -24,7 +24,7 @@ public class FeedBackMessage {
     public static final String APPOINTMENT_DECLINED_SUCCESS = "Запись отклонена";
     public static final String APPOINTMENT_CANCELLED_SUCCESS = "Запись отменена";
     public static final String APPOINTMENT_DELETE_SUCCESS = "Запись успешно удалена";
-    public static final String APPOINTMENT_BOOKED_SUCCESS = "Запись успешно забронирована";
+    public static final String APPOINTMENT_BOOKED_SUCCESS = "Запись успешно зарегистрирована";
     public static final String APPOINTMENT_FOUND = "Запись найдена";
     public static final String APPOINTMENTS_FOUND = "Записи найдены";
     public static final String APPOINTMENT_NOT_FOUND = "Запись не найдена";
@@ -73,6 +73,10 @@ public class FeedBackMessage {
     public static final String TOKEN_DELETE_SUCCESS = "Токен пользователя успешно удален";
     public static final String INVALID_VERIFICATION_TOKEN = "Недействительный токен подтверждения";
     /*======================== End Token API =====================================*/
+
+    /*======================== Start Role API =====================================*/
+    public static final String ROLE_NOT_FOUND = "Роль не найдена";
+    /*======================== End Role API =====================================*/
 
     /*======================== Start Photo API =====================================*/
     public static final String PHOTO_UPDATE_SUCCESS = "Фотография успешно обновлена";

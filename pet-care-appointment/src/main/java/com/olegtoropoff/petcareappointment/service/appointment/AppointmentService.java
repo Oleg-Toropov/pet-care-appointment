@@ -139,6 +139,7 @@ public class AppointmentService implements IAppointmentService {
     @Override
     public Appointment declineAppointment(Long appointmentId) {
         return appointmentRepository.findById(appointmentId)
+                .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.NOT_APPROVED);
                     return appointmentRepository.saveAndFlush(appointment);
