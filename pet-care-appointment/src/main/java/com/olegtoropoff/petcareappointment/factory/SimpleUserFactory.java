@@ -40,7 +40,5 @@ public class SimpleUserFactory implements UserFactory {
                 return null;
             }
         }
-
-
     }
 }

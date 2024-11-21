@@ -42,7 +42,7 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
 
     private void createDefaultVetIfNotExits() {
         Role vetRole = roleService.getRoleByName("ROLE_VET");
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 4; i++) {
             String defaultEmail = "vet" + i + "@gmail.com";
             if (userRepository.existsByEmail(defaultEmail)) {
                 continue;
@@ -63,10 +63,9 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         }
     }
 
-
     private void createDefaultPatientIfNotExits() {
         Role patientRole = roleService.getRoleByName("ROLE_PATIENT");
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 4; i++) {
             String defaultEmail = "pat" + i + "@gmail.com";
             if (userRepository.existsByEmail(defaultEmail)) {
                 continue;
@@ -86,7 +85,6 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         }
     }
 
-
     private void createDefaultAdminIfNotExists() {
         Role adminRole = roleService.getRoleByName("ROLE_ADMIN");
         final String defaultAdminEmail = "admin@email.com";
@@ -100,7 +98,7 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         admin.setGender("Female");
         admin.setPhoneNumber("22222222");
         admin.setEmail(defaultAdminEmail);
-        admin.setPassword(passwordEncoder.encode("00220033"));
+        admin.setPassword(passwordEncoder.encode("12345"));
         admin.setUserType("ADMIN");
         admin.setRoles(new HashSet<>(Collections.singletonList(adminRole)));
         Admin theAdmin = adminRepository.save(admin);

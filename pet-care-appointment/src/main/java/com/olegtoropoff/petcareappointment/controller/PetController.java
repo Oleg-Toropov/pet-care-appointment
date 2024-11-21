@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
-@CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.PETS)
@@ -96,5 +95,4 @@ public class PetController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
-
 }

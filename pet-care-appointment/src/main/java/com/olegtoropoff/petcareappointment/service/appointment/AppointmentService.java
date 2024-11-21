@@ -13,13 +13,18 @@ import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
 import com.olegtoropoff.petcareappointment.service.pet.IPetService;
+import com.olegtoropoff.petcareappointment.service.veterinarian.VeterinarianService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +36,7 @@ public class AppointmentService implements IAppointmentService {
     private final IPetService petService;
     private final EntityConverter<Appointment, AppointmentDto> entityConverter;
     private final EntityConverter<Pet, PetDto> petEntityConverter;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Override
@@ -79,8 +85,9 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public Page<AppointmentDto> getAllAppointments(Pageable pageable) {
+        return appointmentRepository.findAll(pageable)
+                .map(appointment -> modelMapper.map(appointment, AppointmentDto.class));
     }
 
     @Override
@@ -153,7 +160,7 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public List<Map<String, Object>> getAppointmentSummary() {
-        return getAllAppointments()
+        return appointmentRepository.findAll()
                 .stream()
                 .collect(Collectors.groupingBy(Appointment::getStatus, Collectors.counting()))
                 .entrySet()
@@ -168,5 +175,51 @@ public class AppointmentService implements IAppointmentService {
         summaryMap.put("name", status);
         summaryMap.put("value", value);
         return summaryMap;
+    }
+
+    @Override
+    public List<Long> getAppointmentIds() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return  appointments.stream()
+                .map(Appointment::getId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void setAppointmentStatus(Long appointmentId){
+        Appointment appointment = getAppointmentById(appointmentId);
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+        LocalTime appointmentEndTime = appointment.getAppointmentTime()
+                .plusMinutes(VeterinarianService.APPOINTMENT_DURATION_MINUTES).truncatedTo(ChronoUnit.MINUTES);
+        switch (appointment.getStatus()) {
+            case APPROVED:
+                if (currentDate.isBefore(appointment.getAppointmentDate()) ||
+                        (currentDate.equals(appointment.getAppointmentDate()) && currentTime.isBefore(appointment.getAppointmentTime()))) {
+                    appointment.setStatus(AppointmentStatus.UP_COMING);
+                }
+                break;
+
+            case UP_COMING:
+                if (currentDate.equals(appointment.getAppointmentDate()) &&
+                        currentTime.isAfter(appointment.getAppointmentTime()) && currentTime.isBefore(appointmentEndTime)) {
+                    appointment.setStatus(AppointmentStatus.ON_GOING);
+                }
+                break;
+            case ON_GOING:
+                if (currentDate.isAfter(appointment.getAppointmentDate()) ||
+                        (currentDate.equals(appointment.getAppointmentDate()) && currentTime.isAfter(appointmentEndTime))) {
+                    appointment.setStatus(AppointmentStatus.COMPLETED);
+                }
+                break;
+
+            case WAITING_FOR_APPROVAL:
+                if (currentDate.isAfter(appointment.getAppointmentDate()) ||
+                        (currentDate.equals(appointment.getAppointmentDate()) && currentTime.isAfter(appointment.getAppointmentTime()))) {
+                    appointment.setStatus(AppointmentStatus.NOT_APPROVED);
+                }
+                break;
+        }
+        appointmentRepository.save(appointment);
     }
 }

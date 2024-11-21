@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class VeterinarianService implements IVeterinarianService {
-    private static final int APPOINTMENT_DURATION_MINUTES = 60;
+    public static final int APPOINTMENT_DURATION_MINUTES = 60;
     private static final int UNAVAILABLE_BEFORE_START_MINUTES = 10;
     private static final int UNAVAILABLE_AFTER_END_MINUTES = 10;
 

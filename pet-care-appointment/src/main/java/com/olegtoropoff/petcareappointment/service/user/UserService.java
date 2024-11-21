@@ -20,6 +20,8 @@ import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -111,10 +113,9 @@ public class UserService implements IUserService {
     }
 
     private void setUserReviews(UserDto userDto, Long userId) {
-        Page<Review> reviewPage = reviewService.findAllReviewsByUserId(userId, 0, Integer.MAX_VALUE);
-        List<ReviewDto> reviewDtos = reviewPage.getContent()
-                .stream()
-                .map(this::mapReviewToDto).toList();
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        Page<ReviewDto> reviewPage = reviewService.findAllReviewsByUserId(userId, pageable);
+        List<ReviewDto> reviewDtos = reviewPage.getContent();
         if (!reviewDtos.isEmpty()) {
             double averageRating = reviewService.getAverageRatingForVet(userId);
             userDto.setAverageRating(averageRating);

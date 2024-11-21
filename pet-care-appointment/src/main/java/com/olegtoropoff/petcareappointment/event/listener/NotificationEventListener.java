@@ -5,6 +5,7 @@ import com.olegtoropoff.petcareappointment.event.*;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +66,11 @@ public class NotificationEventListener implements ApplicationListener<Applicatio
                 }
                 break;
 
+            case "PasswordResetEvent":
+                PasswordResetEvent passwordResetEvent = (PasswordResetEvent) event;
+                handlePasswordResetRequest(passwordResetEvent);
+                break;
+
             default:
                 break;
         }
@@ -86,7 +92,7 @@ public class NotificationEventListener implements ApplicationListener<Applicatio
     private void sendRegistrationVerificationEmail(User user, String url) throws MessagingException, UnsupportedEncodingException {
         String subject = "Подтвердите свой адрес электронной почты";
         String senderName = "Doctor Aibolit";
-        String mailContent = user.getFirstName() + ", благодарим вас за регистрацию на нашем сайте! Пожалуйста, пройдите по ссылке ниже, чтобы завершить регистрацию.</p>" +
+        String mailContent = user.getFirstName() + ", благодарим вас за регистрацию на нашем сайте! Пожалуйста, пройдите по ссылке, чтобы завершить регистрацию. </p>" +
                 "<a href=\"" + url + "\">Подтвердите свой адрес электронной почты.</a> <br/>" +
                 "<p>С уважением,<br> Doctor Aibolit";
         emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
@@ -143,4 +149,28 @@ public class NotificationEventListener implements ApplicationListener<Applicatio
         emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
     }
     /*======================== End Decline Appointment notifications ===================================================*/
+
+    /*======================== Start password reset related notifications ===================================================*/
+    private void handlePasswordResetRequest(PasswordResetEvent event) {
+        User user = event.getUser();
+        String token = UUID.randomUUID().toString();
+        tokenService.saveVerificationTokenForUser(token, user);
+        String resetUrl = frontendBaseUrl + "/reset-password?token=" + token;
+        try {
+            sendPasswordResetEmail(user, resetUrl);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(FeedBackMessage.PASSWORD_RESET_EMAIL_FAILED, e);
+        }
+    }
+
+    private void sendPasswordResetEmail(User user, String resetUrl) throws MessagingException, UnsupportedEncodingException {
+        String subject = "Запрос на сброс пароля";
+        String senderName = "Doctor Aibolit";
+        String mailContent = user.getFirstName() + ", вы запросили сброс вашего пароля. Пожалуйста, перейдите по ссылке, чтобы продолжить: </p>" +
+                "<a href=\"" + resetUrl + "\">Сброс пароля</a><br/>" +
+                "<p>Если вы не запрашивали сброс пароля, пожалуйста, проигнорируйте это письмо.</p>" +
+                "<p>С уважением,<br> Doctor Aibolit";
+        emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
+    }
+    /*======================== End password reset related notifications ===================================================*/
 }

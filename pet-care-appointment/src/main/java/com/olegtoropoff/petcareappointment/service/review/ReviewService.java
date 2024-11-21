@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
+import com.olegtoropoff.petcareappointment.dto.ReviewDto;
 import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
 import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
@@ -11,8 +12,9 @@ import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.ReviewUpdateRequest;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class ReviewService implements IReviewService {
     private final ReviewRepository reviewRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Review saveReview(Review review, Long reviewerId, Long veterinarianId) {
@@ -74,9 +77,9 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Page<Review> findAllReviewsByUserId(Long userId, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return reviewRepository.findAllByUserId(userId, pageRequest);
+    public Page<ReviewDto> findAllReviewsByUserId(Long userId, Pageable pageable) {
+        return reviewRepository.findAllByUserId(userId, pageable)
+                .map(review -> modelMapper.map(review, ReviewDto.class));
     }
 
     @Transactional

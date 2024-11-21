@@ -2,13 +2,14 @@ package com.olegtoropoff.petcareappointment.utils;
 
 public class FeedBackMessage {
     /*======================== Start User API =====================================*/
-    public static final String CREATE_USER_SUCCESS = "Учетная запись пользователя успешно создана";
+    public static final String CREATE_USER_SUCCESS = "Учетная запись пользователя успешно создана для завершения регистрации перейдите по ссылке которая была отправлена на указанный при регистрации электронный адрес";
     public static final String DELETE_USER_SUCCESS = "Учетная запись пользователя успешно удалена";
     public static final String USER_ALREADY_EXISTS = "Пользователь с таким email уже существует";
     public static final String USER_UPDATE_SUCCESS = "Пользователь успешно обновлен";
     public static final String USER_FOUND = "Пользователь найден";
     public static final String USERS_FOUND = "Пользователи найдены";
     public static final String USER_NOT_FOUND = "Извините, пользователь не найден";
+    public static final String USER_NOT_FOUND_WITH_EMAIL = "Извините, пользователь с электронной почтой: '%s' не найден";
     public static final String LOCKED_ACCOUNT_SUCCESS = "Учетная запись успешно заблокирована";
     public static final String UNLOCKED_ACCOUNT_SUCCESS = "Учетная запись успешно разблокирована";
     public static final String SPECIALIZATION_NOT_FOUND = "В системе не найден ветеринар со специализацией '%s'";
@@ -16,6 +17,12 @@ public class FeedBackMessage {
 
     /*======================== Start Password API =====================================*/
     public static final String PASSWORD_CHANGE_SUCCESS = "Пароль успешно изменен, теперь можно закрыть форму.";
+    public static final String PASSWORD_RESET_EMAIL_SENT = "Ссылка отправлена на вашу электронную почту, пожалуйста, проверьте ее для завершения запроса на смену пароля.";
+    public static final String MISSING_PASSWORD = "Отсутствует токен или пароль";
+    public static final String INVALID_RESET_TOKEN = "Недействительный токен сброса пароля";
+    public static final String INVALID_EMAIL = "Пожалуйста, введите email, связанный с вашей учетной записью.";
+    public static final String PASSWORD_RESET_SUCCESS = "Ваш пароль успешно сброшен!";
+    public static final String PASSWORD_RESET_EMAIL_FAILED = "Не удалось отправить электронное письмо для сброса пароля";
     /*======================== End Password API =====================================*/
 
     /*======================== Start Appointment API =====================================*/
@@ -45,7 +52,7 @@ public class FeedBackMessage {
     public static final String ALREADY_REVIEWED = "Вы уже оставили отзыв этому ветеринару, вы можете редактировать предыдущий отзыв";
     public static final String CANNOT_REVIEW = "Ветеринары не могут оставлять отзывы о себе";
     public static final String VET_OR_PATIENT_NOT_FOUND = "Ветеринар или пациент не найдены";
-    public static final String NO_VETS_AVAILABLE = "Нет доступных ветеринаров на указанную дату и время";
+    public static final String NO_VETS_AVAILABLE = "По выбранной специальности на указанную дату и время нет доступных ветеринаров";
     public static final String REVIEW_SUBMIT_SUCCESS = "Отзыв успешно отправлен";
     public static final String REVIEW_UPDATE_SUCCESS = "Отзыв успешно обновлен";
     public static final String REVIEW_DELETE_SUCCESS = "Отзыв успешно удален";
@@ -59,19 +66,21 @@ public class FeedBackMessage {
     public static final String NEW_PASSWORD_MUST_DIFFER = "Новый пароль должен отличаться от текущего";
     public static final String PASSWORD_MISMATCH = "Подтверждение пароля не совпадает";
     public static final String AUTHENTICATION_SUCCESS = "Аутентификация успешна";
-    public static final String ACCOUNT_DISABLED = "Извините, ваша учетная запись отключена, пожалуйста, обратитесь в службу поддержки";
+    public static final String ACCOUNT_DISABLED = "Извините, ваша учетная запись отключена, вам необходимо завершить регистрацию, перейдите по ссылке, которая была отправлена на ваш электронный адрес или обратитесь в службу поддержки";
     public static final Object INVALID_PASSWORD = "Неверное имя пользователя или пароль";
     /*======================== End authentication feedback =====================================*/
 
     /*======================== Start Token API =====================================*/
-    public static final String INVALID_TOKEN = "НЕДЕЙСТВИТЕЛЬНЫЙ";
-    public static final String TOKEN_ALREADY_VERIFIED = "ПОДТВЕРЖДЕННЫЙ";
-    public static final String EXPIRED_TOKEN = "ИСТЕКШИЙ";
-    public static final String VALID_TOKEN = "ДЕЙСТВИТЕЛЬНЫЙ";
+    public static final String INVALID_TOKEN = "INVALID";
+    public static final String TOKEN_ALREADY_VERIFIED = "VERIFIED";
+    public static final String EXPIRED_TOKEN = "EXPIRED";
+    public static final String VALID_TOKEN = "VALID";
     public static final String TOKEN_VALIDATION_ERROR = "Ошибка проверки токена";
     public static final String TOKEN_SAVED_SUCCESS = "Токен подтверждения успешно сохранен";
     public static final String TOKEN_DELETE_SUCCESS = "Токен пользователя успешно удален";
     public static final String INVALID_VERIFICATION_TOKEN = "Недействительный токен подтверждения";
+    public static final String NEW_VERIFICATION_TOKEN_SENT = "Новая ссылка для подтверждения отправлена на вашу почту. Пожалуйста, перейдите по ней для завершения регистрации.";
+    public static final String INVALID_OR_EXPIRED_JWT = "Недействительный или просроченный токен JWT";
     /*======================== End Token API =====================================*/
 
     /*======================== Start Role API =====================================*/

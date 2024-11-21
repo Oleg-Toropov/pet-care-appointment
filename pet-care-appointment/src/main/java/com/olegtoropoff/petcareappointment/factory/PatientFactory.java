@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class PatientFactory {
     private final PatientRepository patientRepository;
     private final UserAttributesMapper userAttributesMapper;
-    private IRoleService roleService;
+    private final IRoleService roleService;
 
     public Patient createPatient(RegistrationRequest request) {
         Patient patient = new Patient();

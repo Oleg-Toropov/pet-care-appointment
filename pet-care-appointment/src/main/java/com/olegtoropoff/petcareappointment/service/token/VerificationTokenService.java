@@ -46,11 +46,12 @@ public class VerificationTokenService implements IVerificationTokenService {
     @Override
     public VerificationToken generateNewVerificationToken(String oldToken) {
         Optional<VerificationToken> theToken = findByToken(oldToken);
+
         if (theToken.isPresent()) {
             var verificationToken = theToken.get();
             verificationToken.setToken(UUID.randomUUID().toString());
             verificationToken.setExpirationDate(SystemUtils.getExpirationTime());
-            tokenRepository.save(verificationToken);
+            return tokenRepository.save(verificationToken);
         }
         throw new IllegalArgumentException(FeedBackMessage.INVALID_VERIFICATION_TOKEN + oldToken);
     }

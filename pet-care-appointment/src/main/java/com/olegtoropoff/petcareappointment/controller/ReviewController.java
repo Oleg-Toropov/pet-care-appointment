@@ -10,20 +10,19 @@ import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
 
-@CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.REVIEWS)
 public class ReviewController {
     private final IReviewService reviewService;
-    private final ModelMapper modelMapper;
 
     @PostMapping(UrlMapping.SUBMIT_REVIEW)
     public ResponseEntity<ApiResponse> saveReview(@RequestBody Review review, @RequestParam Long reviewerId,
@@ -64,10 +63,10 @@ public class ReviewController {
     @GetMapping(UrlMapping.GET_USER_REVIEWS)
     public ResponseEntity<ApiResponse> getReviewsByUserID(@PathVariable Long userId,
                                                           @RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "5") int size) {
-        Page<Review> reviewPage = reviewService.findAllReviewsByUserId(userId, page, size);
-        Page<ReviewDto> reviewDtos = reviewPage.map((element) -> modelMapper.map(element, ReviewDto.class));
-        return ResponseEntity.status(FOUND).body(new ApiResponse(FeedBackMessage.REVIEW_FOUND, reviewDtos));
+                                                          @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReviewDto> reviewPage = reviewService.findAllReviewsByUserId(userId, pageable);
+        return ResponseEntity.status(FOUND).body(new ApiResponse(FeedBackMessage.REVIEW_FOUND, reviewPage));
     }
 
     @GetMapping(UrlMapping.GET_AVERAGE_RATING)

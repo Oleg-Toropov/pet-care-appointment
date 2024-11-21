@@ -33,7 +33,7 @@ public class ApplicationSecurityConfig {
     private final JwtAuthEntryPoint authEntryPoint;
 
     private static final List<String> SECURED_URLS = List.of(
-//            "/api/v1/appointments/book-appointment", TODO UNCOMMENT
+            "/api/v1/appointments/book-appointment",
             "/api/v1/reviews/**");
 
     @Bean
@@ -80,7 +80,7 @@ public class ApplicationSecurityConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173")
+                        .allowedOrigins("http://localhost:5173") // todo
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

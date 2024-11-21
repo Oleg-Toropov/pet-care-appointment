@@ -16,7 +16,6 @@ public class PatientService implements IPatientService {
     private final PatientRepository patientRepository;
     private final EntityConverter<User, UserDto> entityConverter;
 
-
     @Override
     public List<UserDto> getPatients() {
         List<Patient> patients = patientRepository.findAll();

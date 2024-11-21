@@ -53,8 +53,7 @@ public class JwtUtils {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(token);
             return true;
         } catch (MalformedJwtException | IllegalArgumentException | UnsupportedJwtException | ExpiredJwtException e) {
-            throw new JwtException(e.getMessage());
+            return false;
         }
     }
-
 }

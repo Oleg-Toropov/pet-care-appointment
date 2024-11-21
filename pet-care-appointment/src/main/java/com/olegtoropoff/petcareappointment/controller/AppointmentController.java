@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
 import com.olegtoropoff.petcareappointment.event.AppointmentApprovedEvent;
 import com.olegtoropoff.petcareappointment.event.AppointmentBookedEvent;
 import com.olegtoropoff.petcareappointment.event.AppointmentDeclinedEvent;
@@ -14,6 +15,10 @@ import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +27,13 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
-@CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.APPOINTMENTS)
 public class AppointmentController {
     private final IAppointmentService appointmentService;
     private final ApplicationEventPublisher publisher;
+
 
     @PostMapping(UrlMapping.BOOK_APPOINTMENT)
     public ResponseEntity<ApiResponse> bookAppointment(
@@ -79,10 +84,12 @@ public class AppointmentController {
     }
 
     @GetMapping(UrlMapping.ALL_APPOINTMENT)
-    public ResponseEntity<ApiResponse> getAllAppointments() {
+    public ResponseEntity<ApiResponse> getAllAppointments(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
         try {
-            List<Appointment> appointments = appointmentService.getAllAppointments();
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENTS_FOUND, appointments));
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"));
+            Page<AppointmentDto> appointmentPage = appointmentService.getAllAppointments(pageable);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENTS_FOUND, appointmentPage));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }

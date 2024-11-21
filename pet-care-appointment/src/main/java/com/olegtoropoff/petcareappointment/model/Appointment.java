@@ -45,7 +45,7 @@ public class Appointment {
     private User veterinarian;
 
     @OneToMany(mappedBy = "appointment", cascade =  CascadeType.ALL, orphanRemoval = true)
-    List<Pet> pets = new ArrayList<>();
+    private List<Pet> pets = new ArrayList<>();
 
     public void addPatient(User sender) {
         this.setPatient(sender);
@@ -63,7 +63,7 @@ public class Appointment {
         recipient.getAppointments().add(this);
     }
 
-    public void setAppointmentNo() { // TODO CHANGE THIS APPROACH
+    public void setAppointmentNo() {
         this.appointmentNo = String.valueOf(new Random().nextLong()).substring(1, 11);
     }
 }

@@ -24,7 +24,6 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
-@CrossOrigin("http://localhost:5173") //TODO delete
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.USERS)
@@ -32,7 +31,7 @@ public class UserController {
     private final IUserService userService;
     private final EntityConverter<User, UserDto> entityConverter;
     private final IChangePasswordService changePasswordService;
-    private  final ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher publisher;
 
     @PostMapping(UrlMapping.REGISTER_USER)
     public ResponseEntity<ApiResponse> register(@RequestBody RegistrationRequest request) {
@@ -112,17 +111,17 @@ public class UserController {
 
     @GetMapping(UrlMapping.COUNT_ALL_VETERINARIANS)
     public long countVeterinarians() {
-        return  userService.countVeterinarians();
+        return userService.countVeterinarians();
     }
 
     @GetMapping(UrlMapping.COUNT_ALL_PATIENTS)
     public long countPatients() {
-        return  userService.countPatients();
+        return userService.countPatients();
     }
 
     @GetMapping(UrlMapping.COUNT_ALL_USERS)
     public long countUsers() {
-        return  userService.countAllUsers();
+        return userService.countAllUsers();
     }
 
     @GetMapping(UrlMapping.AGGREGATE_USERS)
@@ -146,7 +145,7 @@ public class UserController {
     }
 
     @PutMapping(UrlMapping.LOCK_USER_ACCOUNT)
-    public  ResponseEntity<ApiResponse> lockUserAccount(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse> lockUserAccount(@PathVariable Long userId) {
         try {
             userService.lockUserAccount(userId);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.LOCKED_ACCOUNT_SUCCESS, null));
@@ -156,7 +155,7 @@ public class UserController {
     }
 
     @PutMapping(UrlMapping.UNLOCK_USER_ACCOUNT)
-    public  ResponseEntity<ApiResponse> unLockUserAccount(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse> unLockUserAccount(@PathVariable Long userId) {
         try {
             userService.unLockUserAccount(userId);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS, null));
@@ -164,5 +163,4 @@ public class UserController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
-
 }

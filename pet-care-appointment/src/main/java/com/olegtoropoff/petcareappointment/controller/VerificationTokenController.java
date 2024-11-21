@@ -22,13 +22,13 @@ public class VerificationTokenController {
     @GetMapping(UrlMapping.VALIDATE_TOKEN)
     public ResponseEntity<ApiResponse> validateToken(String token) {
         String result = verificationTokenService.validateToken(token);
-        ApiResponse response = switch (result){
-            case "НЕДЕЙСТВИТЕЛЬНЫЙ" -> new ApiResponse(FeedBackMessage.INVALID_TOKEN, null);
-            case "ПОДТВЕРЖДЕННЫЙ" -> new ApiResponse(FeedBackMessage.TOKEN_ALREADY_VERIFIED, null);
-            case "ИСТЕКШИЙ" -> new ApiResponse(FeedBackMessage.EXPIRED_TOKEN, null);
-            case "ДЕЙСТВИТЕЛЬНЫЙ" -> new ApiResponse(FeedBackMessage.VALID_TOKEN, null);
+        ApiResponse response = switch (result) {
+            case "INVALID" -> new ApiResponse(FeedBackMessage.INVALID_TOKEN, null);
+            case "VERIFIED" -> new ApiResponse(FeedBackMessage.TOKEN_ALREADY_VERIFIED, null);
+            case "EXPIRED" -> new ApiResponse(FeedBackMessage.EXPIRED_TOKEN, null);
+            case "VALID" -> new ApiResponse(FeedBackMessage.VALID_TOKEN, null);
             default -> new ApiResponse(FeedBackMessage.TOKEN_VALIDATION_ERROR, null);
-        } ;
+        };
         return ResponseEntity.ok(response);
     }
 
@@ -38,7 +38,7 @@ public class VerificationTokenController {
         ApiResponse response;
         if (isExpired) {
             response = new ApiResponse(FeedBackMessage.EXPIRED_TOKEN, null);
-        }else {
+        } else {
             response = new ApiResponse(FeedBackMessage.VALID_TOKEN, null);
         }
         return ResponseEntity.ok(response);
@@ -48,7 +48,7 @@ public class VerificationTokenController {
     public ResponseEntity<ApiResponse> saveVerificationTokenForUser(@RequestBody VerificationTokenRequest request) {
         User user = userRepository.findById(request.getUser().getId())
                 .orElseThrow(() -> new RuntimeException(FeedBackMessage.USER_NOT_FOUND));
-        verificationTokenService.saveVerificationTokenForUser(request.getToken(),user);
+        verificationTokenService.saveVerificationTokenForUser(request.getToken(), user);
         return ResponseEntity.ok(new ApiResponse(FeedBackMessage.TOKEN_SAVED_SUCCESS, null));
     }
 
@@ -63,6 +63,4 @@ public class VerificationTokenController {
         verificationTokenService.deleteVerificationToken(userId);
         return ResponseEntity.ok(new ApiResponse(FeedBackMessage.TOKEN_DELETE_SUCCESS, null));
     }
-
-
 }
