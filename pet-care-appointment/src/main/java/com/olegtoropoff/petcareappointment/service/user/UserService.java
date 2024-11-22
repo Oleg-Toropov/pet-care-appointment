@@ -113,14 +113,15 @@ public class UserService implements IUserService {
     }
 
     private void setUserReviews(UserDto userDto, Long userId) {
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-        Page<ReviewDto> reviewPage = reviewService.findAllReviewsByUserId(userId, pageable);
-        List<ReviewDto> reviewDtos = reviewPage.getContent();
-        if (!reviewDtos.isEmpty()) {
+        Page<Review> reviewPage = reviewService.findAllReviewsByUserId(userId, 0, Integer.MAX_VALUE);
+        List<ReviewDto> reviewDto = reviewPage.getContent()
+                .stream()
+                .map(this::mapReviewToDto).toList();
+        if (!reviewDto.isEmpty()) {
             double averageRating = reviewService.getAverageRatingForVet(userId);
             userDto.setAverageRating(averageRating);
         }
-        userDto.setReviews(reviewDtos);
+        userDto.setReviews(reviewDto);
     }
 
     private ReviewDto mapReviewToDto(Review review) {

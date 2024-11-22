@@ -70,6 +70,7 @@ public class UrlMapping {
     public static final String SEARCH_VETERINARIAN_FOR_APPOINTMENT = "/search-veterinarian";
     public static final String GET_ALL_SPECIALIZATIONS = "/vet/get-all-specialization";
     public static final String AGGREGATE_VETERINARIANS_BY_SPECIALIZATION = "/vet/get-by-specialization";
+    public static final String GET_AVAILABLE_TIME_FOR_BOOK_APPOINTMENT = "/{vetId}/available-times";
     /*============================ End Veterinarian API ===================================*/
 
     /*============================ Start Change Password API ===================================*/

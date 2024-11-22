@@ -24,6 +24,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByVeterinarianAndAppointmentDate(User veterinarian, LocalDate requestedDate);
 
+    List<Appointment> findByVeterinarianIdAndAppointmentDate(Long veterinarianId, LocalDate requestedDate);
+
     @NonNull
     Page<Appointment> findAll(@NonNull Pageable pageable);
 }

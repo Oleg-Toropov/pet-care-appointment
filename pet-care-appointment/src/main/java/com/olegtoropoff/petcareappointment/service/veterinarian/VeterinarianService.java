@@ -21,6 +21,10 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.olegtoropoff.petcareappointment.enums.AppointmentStatus.CANCELLED;
+import static com.olegtoropoff.petcareappointment.enums.AppointmentStatus.NOT_APPROVED;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,10 @@ public class VeterinarianService implements IVeterinarianService {
     public static final int APPOINTMENT_DURATION_MINUTES = 60;
     private static final int UNAVAILABLE_BEFORE_START_MINUTES = 10;
     private static final int UNAVAILABLE_AFTER_END_MINUTES = 10;
+    private static final LocalTime BEGINNING_OF_WORKING_DAY = LocalTime.of(9, 0);
+    private static final LocalTime END_OF_WORKING_DAY = LocalTime.of(21, 0);
+    private static final int UNAVAILABLE_BEFORE_END_OF_WORKING_DAY = 70;
+    private static final int AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT = 30;
 
     private final EntityConverter<Veterinarian, UserDto> entityConverter;
     private final ReviewService reviewService;
@@ -101,6 +109,9 @@ public class VeterinarianService implements IVeterinarianService {
     }
 
     private boolean doesAppointmentOverLap(Appointment existingAppointment, LocalTime requestedStartTime, LocalTime requestedEndTime) {
+        if (existingAppointment.getStatus() == CANCELLED || existingAppointment.getStatus() == NOT_APPROVED) {
+            return false;
+        }
         LocalTime existingStartTime = existingAppointment.getAppointmentTime();
         LocalTime existingEndTime = existingStartTime.plusMinutes(APPOINTMENT_DURATION_MINUTES);
         LocalTime unavailableStartTime = existingStartTime.minusMinutes(UNAVAILABLE_BEFORE_START_MINUTES);
@@ -109,10 +120,23 @@ public class VeterinarianService implements IVeterinarianService {
     }
 
     @Override
-    public List<Map<String, Object>> aggregateVetsBySpecialization(){
+    public List<Map<String, Object>> aggregateVetsBySpecialization() {
         List<Object[]> results = veterinarianRepository.countVetsBySpecialization();
         return results.stream()
                 .map(result -> Map.of("specialization", result[0], "count", result[1]))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LocalTime> getAvailableTimeForBookAppointment(Long vetId, LocalDate date) {
+        List<Appointment> appointments = appointmentRepository.findByVeterinarianIdAndAppointmentDate(vetId, date);
+
+        return Stream.iterate(BEGINNING_OF_WORKING_DAY,
+                        time -> time.isBefore(END_OF_WORKING_DAY.minusMinutes(UNAVAILABLE_BEFORE_END_OF_WORKING_DAY)),
+                        time -> time.plusMinutes(AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT))
+                .filter(time -> appointments.stream().noneMatch(appointment ->
+                        doesAppointmentOverLap(appointment, time, time.plusMinutes(APPOINTMENT_DURATION_MINUTES))
+                ))
                 .collect(Collectors.toList());
     }
 }

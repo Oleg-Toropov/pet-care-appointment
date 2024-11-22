@@ -18,4 +18,6 @@ public interface IVeterinarianService {
     List<Veterinarian> getVeterinariansBySpecialization(String specialization);
 
     List<Map<String, Object>> aggregateVetsBySpecialization();
+
+    List<LocalTime> getAvailableTimeForBookAppointment(Long vetId, LocalDate date);
 }

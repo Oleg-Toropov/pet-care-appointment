@@ -1,8 +1,5 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
-import com.olegtoropoff.petcareappointment.dto.ReviewDto;
-import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
-import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
@@ -12,14 +9,12 @@ import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.ReviewUpdateRequest;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,18 +22,17 @@ public class ReviewService implements IReviewService {
     private final ReviewRepository reviewRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
 
     @Override
     public Review saveReview(Review review, Long reviewerId, Long veterinarianId) {
         if (veterinarianId.equals(reviewerId)) {
             throw new IllegalArgumentException(FeedBackMessage.CANNOT_REVIEW);
         }
-
-        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
-        if (existingReview.isPresent()) {
-            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
-        }
+// todo uncomment
+//        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
+//        if (existingReview.isPresent()) {
+//            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
+//        }
 
         User veterinarian = userRepository.findById(veterinarianId).orElseThrow(() ->
                 new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
@@ -46,11 +40,11 @@ public class ReviewService implements IReviewService {
         User patient = userRepository.findById(reviewerId).orElseThrow(() ->
                 new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
 
-        boolean hadCompletedAppointments =
-                appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
-        if (!hadCompletedAppointments) {
-            throw new IllegalStateException(FeedBackMessage.REVIEW_NOT_ALLOWED);
-        }
+//        boolean hadCompletedAppointments =
+//                appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
+//        if (!hadCompletedAppointments) {
+//            throw new IllegalStateException(FeedBackMessage.REVIEW_NOT_ALLOWED);
+//        }
 
         review.setVeterinarian(veterinarian);
         review.setPatient(patient);
@@ -77,9 +71,9 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Page<ReviewDto> findAllReviewsByUserId(Long userId, Pageable pageable) {
-        return reviewRepository.findAllByUserId(userId, pageable)
-                .map(review -> modelMapper.map(review, ReviewDto.class));
+    public Page<Review> findAllReviewsByUserId(Long userId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return reviewRepository.findAllByUserId(userId, pageRequest);
     }
 
     @Transactional

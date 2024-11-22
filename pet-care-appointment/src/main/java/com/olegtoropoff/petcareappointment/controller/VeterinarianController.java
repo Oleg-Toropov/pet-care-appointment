@@ -2,6 +2,7 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
+import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
 import com.olegtoropoff.petcareappointment.service.veterinarian.IVeterinarianService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
@@ -65,4 +66,18 @@ public class VeterinarianController {
         List<Map<String, Object>> aggregatedVets = veterinarianService.aggregateVetsBySpecialization();
         return ResponseEntity.ok(aggregatedVets);
     }
+
+    @GetMapping(UrlMapping.GET_AVAILABLE_TIME_FOR_BOOK_APPOINTMENT)
+    public ResponseEntity<ApiResponse> getAvailableTimeForBookAppointment(@PathVariable Long vetId,
+                                                                          @RequestParam LocalDate date) {
+        try {
+            List<LocalTime> availableTimes = veterinarianService.getAvailableTimeForBookAppointment(vetId, date);
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, availableTimes)); // todo change feedback
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+        }
+    }
+    /*
+     /veterinarians/${vetId}/available-times?date=${date}
+     */
 }
