@@ -85,8 +85,8 @@ public class UrlMapping {
     /*============================ Start Auth ===================================*/
     public static final String AUTH = API + "/auth";
     public static final String LOGIN = "/login";
-    public static final String REQUEST_PASSWORD_RESET = "/request-password-reset" ;
-    public static final String RESET_PASSWORD = "/reset-password" ;
+    public static final String REQUEST_PASSWORD_RESET = "/request-password-reset";
+    public static final String RESET_PASSWORD = "/reset-password";
     public static final String VERIFY_EMAIL = "/verify-your-email";
     public static final String RESEND_VERIFICATION_TOKEN = "/resend-verification-token";
     /*============================ End Auth ===================================*/
@@ -95,7 +95,7 @@ public class UrlMapping {
     public static final String TOKEN_VERIFICATION = API + "/verification";
     public static final String VALIDATE_TOKEN = "/validate-token";
     public static final String CHECK_TOKEN_EXPIRATION = "/check-token-expiration";
-    public static final String SAVE_TOKEN = "/user/save-token" ;
+    public static final String SAVE_TOKEN = "/user/save-token";
     public static final String GENERATE_NEW_TOKEN_FOR_USER = "/generate-new-token";
     public static final String DELETE_TOKEN = "/delete-token";
     /*============================ End Verification token ===================================*/
@@ -106,4 +106,12 @@ public class UrlMapping {
     public static final String GET_ROLE_BY_ID = "/role/get-by-id/role";
     public static final String GET_ROLE_BY_NAME = "/role/get-by-name";
     /*============================ End Role ===================================*/
+
+    /*============================ Start VetBiography ===================================*/
+    public static final String BIOGRAPHIES = API + "/biographies";
+    public static final String GET_BIOGRAPHY_BY_VET_ID = "/biography/{vetId}";
+    public static final String SAVE_BIOGRAPHY = "/biography/{vetId}/save";
+    public static final String UPDATE_BIOGRAPHY = "/biography/{id}/update";
+    public static final String DELETE_BIOGRAPHY = "/biography/{id}/delete";
+    /*============================ End VetBiography ===================================*/
 }

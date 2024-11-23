@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long> {
+    List<Veterinarian> findAllByUserType(String vet);
+
     List<Veterinarian> findBySpecialization(String specialization);
 
     boolean existsBySpecialization(String specialization);

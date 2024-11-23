@@ -23,6 +23,7 @@ public class ReviewService implements IReviewService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public Review saveReview(Review review, Long reviewerId, Long veterinarianId) {
         if (veterinarianId.equals(reviewerId)) {

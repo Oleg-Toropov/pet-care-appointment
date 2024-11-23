@@ -72,12 +72,9 @@ public class VeterinarianController {
                                                                           @RequestParam LocalDate date) {
         try {
             List<LocalTime> availableTimes = veterinarianService.getAvailableTimeForBookAppointment(vetId, date);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, availableTimes)); // todo change feedback
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.AVAILABLE_TIME_FOR_APPOINTMENT_FOUND, availableTimes));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
     }
-    /*
-     /veterinarians/${vetId}/available-times?date=${date}
-     */
 }

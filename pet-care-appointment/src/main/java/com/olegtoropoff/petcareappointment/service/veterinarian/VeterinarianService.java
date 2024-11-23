@@ -7,7 +7,6 @@ import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
-import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
 import com.olegtoropoff.petcareappointment.service.photo.PhotoService;
 import com.olegtoropoff.petcareappointment.service.review.ReviewService;
@@ -41,13 +40,12 @@ public class VeterinarianService implements IVeterinarianService {
     private final ReviewService reviewService;
     private final ReviewRepository reviewRepository;
     private final PhotoService photoService;
-    private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
     private final VeterinarianRepository veterinarianRepository;
 
     @Override
     public List<UserDto> getAllVeterinariansWithDetails() {
-        List<Veterinarian> veterinarians = userRepository.findAllByUserType("VET");
+        List<Veterinarian> veterinarians = veterinarianRepository.findAllByUserType("VET");
         return veterinarians.stream()
                 .map(this::mapVeterinarianToUserDto)
                 .toList();
@@ -139,4 +137,6 @@ public class VeterinarianService implements IVeterinarianService {
                 ))
                 .collect(Collectors.toList());
     }
+
+
 }

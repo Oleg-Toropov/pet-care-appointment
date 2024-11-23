@@ -13,6 +13,7 @@ public class FeedBackMessage {
     public static final String LOCKED_ACCOUNT_SUCCESS = "Учетная запись успешно заблокирована";
     public static final String UNLOCKED_ACCOUNT_SUCCESS = "Учетная запись успешно разблокирована";
     public static final String SPECIALIZATION_NOT_FOUND = "В системе не найден ветеринар со специализацией '%s'";
+    public static final String AVAILABLE_TIME_FOR_APPOINTMENT_FOUND = "Доступное время для приема успешно найдено";
     /*======================== End User API =====================================*/
 
     /*======================== Start Password API =====================================*/
@@ -62,7 +63,7 @@ public class FeedBackMessage {
 
     /*======================== Start authentication feedback =====================================*/
     public static final String EMPTY_PASSWORD = "Все поля обязательны для заполнения";
-    public static final String CURRENT_PASSWORD_WRONG  = "Текущий пароль указан неверно";
+    public static final String CURRENT_PASSWORD_WRONG = "Текущий пароль указан неверно";
     public static final String NEW_PASSWORD_MUST_DIFFER = "Новый пароль должен отличаться от текущего";
     public static final String PASSWORD_MISMATCH = "Подтверждение пароля не совпадает";
     public static final String AUTHENTICATION_SUCCESS = "Аутентификация успешна";
@@ -100,4 +101,14 @@ public class FeedBackMessage {
     public static final String RESOURCE_NOT_FOUND = "Ресурс не найден";
     public static final String OPERATION_NOT_ALLOWED = "Операция не разрешена";
     /*======================== End general feedback =====================================*/
+
+    /*======================== Start VetBiography API =====================================*/
+    public static final String VETERINARIAN_INFO_NOT_AVAILABLE = "Информация о ветеринаре пока отсутствует, но вскоре появится!";
+    public static final String VETERINARIAN_NOT_FOUND = "Ветеринар не найден";
+    public static final String BIOGRAPHY_FOUND = "Биография найдена";
+    public static final String BIOGRAPHY_NOT_FOUND = "Биография не найдена";
+    public static final String BIOGRAPHY_SAVED_SUCCESS = "Биография успешно сохранена";
+    public static final String BIOGRAPHY_UPDATED_SUCCESS = "Биография успешно обновлена";
+    public static final String BIOGRAPHY_DELETED_SUCCESS = "Биография успешно удалена";
+    /*======================== End VetBiography API =====================================*/
 }
