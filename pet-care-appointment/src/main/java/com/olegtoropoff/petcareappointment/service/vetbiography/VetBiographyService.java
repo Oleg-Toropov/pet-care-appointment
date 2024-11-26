@@ -9,6 +9,8 @@ import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class VetBiographyService implements IVetBiographyService {
@@ -35,7 +37,7 @@ public class VetBiographyService implements IVetBiographyService {
                 .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.BIOGRAPHY_NOT_FOUND));
         existingVetBiography.setBiography(vetBiography.getBiography());
         return vetBiographyRepository.save(existingVetBiography);
-    }
+        }
 
     @Override
     public void deleteVetBiography(Long id) {

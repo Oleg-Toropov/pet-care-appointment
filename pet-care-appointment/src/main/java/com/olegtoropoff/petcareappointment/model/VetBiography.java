@@ -17,6 +17,7 @@ public class VetBiography {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "TEXT")
     private String biography;
 
     @OneToOne

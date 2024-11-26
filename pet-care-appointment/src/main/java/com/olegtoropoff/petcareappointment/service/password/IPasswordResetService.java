@@ -5,7 +5,7 @@ import com.olegtoropoff.petcareappointment.model.User;
 import java.util.Optional;
 
 public interface IPasswordResetService {
-    Optional<User> findUserByPasswordResetToken(String token);
+    User findUserByPasswordResetToken(String token, String password);
 
     void requestPasswordReset(String email);
 

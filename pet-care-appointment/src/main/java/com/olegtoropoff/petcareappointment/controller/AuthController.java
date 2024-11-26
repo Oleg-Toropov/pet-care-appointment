@@ -28,7 +28,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -90,16 +89,11 @@ public class AuthController {
 
     @PostMapping(UrlMapping.REQUEST_PASSWORD_RESET)
     public ResponseEntity<ApiResponse> requestPasswordReset(@RequestBody Map<String, String> requestBody) {
-        String email = requestBody.get("email");
-        if (email == null || email.trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(FeedBackMessage.INVALID_EMAIL, null));
-        }
         try {
-            passwordResetService.requestPasswordReset(email);
+            passwordResetService.requestPasswordReset(requestBody.get("email"));
             return ResponseEntity.
                     ok(new ApiResponse(FeedBackMessage.PASSWORD_RESET_EMAIL_SENT, null));
-        } catch (ResourceNotFoundException e) {
+        } catch (IllegalArgumentException | ResourceNotFoundException e) {
             return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponse(e.getMessage(), null));
@@ -108,17 +102,12 @@ public class AuthController {
 
     @PostMapping(UrlMapping.RESET_PASSWORD)
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody PasswordResetRequest request) {
-        String token = request.getToken();
-        String newPassword = request.getNewPassword();
-        if (token == null || token.trim().isEmpty() || newPassword == null || newPassword.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(new ApiResponse(FeedBackMessage.MISSING_PASSWORD, null));
+        try {
+            User user = passwordResetService.findUserByPasswordResetToken(request.getToken(), request.getNewPassword());
+            String message = passwordResetService.resetPassword(request.getNewPassword(), user);
+            return ResponseEntity.ok(new ApiResponse(message, null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));
         }
-        Optional<User> theUser = passwordResetService.findUserByPasswordResetToken(token);
-        if (theUser.isEmpty()) {
-            return ResponseEntity.badRequest().body(new ApiResponse(FeedBackMessage.INVALID_RESET_TOKEN, null));
-        }
-        User user = theUser.get();
-        String message = passwordResetService.resetPassword(newPassword, user);
-        return ResponseEntity.ok(new ApiResponse(message, null));
     }
 }

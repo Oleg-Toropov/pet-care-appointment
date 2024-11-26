@@ -67,7 +67,7 @@ public class FeedBackMessage {
     public static final String NEW_PASSWORD_MUST_DIFFER = "Новый пароль должен отличаться от текущего";
     public static final String PASSWORD_MISMATCH = "Подтверждение пароля не совпадает";
     public static final String AUTHENTICATION_SUCCESS = "Аутентификация успешна";
-    public static final String ACCOUNT_DISABLED = "Извините, ваша учетная запись отключена, вам необходимо завершить регистрацию, перейдите по ссылке, которая была отправлена на ваш электронный адрес или обратитесь в службу поддержки";
+    public static final String ACCOUNT_DISABLED = "Извините, ваша учетная запись отключена, вам необходимо завершить регистрацию: перейдите по ссылке, которая была отправлена на ваш электронный адрес или обратитесь в службу поддержки";
     public static final Object INVALID_PASSWORD = "Неверное имя пользователя или пароль";
     /*======================== End authentication feedback =====================================*/
 
@@ -111,4 +111,8 @@ public class FeedBackMessage {
     public static final String BIOGRAPHY_UPDATED_SUCCESS = "Биография успешно обновлена";
     public static final String BIOGRAPHY_DELETED_SUCCESS = "Биография успешно удалена";
     /*======================== End VetBiography API =====================================*/
+
+    /*======================== Start PasswordValidator API =====================================*/
+    public static final String INVALID_PASSWORD_FORMAT = "Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!";
+    /*======================== End PasswordValidator API =====================================*/
 }

@@ -92,7 +92,7 @@ public class NotificationEventListener implements ApplicationListener<Applicatio
     private void sendRegistrationVerificationEmail(User user, String url) throws MessagingException, UnsupportedEncodingException {
         String subject = "Подтвердите свой адрес электронной почты";
         String senderName = "Doctor Aibolit";
-        String mailContent = user.getFirstName() + ", благодарим вас за регистрацию на нашем сайте! Пожалуйста, пройдите по ссылке, чтобы завершить регистрацию. </p>" +
+        String mailContent = user.getFirstName() + ", благодарим вас за регистрацию на нашем сайте! Пожалуйста, перейдите по ссылке, чтобы завершить регистрацию. </p>" +
                 "<a href=\"" + url + "\">Подтвердите свой адрес электронной почты.</a> <br/>" +
                 "<p>С уважением,<br> Doctor Aibolit";
         emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
@@ -144,7 +144,7 @@ public class NotificationEventListener implements ApplicationListener<Applicatio
         String subject = "Запись на прием не подтверждена";
         String senderName = "Doctor Aibolit";
         String mailContent = user.getFirstName() + ", к сожалению, ваша запись на прием не была подтверждена ветеринаром! Вы можете перенести прием на другую дату.</p>" +
-                "<a href=\"" + url + "\">Посетите сайт клиники, чтобы ознакомиться с подробной информацией о прием.</a> <br/>" +
+                "<a href=\"" + url + "\">Посетите сайт клиники, чтобы ознакомиться с подробной информацией о приеме.</a> <br/>" +
                 "<p>С уважением,<br> Doctor Aibolit";
         emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
     }

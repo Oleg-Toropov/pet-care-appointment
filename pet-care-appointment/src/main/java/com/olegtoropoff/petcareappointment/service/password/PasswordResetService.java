@@ -7,6 +7,7 @@ import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.repository.VerificationTokenRepository;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,12 +24,29 @@ public class PasswordResetService implements IPasswordResetService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public Optional<User> findUserByPasswordResetToken(String token) {
-        return tokenRepository.findByToken(token).map(VerificationToken::getUser);
+    public User findUserByPasswordResetToken(String token, String password) {
+        if (token == null || token.trim().isEmpty()) {
+            throw new IllegalArgumentException(FeedBackMessage.MISSING_PASSWORD);
+        }
+
+        if (!PasswordValidator.isValid(password)) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
+        }
+
+        Optional<User> theUser = tokenRepository.findByToken(token).map(VerificationToken::getUser);
+        if (theUser.isEmpty()) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_RESET_TOKEN);
+        }
+
+        return theUser.get();
     }
 
     @Override
     public void requestPasswordReset(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_EMAIL);
+        }
+
         userRepository.findByEmail(email).ifPresentOrElse(user -> {
             PasswordResetEvent passwordResetEvent = new PasswordResetEvent(this, user);
             eventPublisher.publishEvent(passwordResetEvent);

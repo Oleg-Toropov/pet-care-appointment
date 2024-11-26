@@ -5,6 +5,7 @@ import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,10 @@ public class ChangePasswordService implements IChangePasswordService {
 
         if (request.getCurrentPassword().equals(request.getNewPassword())) {
             throw new IllegalArgumentException(FeedBackMessage.NEW_PASSWORD_MUST_DIFFER);
+        }
+
+        if (!PasswordValidator.isValid(request.getNewPassword())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
         }
 
         if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {

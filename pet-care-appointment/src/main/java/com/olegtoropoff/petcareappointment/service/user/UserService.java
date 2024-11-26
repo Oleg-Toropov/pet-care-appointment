@@ -18,10 +18,9 @@ import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentServi
 import com.olegtoropoff.petcareappointment.service.photo.IPhotoService;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -47,7 +46,11 @@ public class UserService implements IUserService {
 
     @Override
     public User register(RegistrationRequest request) {
-        return userFactory.createUser(request);
+        if (PasswordValidator.isValid(request.getPassword())) {
+            return userFactory.createUser(request);
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
