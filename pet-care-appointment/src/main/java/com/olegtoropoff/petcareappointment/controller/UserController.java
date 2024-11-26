@@ -43,7 +43,7 @@ public class UserController {
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(FeedBackMessage.INVALID_PASSWORD_FORMAT, null));
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }

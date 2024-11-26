@@ -112,7 +112,9 @@ public class FeedBackMessage {
     public static final String BIOGRAPHY_DELETED_SUCCESS = "Биография успешно удалена";
     /*======================== End VetBiography API =====================================*/
 
-    /*======================== Start PasswordValidator API =====================================*/
+    /*======================== Start Validator API =====================================*/
     public static final String INVALID_PASSWORD_FORMAT = "Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!";
-    /*======================== End PasswordValidator API =====================================*/
+    public static final String INVALID_EMAIL_FORMAT = "Упс! Кажется, в адресе электронной почты ошибка. Проверьте, что ваш email введён правильно.";
+    public static final String INVALID_PHONE_FORMAT = "Упс! Кажется, в номере телефона ошибка. Проверьте, что номер телефона введён правильно.";
+    /*======================== End Validator API =====================================*/
 }

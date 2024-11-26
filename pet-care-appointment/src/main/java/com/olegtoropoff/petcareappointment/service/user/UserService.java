@@ -18,7 +18,9 @@ import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentServi
 import com.olegtoropoff.petcareappointment.service.photo.IPhotoService;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.validation.EmailValidator;
 import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
+import com.olegtoropoff.petcareappointment.validation.PhoneValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -46,11 +48,19 @@ public class UserService implements IUserService {
 
     @Override
     public User register(RegistrationRequest request) {
-        if (PasswordValidator.isValid(request.getPassword())) {
-            return userFactory.createUser(request);
-        } else {
-            throw new IllegalArgumentException();
+        if (!PasswordValidator.isValid(request.getPassword())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
         }
+
+        if (!EmailValidator.isValid(request.getEmail())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_EMAIL_FORMAT);
+        }
+
+        if (!PhoneValidator.isValid(request.getPhoneNumber())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT);
+        }
+
+        return userFactory.createUser(request);
     }
 
     @Override
