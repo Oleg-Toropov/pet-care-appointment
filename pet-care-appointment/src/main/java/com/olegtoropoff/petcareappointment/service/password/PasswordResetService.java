@@ -1,19 +1,21 @@
 package com.olegtoropoff.petcareappointment.service.password;
 
-import com.olegtoropoff.petcareappointment.event.PasswordResetEvent;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
+import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.repository.VerificationTokenRepository;
+import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.validation.EmailValidator;
 import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,8 @@ public class PasswordResetService implements IPasswordResetService {
     private final VerificationTokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ApplicationEventPublisher eventPublisher;
+    private final IVerificationTokenService tokenService;
+    private final RabbitMQProducer rabbitMQProducer;
 
     @Override
     public User findUserByPasswordResetToken(String token, String password) {
@@ -43,13 +46,14 @@ public class PasswordResetService implements IPasswordResetService {
 
     @Override
     public void requestPasswordReset(String email) {
-        if (email == null || email.trim().isEmpty()) {
+        if (!EmailValidator.isValid(email)) {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_EMAIL);
         }
 
         userRepository.findByEmail(email).ifPresentOrElse(user -> {
-            PasswordResetEvent passwordResetEvent = new PasswordResetEvent(this, user);
-            eventPublisher.publishEvent(passwordResetEvent);
+            String token = UUID.randomUUID().toString();
+            tokenService.saveVerificationTokenForUser(token, user);
+            rabbitMQProducer.sendMessage("PasswordResetEvent:" + user.getId() + "#" + token);
         }, () -> {
             throw new ResourceNotFoundException(String.format(FeedBackMessage.USER_NOT_FOUND_WITH_EMAIL, email));
         });

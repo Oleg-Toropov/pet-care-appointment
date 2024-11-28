@@ -1,9 +1,9 @@
 package com.olegtoropoff.petcareappointment.controller;
 
-import com.olegtoropoff.petcareappointment.event.RegistrationCompleteEvent;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
+import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.LoginRequest;
 import com.olegtoropoff.petcareappointment.request.PasswordResetRequest;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
@@ -16,7 +16,6 @@ import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +38,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final IVerificationTokenService tokenService;
     private final IPasswordResetService passwordResetService;
-    private final ApplicationEventPublisher publisher;
+    private final RabbitMQProducer rabbitMQProducer;
 
     @PostMapping(UrlMapping.LOGIN)
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -79,8 +78,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> resendVerificationToken(@RequestParam("token") String oldToken) {
         try {
             VerificationToken verificationToken = tokenService.generateNewVerificationToken(oldToken);
-            User theUser = verificationToken.getUser();
-            publisher.publishEvent(new RegistrationCompleteEvent(theUser));
+            rabbitMQProducer.sendMessage("RegistrationCompleteEvent:" + verificationToken.getUser().getId());
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.NEW_VERIFICATION_TOKEN_SENT, null));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));

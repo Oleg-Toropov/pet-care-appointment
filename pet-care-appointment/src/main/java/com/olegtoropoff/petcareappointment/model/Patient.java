@@ -14,6 +14,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "patient_id")
 public class Patient extends User {
-    private long id;
-
+    private Long id;
 }

@@ -1,12 +1,10 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
-import com.olegtoropoff.petcareappointment.event.AppointmentApprovedEvent;
-import com.olegtoropoff.petcareappointment.event.AppointmentBookedEvent;
-import com.olegtoropoff.petcareappointment.event.AppointmentDeclinedEvent;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Pet;
+import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
@@ -14,7 +12,6 @@ import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentServi
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +29,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(UrlMapping.APPOINTMENTS)
 public class AppointmentController {
     private final IAppointmentService appointmentService;
-    private final ApplicationEventPublisher publisher;
+    private final RabbitMQProducer rabbitMQProducer;
 
 
     @PostMapping(UrlMapping.BOOK_APPOINTMENT)
@@ -41,9 +38,9 @@ public class AppointmentController {
             @RequestParam Long senderId,
             @RequestParam Long recipientId) {
         try {
-            Appointment theAppointment = appointmentService.createAppointment(request, senderId, recipientId);
-            publisher.publishEvent(new AppointmentBookedEvent(theAppointment));
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, theAppointment));
+            Appointment appointment = appointmentService.createAppointment(request, senderId, recipientId);
+            rabbitMQProducer.sendMessage("AppointmentBookedEvent:" + appointment.getVeterinarian().getId());
+            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, appointment));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
@@ -135,6 +132,7 @@ public class AppointmentController {
     public ResponseEntity<ApiResponse> cancelAppointment(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.cancelAppointment(id);
+            rabbitMQProducer.sendMessage("AppointmentCanceledEvent:" +  appointment.getVeterinarian().getId() + "#" + appointment.getAppointmentNo());
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
@@ -147,7 +145,7 @@ public class AppointmentController {
     public ResponseEntity<ApiResponse> approveAppointment(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.approveAppointment(id);
-            publisher.publishEvent(new AppointmentApprovedEvent(appointment));
+            rabbitMQProducer.sendMessage("AppointmentApprovedEvent:" + appointment.getPatient().getId());
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
@@ -160,7 +158,7 @@ public class AppointmentController {
     public ResponseEntity<ApiResponse> declineAppointment(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.declineAppointment(id);
-            publisher.publishEvent(new AppointmentDeclinedEvent(appointment));
+            rabbitMQProducer.sendMessage("AppointmentDeclinedEvent:" + appointment.getPatient().getId());
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));

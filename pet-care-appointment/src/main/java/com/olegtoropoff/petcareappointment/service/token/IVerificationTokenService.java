@@ -17,4 +17,6 @@ public interface IVerificationTokenService {
     void deleteVerificationToken(Long tokenId);
 
     boolean isTokenExpired(String token);
+
+    VerificationToken findTokenByUserId(Long userId);
 }

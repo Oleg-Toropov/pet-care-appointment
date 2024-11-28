@@ -112,9 +112,19 @@ public class FeedBackMessage {
     public static final String BIOGRAPHY_DELETED_SUCCESS = "Биография успешно удалена";
     /*======================== End VetBiography API =====================================*/
 
-    /*======================== Start Validator API =====================================*/
+    /*======================== Start Validator =====================================*/
     public static final String INVALID_PASSWORD_FORMAT = "Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!";
     public static final String INVALID_EMAIL_FORMAT = "Упс! Кажется, в адресе электронной почты ошибка. Проверьте, что ваш email введён правильно.";
     public static final String INVALID_PHONE_FORMAT = "Упс! Кажется, в номере телефона ошибка. Проверьте, что номер телефона введён правильно.";
-    /*======================== End Validator API =====================================*/
+    /*======================== End Validator =====================================*/
+
+    /*======================== Start RabbitMQConsumer =====================================*/
+    public static final String REGISTRATION_EMAIL_FAILED = "Не удалось отправить письмо для подтверждения регистрации";
+    public static final String APPOINTMENT_BOOKED_NOTIFICATION_FAILED = "Не удалось отправить уведомление о записи на приём";
+    public static final String APPOINTMENT_CANCELED_NOTIFICATION_FAILED = "Не удалось отправить уведомление об отмене записи на приём";
+    public static final String APPOINTMENT_APPROVED_NOTIFICATION_FAILED = "Не удалось отправить уведомление о подтверждении записи на приём";
+    public static final String APPOINTMENT_DECLINED_NOTIFICATION_FAILED = "Не удалось отправить уведомление об отклонении записи на приём";
+    public static final String UNKNOWN_EVENT_TYPE = "Неизвестный тип события: ";
+    public static final String EVENT_PROCESSING_FAILED = "Не удалось обработать сообщение: ";
+    /*======================== End RabbitMQConsumer =====================================*/
 }

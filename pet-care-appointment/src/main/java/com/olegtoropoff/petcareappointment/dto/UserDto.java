@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 public class UserDto {
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String gender;

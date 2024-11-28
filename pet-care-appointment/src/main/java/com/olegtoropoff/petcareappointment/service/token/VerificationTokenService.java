@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.service.token;
 
+import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
@@ -9,9 +10,7 @@ import com.olegtoropoff.petcareappointment.utils.SystemUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -74,5 +73,12 @@ public class VerificationTokenService implements IVerificationTokenService {
         }
         VerificationToken verificationToken = theToken.get();
         return verificationToken.getExpirationDate().getTime() <= Calendar.getInstance().getTime().getTime();
+    }
+
+    @Override
+    public VerificationToken findTokenByUserId(Long userId) {
+        return tokenRepository.findAllByUserId(userId).stream()
+                .max(Comparator.comparingLong(VerificationToken::getId))
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
     }
 }

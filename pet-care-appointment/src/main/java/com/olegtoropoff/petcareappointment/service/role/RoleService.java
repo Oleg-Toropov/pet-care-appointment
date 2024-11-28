@@ -35,7 +35,6 @@ public class RoleService implements IRoleService {
     @Override
     public void saveRole(Role role) {
         roleRepository.save(role);
-
     }
 
     @Override

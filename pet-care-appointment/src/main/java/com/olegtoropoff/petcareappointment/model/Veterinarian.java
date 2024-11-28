@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "veterinarian_id")
 public class Veterinarian extends User{
-    private long id;
+    private Long id;
     private String specialization;
 
     @OneToOne(mappedBy = "veterinarian", cascade =  CascadeType.ALL, orphanRemoval = true)

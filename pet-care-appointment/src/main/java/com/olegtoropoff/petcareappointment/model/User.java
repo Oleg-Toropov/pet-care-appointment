@@ -22,7 +22,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String gender;
@@ -54,7 +54,7 @@ public class User {
     private Collection<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private  List<VerificationToken> verificationTokens = new ArrayList<>();
+    private List<VerificationToken> verificationTokens = new ArrayList<>();
 
     public void removeUserPhoto() {
         if (this.getPhoto() != null) {

@@ -9,6 +9,7 @@ import com.olegtoropoff.petcareappointment.factory.UserFactory;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
@@ -17,6 +18,7 @@ import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
 import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentService;
 import com.olegtoropoff.petcareappointment.service.photo.IPhotoService;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
+import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.validation.EmailValidator;
 import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
@@ -28,11 +30,9 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +45,7 @@ public class UserService implements IUserService {
     private final EntityConverter<User, UserDto> entityConverter;
     private final ReviewRepository reviewRepository;
     private final AppointmentRepository appointmentRepository;
+    private final IVerificationTokenService tokenService;
 
     @Override
     public User register(RegistrationRequest request) {
@@ -60,7 +61,10 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT);
         }
 
-        return userFactory.createUser(request);
+        User user = userFactory.createUser(request);
+        String vToken = UUID.randomUUID().toString();
+        tokenService.saveVerificationTokenForUser(vToken, user);
+        return user;
     }
 
     @Override
@@ -213,11 +217,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Map<String, Map<String, Long>> aggregateUsersByEnabledStatusAndType(){
+    public Map<String, Map<String, Long>> aggregateUsersByEnabledStatusAndType() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .collect(Collectors.groupingBy(user -> user.isEnabled()? "Enabled" : "Non-Enabled",
-                        Collectors.groupingBy(User :: getUserType, Collectors.counting())));
+                .collect(Collectors.groupingBy(user -> user.isEnabled() ? "Enabled" : "Non-Enabled",
+                        Collectors.groupingBy(User::getUserType, Collectors.counting())));
     }
 
     @Override
