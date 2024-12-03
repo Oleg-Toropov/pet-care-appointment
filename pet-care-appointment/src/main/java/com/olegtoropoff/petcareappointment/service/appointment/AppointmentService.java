@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService implements IAppointmentService {
+    private static final int MAX_ACTIVE_APPOINTMENTS = 2;
+
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final IPetService petService;
@@ -42,8 +44,19 @@ public class AppointmentService implements IAppointmentService {
     @Override
     public Appointment createAppointment(BookAppointmentRequest request, Long senderId, Long recipientId) {
         Optional<User> sender = userRepository.findById(senderId);
+
+        if (sender.isPresent() && sender.get().getUserType().equals("VET")) {
+            throw new IllegalStateException(FeedBackMessage.VET_APPOINTMENT_NOT_ALLOWED);
+        }
+
         Optional<User> recipient = userRepository.findById(recipientId);
+
         if (sender.isPresent() && recipient.isPresent()) {
+            int activeAppointmentsCount = countActiveAppointments(senderId);
+            if (activeAppointmentsCount >= MAX_ACTIVE_APPOINTMENTS) {
+                throw new IllegalStateException(FeedBackMessage.TOO_MANY_ACTIVE_APPOINTMENTS);
+            }
+
             Appointment appointment = request.getAppointment();
             List<Pet> pets = request.getPets();
             pets.forEach(pet -> pet.setAppointment(appointment));
@@ -57,6 +70,13 @@ public class AppointmentService implements IAppointmentService {
             return appointmentRepository.save(appointment);
         }
         throw new ResourceNotFoundException(FeedBackMessage.SENDER_RECIPIENT_NOT_FOUND);
+    }
+
+    private int countActiveAppointments(Long senderId) {
+        return appointmentRepository.countByPatientIdAndStatusNotIn(
+                senderId,
+                List.of(AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NOT_APPROVED)
+        );
     }
 
     @Override

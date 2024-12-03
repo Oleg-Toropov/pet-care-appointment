@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.repository;
 
+import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.User;
 import org.springframework.data.domain.Page;
@@ -25,4 +26,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @NonNull
     Page<Appointment> findAll(@NonNull Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.patient.id = :senderId AND a.status NOT IN :excludedStatuses")
+    int countByPatientIdAndStatusNotIn(@Param("senderId") Long senderId, @Param("excludedStatuses") List<AppointmentStatus> excludedStatuses);
+
 }

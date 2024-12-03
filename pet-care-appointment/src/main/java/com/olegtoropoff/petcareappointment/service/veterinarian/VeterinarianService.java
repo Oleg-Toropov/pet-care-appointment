@@ -35,6 +35,7 @@ public class VeterinarianService implements IVeterinarianService {
     private static final LocalTime END_OF_WORKING_DAY = LocalTime.of(21, 0);
     private static final int UNAVAILABLE_BEFORE_END_OF_WORKING_DAY = 70;
     private static final int AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT = 30;
+    private static final int MINIMUM_HOURS_FROM_NOW_FOR_APPOINTMENT = 2;
 
     private final EntityConverter<Veterinarian, UserDto> entityConverter;
     private final ReviewService reviewService;
@@ -129,9 +130,18 @@ public class VeterinarianService implements IVeterinarianService {
     public List<LocalTime> getAvailableTimeForBookAppointment(Long vetId, LocalDate date) {
         List<Appointment> appointments = appointmentRepository.findByVeterinarianIdAndAppointmentDate(vetId, date);
 
+        LocalTime currentTime = LocalTime.now();
+        LocalDate currentDate = LocalDate.now();
+
         return Stream.iterate(BEGINNING_OF_WORKING_DAY,
                         time -> time.isBefore(END_OF_WORKING_DAY.minusMinutes(UNAVAILABLE_BEFORE_END_OF_WORKING_DAY)),
                         time -> time.plusMinutes(AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT))
+                .filter(time -> {
+                    if (date.equals(currentDate)) {
+                        return time.isAfter(currentTime.plusHours(MINIMUM_HOURS_FROM_NOW_FOR_APPOINTMENT));
+                    }
+                    return true;
+                })
                 .filter(time -> appointments.stream().noneMatch(appointment ->
                         doesAppointmentOverLap(appointment, time, time.plusMinutes(APPOINTMENT_DURATION_MINUTES))
                 ))

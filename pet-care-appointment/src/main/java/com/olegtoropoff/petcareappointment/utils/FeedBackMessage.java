@@ -37,6 +37,8 @@ public class FeedBackMessage {
     public static final String APPOINTMENTS_FOUND = "Записи найдены";
     public static final String APPOINTMENT_NOT_FOUND = "Запись не найдена";
     public static final String APPOINTMENT_UPDATE_NOT_ALLOWED = "Невозможно обновить или отменить запись";
+    public static final String VET_APPOINTMENT_NOT_ALLOWED = "Запись на прием для ветеринаров недоступна";
+    public static final String TOO_MANY_ACTIVE_APPOINTMENTS = "У вас есть 2 предстоящих приема. Вы не можете записаться на новый прием, пока один из них не завершится.";
     /*======================== End Appointment API =====================================*/
 
     /*======================== Start Pet API =====================================*/

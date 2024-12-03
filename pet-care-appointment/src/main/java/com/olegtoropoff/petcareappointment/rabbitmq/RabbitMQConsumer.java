@@ -150,7 +150,7 @@ public class RabbitMQConsumer {
 
         String subject = "Запись на прием не подтверждена";
         String senderName = "Doctor Aibolit";
-        String mailContent = patient.getFirstName() + ", к сожалению, ваша запись на прием не была подтверждена ветеринаром! Вы можете перенести прием на другую дату.</p>" +
+        String mailContent = patient.getFirstName() + ", к сожалению, ваша запись на прием не была подтверждена ветеринаром! Вы можете записаться на прием на другую дату или к другому ветеринару.</p>" +
                 "<a href=\"" + frontendBaseUrl + "\">Посетите сайт клиники, чтобы ознакомиться с подробной информацией о приеме.</a> <br/>" +
                 "<p>С уважением,<br> Doctor Aibolit";
 

@@ -14,8 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(UrlMapping.PHOTOS)
@@ -29,6 +28,8 @@ public class PhotoController {
         try {
             Long id = photoService.savePhoto(file, userId);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PHOTO_UPDATE_SUCCESS, id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (IOException | SQLException e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }

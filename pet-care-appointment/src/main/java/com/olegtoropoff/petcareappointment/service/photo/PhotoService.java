@@ -55,7 +55,7 @@ public class PhotoService implements IPhotoService {
                 .ifPresentOrElse(User::removeUserPhoto, () -> {
                     throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
                 });
-         photoRepository.findById(id)
+        photoRepository.findById(id)
                 .ifPresentOrElse(photoRepository::delete, () -> {
                     throw new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND);
                 });
