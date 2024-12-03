@@ -15,6 +15,7 @@ import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -162,6 +163,18 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS, null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+        }
+    }
+
+    @GetMapping(value = UrlMapping.GET_PHOTO_BY_USER_ID, produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getPhotoByUserId(@PathVariable Long userId) {
+        try {
+            byte[] photoBytes = userService.getPhotoByUserId(userId);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photoBytes);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }
     }
 }

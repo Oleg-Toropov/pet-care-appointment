@@ -7,9 +7,9 @@ import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.factory.UserFactory;
 import com.olegtoropoff.petcareappointment.model.Appointment;
+import com.olegtoropoff.petcareappointment.model.Photo;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
-import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
@@ -232,5 +232,18 @@ public class UserService implements IUserService {
     @Override
     public void unLockUserAccount(Long userId) {
         userRepository.updateUserEnabledStatus(userId, true);
+    }
+
+    @Override
+    public byte[] getPhotoByUserId(Long userId) {
+        User user = findById(userId);
+        if (user.getPhoto() != null) {
+            try {
+                return photoService.getImageData(user.getPhoto().getId());
+            } catch (SQLException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+        return null;
     }
 }

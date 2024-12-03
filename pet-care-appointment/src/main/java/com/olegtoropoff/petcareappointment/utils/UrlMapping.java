@@ -18,6 +18,7 @@ public class UrlMapping {
     public static final String AGGREGATE_USERS_BY_STATUS = "/account/aggregated-by-status";
     public static final String LOCK_USER_ACCOUNT = "/account/{userId}/lock-user-account";
     public static final String UNLOCK_USER_ACCOUNT = "/account/{userId}/unLock-user-account";
+    public static final String GET_PHOTO_BY_USER_ID = "/user/{userId}/photo";
     /*========================= End User API ================================*/
 
     /*========================== Start Appointment API =================================*/

@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.user;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
+import com.olegtoropoff.petcareappointment.model.Photo;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
@@ -35,4 +36,6 @@ public interface IUserService {
     void lockUserAccount(Long userId);
 
     void unLockUserAccount(Long userId);
+
+    byte[] getPhotoByUserId(Long userId);
 }
