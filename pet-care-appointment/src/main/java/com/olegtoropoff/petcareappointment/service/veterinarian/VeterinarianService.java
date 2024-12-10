@@ -28,12 +28,12 @@ import static com.olegtoropoff.petcareappointment.enums.AppointmentStatus.NOT_AP
 @Service
 @RequiredArgsConstructor
 public class VeterinarianService implements IVeterinarianService {
-    public static final int APPOINTMENT_DURATION_MINUTES = 60;
+    public static final int APPOINTMENT_DURATION_MINUTES = 45;
     private static final int UNAVAILABLE_BEFORE_START_MINUTES = 10;
     private static final int UNAVAILABLE_AFTER_END_MINUTES = 10;
     private static final LocalTime BEGINNING_OF_WORKING_DAY = LocalTime.of(9, 0);
     private static final LocalTime END_OF_WORKING_DAY = LocalTime.of(21, 0);
-    private static final int UNAVAILABLE_BEFORE_END_OF_WORKING_DAY = 70;
+    private static final int UNAVAILABLE_BEFORE_END_OF_WORKING_DAY = 55;
     private static final int AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT = 30;
     private static final int MINIMUM_HOURS_FROM_NOW_FOR_APPOINTMENT = 2;
 
@@ -147,6 +147,4 @@ public class VeterinarianService implements IVeterinarianService {
                 ))
                 .collect(Collectors.toList());
     }
-
-
 }

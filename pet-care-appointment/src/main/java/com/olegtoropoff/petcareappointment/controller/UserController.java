@@ -55,6 +55,8 @@ public class UserController {
             User user = userService.update(userId, request);
             UserDto updatedUserDto = entityConverter.mapEntityToDto(user, UserDto.class);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.USER_UPDATE_SUCCESS, updatedUserDto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {

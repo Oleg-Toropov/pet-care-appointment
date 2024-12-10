@@ -14,6 +14,7 @@ public class FeedBackMessage {
     public static final String UNLOCKED_ACCOUNT_SUCCESS = "Учетная запись успешно разблокирована";
     public static final String SPECIALIZATION_NOT_FOUND = "В системе не найден ветеринар со специализацией '%s'";
     public static final String AVAILABLE_TIME_FOR_APPOINTMENT_FOUND = "Доступное время для приема успешно найдено";
+    public static final String INVALID_NAME_FORMAT = "Упс! Кажется, в имени или фамилии ошибка. Проверьте, что данные введены правильно";
     /*======================== End User API =====================================*/
 
     /*======================== Start Password API =====================================*/

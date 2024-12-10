@@ -7,7 +7,6 @@ import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.factory.UserFactory;
 import com.olegtoropoff.petcareappointment.model.Appointment;
-import com.olegtoropoff.petcareappointment.model.Photo;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
@@ -21,6 +20,7 @@ import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.validation.EmailValidator;
+import com.olegtoropoff.petcareappointment.validation.NameValidator;
 import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import com.olegtoropoff.petcareappointment.validation.PhoneValidator;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,6 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +48,13 @@ public class UserService implements IUserService {
 
     @Override
     public User register(RegistrationRequest request) {
+        if (!NameValidator.isValid(request.getFirstName()) || !NameValidator.isValid(request.getLastName())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_NAME_FORMAT);
+        } else {
+            request.setFirstName(NameValidator.format(request.getFirstName()));
+            request.setLastName(NameValidator.format(request.getLastName()));
+        }
+
         if (!PasswordValidator.isValid(request.getPassword())) {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
         }
@@ -69,9 +75,17 @@ public class UserService implements IUserService {
 
     @Override
     public User update(Long userId, UserUpdateRequest request) {
+        if (!NameValidator.isValid(request.getFirstName())|| !NameValidator.isValid(request.getLastName())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_NAME_FORMAT);
+        }
+
+        if (!PhoneValidator.isValid(request.getPhoneNumber())) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT);
+        }
+
         User user = findById(userId);
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        user.setFirstName(NameValidator.format(request.getFirstName()));
+        user.setLastName(NameValidator.format(request.getLastName()));
         user.setGender(request.getGender());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setSpecialization(request.getSpecialization());

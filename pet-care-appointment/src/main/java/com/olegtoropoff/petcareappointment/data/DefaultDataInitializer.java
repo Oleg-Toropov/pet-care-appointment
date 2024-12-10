@@ -35,9 +35,9 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         Set<String> defaultRoles = Set.of("ROLE_ADMIN", "ROLE_PATIENT", "ROLE_VET");
 //        createDefaultRoleIfNotExits(defaultRoles);
 
-        createDefaultAdminIfNotExists();
-        createDefaultVetIfNotExits();
-        createDefaultPatientIfNotExits();
+//        createDefaultAdminIfNotExists();
+//        createDefaultVetIfNotExits();
+//        createDefaultPatientIfNotExits();
     }
 
     private void createDefaultVetIfNotExits() {
