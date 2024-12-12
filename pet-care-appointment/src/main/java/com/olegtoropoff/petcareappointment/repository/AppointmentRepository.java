@@ -30,4 +30,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT COUNT(a) FROM Appointment a WHERE a.patient.id = :senderId AND a.status NOT IN :excludedStatuses")
     int countByPatientIdAndStatusNotIn(@Param("senderId") Long senderId, @Param("excludedStatuses") List<AppointmentStatus> excludedStatuses);
 
+    boolean existsByVeterinarianIdAndPatientIdAndStatus(Long veterinarianId, Long reviewerId, AppointmentStatus appointmentStatus);
 }

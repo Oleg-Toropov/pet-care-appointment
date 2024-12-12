@@ -1,5 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
+import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
+import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +32,11 @@ public class ReviewService implements IReviewService {
         if (veterinarianId.equals(reviewerId)) {
             throw new IllegalArgumentException(FeedBackMessage.CANNOT_REVIEW);
         }
-// todo uncomment
-//        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
-//        if (existingReview.isPresent()) {
-//            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
-//        }
+
+        Optional<Review> existingReview = reviewRepository.findByVeterinarianIdAndPatientId(veterinarianId, reviewerId);
+        if (existingReview.isPresent()) {
+            throw new AlreadyExistsException(FeedBackMessage.ALREADY_REVIEWED);
+        }
 
         User veterinarian = userRepository.findById(veterinarianId).orElseThrow(() ->
                 new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
@@ -41,11 +44,11 @@ public class ReviewService implements IReviewService {
         User patient = userRepository.findById(reviewerId).orElseThrow(() ->
                 new ResourceNotFoundException(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND));
 
-//        boolean hadCompletedAppointments =
-//                appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
-//        if (!hadCompletedAppointments) {
-//            throw new IllegalStateException(FeedBackMessage.REVIEW_NOT_ALLOWED);
-//        }
+        boolean hadCompletedAppointments =
+                appointmentRepository.existsByVeterinarianIdAndPatientIdAndStatus(veterinarianId, reviewerId, AppointmentStatus.COMPLETED);
+        if (!hadCompletedAppointments) {
+            throw new IllegalStateException(FeedBackMessage.REVIEW_NOT_ALLOWED);
+        }
 
         review.setVeterinarian(veterinarian);
         review.setPatient(patient);

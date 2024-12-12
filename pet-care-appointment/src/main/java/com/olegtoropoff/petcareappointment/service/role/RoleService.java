@@ -33,11 +33,6 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public void saveRole(Role role) {
-        roleRepository.save(role);
-    }
-
-    @Override
     public Set<Role> setUserRole(String userType) {
         Set<Role> userRoles = new HashSet<>();
         roleRepository.findByName("ROLE_" + userType)

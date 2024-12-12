@@ -33,7 +33,7 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         Set<String> defaultRoles = Set.of("ROLE_ADMIN", "ROLE_PATIENT", "ROLE_VET");
-//        createDefaultRoleIfNotExits(defaultRoles);
+        createDefaultRoleIfNotExits(defaultRoles);
 
 //        createDefaultAdminIfNotExists();
 //        createDefaultVetIfNotExits();

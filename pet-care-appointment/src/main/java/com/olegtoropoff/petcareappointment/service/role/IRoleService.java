@@ -12,7 +12,5 @@ public interface IRoleService {
 
     Role getRoleByName(String roleName);
 
-    void saveRole(Role role); // todo
-
     Set<Role> setUserRole(String userType);
 }

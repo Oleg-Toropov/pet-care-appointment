@@ -12,8 +12,4 @@ public class EntityConverter<T, D> {
     public D mapEntityToDto(T entity, Class<D> dtoClass) {
         return modelMapper.map(entity, dtoClass);
     }
-
-//    public T mapDtoToEntity(D dto, Class<T> entityClass) { todo delete
-//        return modelMapper.map(dto, entityClass);
-//    }
 }

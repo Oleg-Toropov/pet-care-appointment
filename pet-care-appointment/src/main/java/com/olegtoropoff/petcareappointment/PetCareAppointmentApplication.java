@@ -13,7 +13,7 @@ public class PetCareAppointmentApplication {
 		Dotenv dotenv = Dotenv.configure()
 				.ignoreIfMissing()
 				.load();
-//		System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET")); TODO CHANGE
+
 		String jwtSecret = dotenv.get("JWT_SECRET");
 		if (jwtSecret != null) {
 			System.setProperty("JWT_SECRET", jwtSecret);
