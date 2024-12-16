@@ -4,12 +4,12 @@ import java.util.regex.Pattern;
 
 public class NameValidator {
     private static final Pattern NAME_PATTERN = Pattern.compile(
-            "^[A-ZА-ЯЁ][a-zа-яё]{1,49}((-| )[A-ZА-ЯЁ][a-zа-яё]{1,49})?$"
+            "^[A-Za-zА-Яа-яЁё]{1,50}((-| )[A-Za-zА-Яа-яЁё]{1,50})?$"
     );
 
     public static boolean isValid(String name) {
         if (name == null || name.trim().length() < 2) {
-            return false; // Null или слишком короткая строка
+            return false;
         }
         return NAME_PATTERN.matcher(name.trim()).matches();
     }
