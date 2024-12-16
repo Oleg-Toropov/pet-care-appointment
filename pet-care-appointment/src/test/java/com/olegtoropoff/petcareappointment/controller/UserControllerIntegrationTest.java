@@ -2,11 +2,13 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +31,9 @@ public class UserControllerIntegrationTest {
 
     @MockBean
     private RabbitMQProducer rabbitMQProducer;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     public void testGetById_ValidUserId_ReturnsUser() throws Exception {
@@ -71,7 +76,6 @@ public class UserControllerIntegrationTest {
                     "phoneNumber": "89124000000"
                 }
                 """;
-
         mockMvc.perform(put("/api/v1/users/user/4/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
@@ -92,7 +96,6 @@ public class UserControllerIntegrationTest {
                     "phoneNumber": "891000000"
                 }
                 """;
-
         mockMvc.perform(put("/api/v1/users/user/4/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
@@ -110,7 +113,6 @@ public class UserControllerIntegrationTest {
                     "phoneNumber": "89124000000"
                 }
                 """;
-
         mockMvc.perform(put("/api/v1/users/user/100/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
@@ -142,9 +144,7 @@ public class UserControllerIntegrationTest {
                     "specialization": "Хирург" 
                 }
                 """;
-
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
-
         mockMvc.perform(post("/api/v1/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
@@ -173,7 +173,6 @@ public class UserControllerIntegrationTest {
                     "specialization": "Хирург" 
                 }
                 """;
-
         mockMvc.perform(post("/api/v1/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
@@ -196,7 +195,6 @@ public class UserControllerIntegrationTest {
                     "specialization": "Хирург" 
                 }
                 """;
-
         mockMvc.perform(post("/api/v1/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
@@ -204,4 +202,59 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
+
+    @Test
+    public void testChangePassword_ValidRequest_ReturnsSuccess() throws Exception {
+        String changePasswordRequestJson = """
+            {
+                "currentPassword": "Password34567",
+                "newPassword": "NewPassword123",
+                "confirmNewPassword": "NewPassword123"
+            }
+            """;
+        Mockito.when(passwordEncoder.matches("Password34567", "Password34567")).thenReturn(true);
+        mockMvc.perform(put("/api/v1/users/user/4/change-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(changePasswordRequestJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Пароль успешно изменен, теперь можно закрыть форму."))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    public void testChangePassword_NewPassword_Mismatch_ReturnsBadRequest() throws Exception {
+        String changePasswordRequestJson = """
+            {
+                "currentPassword": "Password34567",
+                "newPassword": "NewPassword123",
+                "confirmNewPassword": "NewPassword321"
+            }
+            """;
+        Mockito.when(passwordEncoder.matches("Password34567", "Password34567")).thenReturn(true);
+        mockMvc.perform(put("/api/v1/users/user/4/change-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(changePasswordRequestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Подтверждение пароля не совпадает"))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    public void testChangePassword_UserNotFound_ReturnsNotFound() throws Exception {
+        String changePasswordRequestJson = """
+            {
+                "currentPassword": "Password34567",
+                "newPassword": "NewPassword123",
+                "confirmNewPassword": "NewPassword321"
+            }
+            """;
+        Mockito.when(passwordEncoder.matches("Password34567", "Password34567")).thenReturn(true);
+        mockMvc.perform(put("/api/v1/users/user/100/change-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(changePasswordRequestJson))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
 }

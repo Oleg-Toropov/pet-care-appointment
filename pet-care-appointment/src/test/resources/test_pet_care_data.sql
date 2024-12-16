@@ -2,36 +2,36 @@
 
 
 -- Insert data into roles
-INSERT INTO role (name) VALUES ('ADMIN'), ('PATIENT'), ('VETERINARIAN');
+INSERT INTO role (name) VALUES ('ADMIN'), ('PATIENT'), ('VET');
 
 -- Insert data into users
 -- Admin
 INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled)
-VALUES ('Admin', 'User', 'Male', '1234567890', 'admin@petcare.com', 'admin123', 'ADMIN', TRUE);
+VALUES ('Admin', 'User', 'Male', '1234567890', 'admin@petcare.com', 'Admin12345', 'ADMIN', TRUE);
 INSERT INTO admin (admin_id) VALUES (1);
 
 -- Patients
 INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled)
 VALUES
-    ('Алексей', 'Петров', 'Male', '89121234567', 'alexey@gmail.com', 'pass123', 'PATIENT', TRUE),
-    ('Мария', 'Сидорова', 'Female', '89121111111', 'maria@gmail.com', 'pass123', 'PATIENT', TRUE),
-    ('Игорь', 'Кузнецов', 'Male', '89122222222', 'igor@gmail.com', 'pass123', 'PATIENT', TRUE),
-    ('Ольга', 'Иванова', 'Female', '89123333333', 'olga@gmail.com', 'pass123', 'PATIENT', TRUE),
-    ('Анна', 'Смирнова', 'Female', '89124444444', 'anna@gmail.com', 'pass123', 'PATIENT', TRUE);
+    ('Алексей', 'Петров', 'Male', '89121234567', 'alexey@gmail.com', 'Password12345', 'PATIENT', TRUE),
+    ('Мария', 'Сидорова', 'Female', '89121111111', 'maria@gmail.com', 'Password23456', 'PATIENT', TRUE),
+    ('Игорь', 'Кузнецов', 'Male', '89122222222', 'igor@gmail.com', 'Password34567', 'PATIENT', TRUE),
+    ('Ольга', 'Иванова', 'Female', '89123333333', 'olga@gmail.com', 'Password45678', 'PATIENT', TRUE),
+    ('Анна', 'Смирнова', 'Female', '89124444444', 'anna@gmail.com', 'Password56789', 'PATIENT', TRUE);
 
 INSERT INTO patient (patient_id) VALUES (2), (3), (4), (5), (6);
 
 -- Veterinarians
 INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled)
 VALUES
-    ('Дмитрий', 'Сергеев', 'Male', '89125555555', 'dmitry@gmail.com', 'pass123', 'VETERINARIAN', TRUE),
-    ('Наталья', 'Федорова', 'Female', '89126666666', 'natalia@gmail.com', 'pass123', 'VETERINARIAN', TRUE),
-    ('Константин', 'Лебедев', 'Male', '89127777777', 'constantine@gmail.com', 'pass123', 'VETERINARIAN', TRUE),
-    ('Валерия', 'Павлова', 'Female', '89128888888', 'valeria@gmail.com', 'pass123', 'VETERINARIAN', TRUE),
-    ('Сергей', 'Григорьев', 'Male', '89129999999', 'sergey@gmail.com', 'pass123', 'VETERINARIAN', TRUE);
+    ('Дмитрий', 'Сергеев', 'Male', '89125555555', 'dmitry@gmail.com', 'Password54321', 'VET', TRUE),
+    ('Наталья', 'Федорова', 'Female', '89126666666', 'natalia@gmail.com', 'Password65432', 'VET', TRUE),
+    ('Константин', 'Лебедев', 'Male', '89127777777', 'constantine@gmail.com', 'Password76543', 'VET', TRUE),
+    ('Валерия', 'Павлова', 'Female', '89128888888', 'valeria@gmail.com', 'Password87654', 'VET', TRUE),
+    ('Сергей', 'Григорьев', 'Male', '89129999999', 'sergey@gmail.com', 'Password98765', 'VET', TRUE);
 
 INSERT INTO veterinarian (veterinarian_id, specialization) VALUES
-                                                               (7, 'Терапия'), (8, 'Терапия'), (9, 'Хирургия'), (10, 'Хирургия'), (11, 'Диагностика');
+                                                               (7, 'Терапевт'), (8, 'Терапевт'), (9, 'Хирург'), (10, 'Хирург'), (11, 'Диагност');
 
 -- Assign roles
 INSERT INTO user_roles (user_id, role_id)
