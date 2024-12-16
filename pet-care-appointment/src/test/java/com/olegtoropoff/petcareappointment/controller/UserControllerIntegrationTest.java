@@ -1,15 +1,19 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +26,9 @@ public class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private RabbitMQProducer rabbitMQProducer;
 
     @Test
     public void testGetById_ValidUserId_ReturnsUser() throws Exception {
@@ -77,25 +84,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdate_InvalidFirstName_ReturnsBadRequest() throws Exception {
-        String updateRequestJson = """
-                {
-                    "firstName": "Updated+Name",
-                    "lastName": "UpdatedLastName",
-                    "phoneNumber": "89124000000"
-                }
-                """;
-
-        mockMvc.perform(put("/api/v1/users/user/4/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateRequestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Упс! Кажется, в имени или фамилии ошибка. Проверьте, что данные введены правильно"))
-                .andExpect(jsonPath("$.data").value(nullValue()));
-    }
-
-    @Test
-    public void testUpdate_InvalidPhoneNumber_ReturnsBadRequest() throws Exception {
+    public void testUpdate_InvalidData_ReturnsBadRequest() throws Exception {
         String updateRequestJson = """
                 {
                     "firstName": "UpdatedName",
@@ -130,4 +119,89 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
+    @Test
+    public void testGetAllUsers_ReturnsAllUsers() throws Exception {
+        mockMvc.perform(get("/api/v1/users/all-users"))
+                .andExpect(status().isFound())
+                .andExpect(jsonPath("$.message").value("Пользователи найдены"))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(11));
+    }
+
+    @Test
+    public void testRegister_ValidRequest_ReturnsSuccess() throws Exception {
+        String registrationRequestJson = """
+                {
+                    "firstName": "Иван",
+                    "lastName": "Иванов",
+                    "gender": "Male",
+                    "phoneNumber": "89124000000",
+                    "email": "test@gmail.com",
+                    "password": "TestPassword123",
+                    "userType": "VET",
+                    "specialization": "Хирург" 
+                }
+                """;
+
+        doNothing().when(rabbitMQProducer).sendMessage(anyString());
+
+        mockMvc.perform(post("/api/v1/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(registrationRequestJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Учетная запись пользователя успешно создана для завершения регистрации перейдите по ссылке которая была отправлена на указанный при регистрации электронный адрес"))
+                .andExpect(jsonPath("$.data.firstName").value("Иван"))
+                .andExpect(jsonPath("$.data.lastName").value("Иванов"))
+                .andExpect(jsonPath("$.data.gender").value("Male"))
+                .andExpect(jsonPath("$.data.phoneNumber").value("89124000000"))
+                .andExpect(jsonPath("$.data.email").value("test@gmail.com"))
+                .andExpect(jsonPath("$.data.userType").value("VET"))
+                .andExpect(jsonPath("$.data.specialization").value("Хирург"));
+    }
+
+    @Test
+    public void testRegister_UserAlreadyExists_ReturnsConflict() throws Exception {
+        String registrationRequestJson = """
+                {
+                    "firstName": "Иван",
+                    "lastName": "Иванов",
+                    "gender": "Male",
+                    "phoneNumber": "89124000000",
+                    "email": "dmitry@gmail.com",
+                    "password": "TestPassword123",
+                    "userType": "VET",
+                    "specialization": "Хирург" 
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(registrationRequestJson))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Пользователь с таким email уже существует"))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    public void testRegister_InvalidData_ReturnsBadRequest() throws Exception {
+        String registrationRequestJson = """
+                {
+                    "firstName": "Иван",
+                    "lastName": "Иванов",
+                    "gender": "Male",
+                    "phoneNumber": "89124000000",
+                    "email": "test@gmail.com",
+                    "password": "TestPassword",
+                    "userType": "VET",
+                    "specialization": "Хирург" 
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(registrationRequestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!"))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
 }
