@@ -200,12 +200,12 @@ public class UserControllerIntegrationTest {
     @Test
     public void testChangePassword_ValidRequest_ReturnsSuccess() throws Exception {
         String changePasswordRequestJson = """
-            {
-                "currentPassword": "Password12345",
-                "newPassword": "NewPassword123",
-                "confirmNewPassword": "NewPassword123"
-            }
-            """;
+                {
+                    "currentPassword": "Password12345",
+                    "newPassword": "NewPassword123",
+                    "confirmNewPassword": "NewPassword123"
+                }
+                """;
         mockMvc.perform(put("/api/v1/users/user/4/change-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
@@ -217,12 +217,12 @@ public class UserControllerIntegrationTest {
     @Test
     public void testChangePassword_CurrentPassword_Wrong_ReturnsBadRequest() throws Exception {
         String changePasswordRequestJson = """
-            {
-                "currentPassword": "Password77444",
-                "newPassword": "NewPassword123",
-                "confirmNewPassword": "NewPassword123"
-            }
-            """;
+                {
+                    "currentPassword": "Password77444",
+                    "newPassword": "NewPassword123",
+                    "confirmNewPassword": "NewPassword123"
+                }
+                """;
         mockMvc.perform(put("/api/v1/users/user/4/change-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
@@ -234,12 +234,12 @@ public class UserControllerIntegrationTest {
     @Test
     public void testChangePassword_UserNotFound_ReturnsNotFound() throws Exception {
         String changePasswordRequestJson = """
-            {
-                "currentPassword": "Password12345",
-                "newPassword": "NewPassword123",
-                "confirmNewPassword": "NewPassword321"
-            }
-            """;
+                {
+                    "currentPassword": "Password12345",
+                    "newPassword": "NewPassword123",
+                    "confirmNewPassword": "NewPassword321"
+                }
+                """;
         mockMvc.perform(put("/api/v1/users/user/100/change-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
@@ -278,5 +278,35 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.data.January").exists())
                 .andExpect(jsonPath("$.data.January.VET").isNumber())
                 .andExpect(jsonPath("$.data.January.PATIENT").isNumber());
+    }
+
+    @Test
+    public void testGetAggregateUsersByEnabledStatus_ReturnsAggregatedData() throws Exception {
+        mockMvc.perform(get("/api/v1/users/account/aggregated-by-status"))
+                .andExpect(status().isOk()) // Проверка на успешный статус
+                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.data").isMap())
+                .andExpect(jsonPath("$.data.Enabled").exists())
+                .andExpect(jsonPath("$.data.Non-Enabled").exists())
+                .andExpect(jsonPath("$.data.Enabled.VET").isNumber())
+                .andExpect(jsonPath("$.data.Enabled.PATIENT").isNumber())
+                .andExpect(jsonPath("$.data.Non-Enabled.VET").isNumber())
+                .andExpect(jsonPath("$.data.Non-Enabled.PATIENT").isNumber());
+    }
+
+    @Test
+    public void testLockUserAccount_ReturnsSuccess() throws Exception {
+        mockMvc.perform(put("/api/v1/users/account/5/lock-user-account"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Учетная запись успешно заблокирована"))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    public void testUnLockUserAccount_ReturnsSuccess() throws Exception {
+        mockMvc.perform(put("/api/v1/users/account/6/unLock-user-account"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Учетная запись успешно разблокирована"))
+                .andExpect(jsonPath("$.data").value(nullValue()));
     }
 }
