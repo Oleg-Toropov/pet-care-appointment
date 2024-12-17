@@ -283,7 +283,7 @@ public class UserControllerIntegrationTest {
     @Test
     public void testGetAggregateUsersByEnabledStatus_ReturnsAggregatedData() throws Exception {
         mockMvc.perform(get("/api/v1/users/account/aggregated-by-status"))
-                .andExpect(status().isOk()) // Проверка на успешный статус
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Ресурс найден"))
                 .andExpect(jsonPath("$.data").isMap())
                 .andExpect(jsonPath("$.data.Enabled").exists())
