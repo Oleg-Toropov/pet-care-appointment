@@ -6,29 +6,29 @@ INSERT INTO role (name) VALUES ('ADMIN'), ('PATIENT'), ('VET');
 
 -- Insert data into users
 -- Admin
-INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled)
-VALUES ('Admin', 'User', 'Male', '1234567890', 'admin@petcare.com', 'Admin12345', 'ADMIN', TRUE);
+INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled, created_at)
+VALUES ('Admin', 'User', 'Male', '89127734565', 'admin@petcare.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'ADMIN', TRUE, '2024-01-01');
 INSERT INTO admin (admin_id) VALUES (1);
 
 -- Patients
-INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled)
+INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled, created_at)
 VALUES
-    ('Алексей', 'Петров', 'Male', '89121234567', 'alexey@gmail.com', 'Password12345', 'PATIENT', TRUE),
-    ('Мария', 'Сидорова', 'Female', '89121111111', 'maria@gmail.com', 'Password23456', 'PATIENT', TRUE),
-    ('Игорь', 'Кузнецов', 'Male', '89122222222', 'igor@gmail.com', 'Password34567', 'PATIENT', TRUE),
-    ('Ольга', 'Иванова', 'Female', '89123333333', 'olga@gmail.com', 'Password45678', 'PATIENT', TRUE),
-    ('Анна', 'Смирнова', 'Female', '89124444444', 'anna@gmail.com', 'Password56789', 'PATIENT', TRUE);
+    ('Алексей', 'Петров', 'Male', '89121234567', 'alexey@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', TRUE, '2024-01-02'),
+    ('Мария', 'Сидорова', 'Female', '89121111111', 'maria@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', TRUE, '2024-01-03'),
+    ('Игорь', 'Кузнецов', 'Male', '89122222222', 'igor@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', TRUE, '2024-01-04'),
+    ('Ольга', 'Иванова', 'Female', '89123333333', 'olga@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', TRUE, '2024-01-05'),
+    ('Анна', 'Смирнова', 'Female', '89124444444', 'anna@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', FALSE, '2024-01-06');
 
 INSERT INTO patient (patient_id) VALUES (2), (3), (4), (5), (6);
 
 -- Veterinarians
-INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled)
+INSERT INTO "user" (first_name, last_name, gender, mobile, email, password, user_type, is_enabled, created_at)
 VALUES
-    ('Дмитрий', 'Сергеев', 'Male', '89125555555', 'dmitry@gmail.com', 'Password54321', 'VET', TRUE),
-    ('Наталья', 'Федорова', 'Female', '89126666666', 'natalia@gmail.com', 'Password65432', 'VET', TRUE),
-    ('Константин', 'Лебедев', 'Male', '89127777777', 'constantine@gmail.com', 'Password76543', 'VET', TRUE),
-    ('Валерия', 'Павлова', 'Female', '89128888888', 'valeria@gmail.com', 'Password87654', 'VET', TRUE),
-    ('Сергей', 'Григорьев', 'Male', '89129999999', 'sergey@gmail.com', 'Password98765', 'VET', TRUE);
+    ('Дмитрий', 'Сергеев', 'Male', '89125555555', 'dmitry@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'VET', TRUE, '2024-01-07'),
+    ('Наталья', 'Федорова', 'Female', '89126666666', 'natalia@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'VET', TRUE, '2024-01-08'),
+    ('Константин', 'Лебедев', 'Male', '89127777777', 'constantine@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'VET', TRUE, '2024-01-09'),
+    ('Валерия', 'Павлова', 'Female', '89128888888', 'valeria@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'VET', TRUE, '2024-01-10'),
+    ('Сергей', 'Григорьев', 'Male', '89129999999', 'sergey@gmail.com', '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'VET', FALSE, '2024-01-11');
 
 INSERT INTO veterinarian (veterinarian_id, specialization) VALUES
                                                                (7, 'Терапевт'), (8, 'Терапевт'), (9, 'Хирург'), (10, 'Хирург'), (11, 'Диагност');
