@@ -25,3 +25,4 @@ public class PatientController {
         return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, patients));
     }
 }
+
