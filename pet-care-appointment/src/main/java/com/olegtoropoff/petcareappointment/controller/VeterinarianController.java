@@ -2,7 +2,6 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
-import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
 import com.olegtoropoff.petcareappointment.service.veterinarian.IVeterinarianService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
