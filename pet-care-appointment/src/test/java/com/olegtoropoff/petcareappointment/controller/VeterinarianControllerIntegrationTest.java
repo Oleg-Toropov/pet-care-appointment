@@ -87,6 +87,7 @@ public class VeterinarianControllerIntegrationTest {
     @Test
     public void getAvailableTimeForBookAppointment_ReturnsAvailableTimes() throws Exception {
         LocalDate date = LocalDate.now();
+        date = date.plusDays(1);
 
         mockMvc.perform(get("/api/v1/veterinarians/9/available-times")
                         .param("date", date.toString()))
