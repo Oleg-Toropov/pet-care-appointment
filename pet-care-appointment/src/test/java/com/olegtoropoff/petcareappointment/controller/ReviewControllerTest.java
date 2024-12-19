@@ -5,6 +5,7 @@ import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -49,7 +50,7 @@ class ReviewControllerTest {
         ResponseEntity<ApiResponse> response = reviewController.saveReview(review, reviewerId, veterinarianId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Отзыв успешно отправлен", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.REVIEW_SUBMIT_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         verify(reviewService, times(1)).saveReview(review, reviewerId, veterinarianId);
     }
 
@@ -58,7 +59,7 @@ class ReviewControllerTest {
         Review review = new Review();
         Long reviewerId = 2L;
         Long veterinarianId = 2L;
-        String errorMessage = "Ветеринары не могут оставлять отзывы о себе";
+        String errorMessage = FeedBackMessage.CANNOT_REVIEW;
 
         when(reviewService.saveReview(review, reviewerId, veterinarianId))
                 .thenThrow(new IllegalArgumentException(errorMessage));
@@ -76,7 +77,7 @@ class ReviewControllerTest {
         Review review = new Review();
         Long reviewerId = 1L;
         Long veterinarianId = 2L;
-        String errorMessage =  "Извините, оставить отзыв могут только пациенты, у которых была завершенная запись с этим ветеринаром";
+        String errorMessage =  FeedBackMessage.REVIEW_NOT_ALLOWED;
         when(reviewService.saveReview(review, reviewerId, veterinarianId))
                 .thenThrow(new IllegalStateException(errorMessage));
 
@@ -93,7 +94,7 @@ class ReviewControllerTest {
         Review review = new Review();
         Long reviewerId = 1L;
         Long veterinarianId = 2L;
-        String errorMessage =  "Вы уже оставили отзыв этому ветеринару, вы можете удалить предыдущий отзыв и написать новый";
+        String errorMessage =  FeedBackMessage.ALREADY_REVIEWED;
         when(reviewService.saveReview(review, reviewerId, veterinarianId))
                 .thenThrow(new AlreadyExistsException(errorMessage));
 
@@ -110,7 +111,7 @@ class ReviewControllerTest {
         Review review = new Review();
         Long reviewerId = 1L;
         Long veterinarianId = 2L;
-        String errorMessage =  "Ветеринар или пациент не найдены";
+        String errorMessage =  FeedBackMessage.VET_OR_PATIENT_NOT_FOUND;
         when(reviewService.saveReview(review, reviewerId, veterinarianId))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -131,14 +132,14 @@ class ReviewControllerTest {
         ResponseEntity<ApiResponse> response = reviewController.deleteReview(reviewId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Отзыв успешно удален", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.REVIEW_DELETE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         verify(reviewService, times(1)).deleteReview(reviewId);
     }
 
     @Test
     void deleteReview_ThrowsResourceNotFoundException() {
         Long reviewId = 1L;
-        String errorMessage =  "Отзыв(ы) не найден(ы)";
+        String errorMessage =  FeedBackMessage.REVIEW_NOT_FOUND;
         doThrow(new ResourceNotFoundException(errorMessage)).when(reviewService).deleteReview(reviewId);
 
         ResponseEntity<ApiResponse> response = reviewController.deleteReview(reviewId);

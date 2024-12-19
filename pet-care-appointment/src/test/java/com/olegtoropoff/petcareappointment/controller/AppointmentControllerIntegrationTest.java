@@ -6,6 +6,7 @@ import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
 import com.olegtoropoff.petcareappointment.model.Pet;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.JwtTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ class AppointmentControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(request))
                         .header("Authorization", jwtTestUtils.generateDefaultToken(3L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись успешно зарегистрирована")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS)))
                 .andExpect(jsonPath("$.data").isNotEmpty());
     }
 
@@ -95,7 +96,7 @@ class AppointmentControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(request))
                         .header("Authorization", jwtTestUtils.generateDefaultToken(3L, "ROLE_PATIENT")))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Отправитель или получатель не найдены")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.SENDER_RECIPIENT_NOT_FOUND)))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -121,7 +122,7 @@ class AppointmentControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(request))
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message", is("У вас есть 2 предстоящих приема. Вы не можете записаться на новый прием, пока один из них не завершится.")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.TOO_MANY_ACTIVE_APPOINTMENTS)))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -135,7 +136,7 @@ class AppointmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись успешно обновлена")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_UPDATE_SUCCESS)))
                 .andExpect(jsonPath("$.data").isNotEmpty());
     }
 
@@ -149,7 +150,7 @@ class AppointmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message", is("Невозможно обновить или отменить запись")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED)))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -163,7 +164,7 @@ class AppointmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Запись не найдена")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_NOT_FOUND)))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -176,7 +177,7 @@ class AppointmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Питомец успешно добавлен к записи")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.PET_ADDED_SUCCESS)))
                 .andExpect(jsonPath("$.data").isNotEmpty());
     }
 
@@ -189,7 +190,7 @@ class AppointmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Запись не найдена")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_NOT_FOUND)))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -202,7 +203,7 @@ class AppointmentControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message", is("Операция не разрешена")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.OPERATION_NOT_ALLOWED)))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -212,7 +213,7 @@ class AppointmentControllerIntegrationTest {
                         .param("page", "0")
                         .param("size", "5"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Записи найдены")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENTS_FOUND)))
                 .andExpect(jsonPath("$.data").isNotEmpty());
     }
 
@@ -220,7 +221,7 @@ class AppointmentControllerIntegrationTest {
     void getAppointmentById_ReturnsSuccessResponse() throws Exception {
         mockMvc.perform(get(APPOINTMENTS + GET_APPOINTMENT_BY_ID, 8L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись найдена")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_FOUND)))
                 .andExpect(jsonPath("$.data.id", is(8)));
     }
 
@@ -228,63 +229,63 @@ class AppointmentControllerIntegrationTest {
     void getAppointmentById_ThrowsNotFoundException() throws Exception {
         mockMvc.perform(get(APPOINTMENTS + GET_APPOINTMENT_BY_ID, 100L))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Запись не найдена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_NOT_FOUND)));
     }
 
     @Test
     void deleteAppointmentById_ReturnsSuccessResponse() throws Exception {
         mockMvc.perform(delete(APPOINTMENTS + DELETE_APPOINTMENT, 4L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись успешно удалена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_DELETE_SUCCESS)));
     }
 
     @Test
     void deleteAppointmentById_ThrowsNotFoundException() throws Exception {
         mockMvc.perform(delete(APPOINTMENTS + DELETE_APPOINTMENT, 100L))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Запись не найдена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_NOT_FOUND)));
     }
 
     @Test
     void cancelAppointment_ReturnsSuccessResponse() throws Exception {
         mockMvc.perform(put(APPOINTMENTS + CANCEL_APPOINTMENT, 12L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись отменена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS)));
     }
 
     @Test
     void cancelAppointment_ThrowsIllegalStateException() throws Exception {
         mockMvc.perform(put(APPOINTMENTS + CANCEL_APPOINTMENT, 11L))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message", is("Невозможно обновить или отменить запись")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED)));
     }
 
     @Test
     void approveAppointment_ReturnsSuccessResponse() throws Exception {
         mockMvc.perform(put(APPOINTMENTS + APPROVE_APPOINTMENT, 13L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись успешно подтверждена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS)));
     }
 
     @Test
     void approveAppointment_ThrowsIllegalStateException() throws Exception {
         mockMvc.perform(put(APPOINTMENTS + APPROVE_APPOINTMENT, 6L))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message", is("Операция не разрешена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.OPERATION_NOT_ALLOWED)));
     }
 
     @Test
     void declineAppointment_ReturnsSuccessResponse() throws Exception {
         mockMvc.perform(put(APPOINTMENTS + DECLINE_APPOINTMENT, 14L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Запись отклонена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS)));
     }
 
     @Test
     void declineAppointment_ThrowsIllegalStateException() throws Exception {
         mockMvc.perform(put(APPOINTMENTS + DECLINE_APPOINTMENT, 6L))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message", is("Операция не разрешена")));
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.OPERATION_NOT_ALLOWED)));
     }
 
     @Test
@@ -298,7 +299,7 @@ class AppointmentControllerIntegrationTest {
     void getAppointmentSummary_ReturnsSummary() throws Exception {
         mockMvc.perform(get(APPOINTMENTS + APPOINTMENT_SUMMARY))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Успешно")))
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.SUCCESS)))
                 .andExpect(jsonPath("$.data").isArray());
     }
 }

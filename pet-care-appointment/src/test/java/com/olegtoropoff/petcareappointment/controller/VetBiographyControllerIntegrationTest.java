@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,7 +31,7 @@ public class VetBiographyControllerIntegrationTest {
     public void getVetBiographyByVetId_WhenBiographyExists_ReturnsBiography() throws Exception {
         mockMvc.perform(get(BIOGRAPHIES + GET_BIOGRAPHY_BY_VET_ID, 10L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Биография найдена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_FOUND))
                 .andExpect(jsonPath("$.data.biography").value("Валерия Павлова проводит сложные хирургические операции. Опыт работы более 7 лет."));
     }
 
@@ -38,7 +39,7 @@ public class VetBiographyControllerIntegrationTest {
     public void getVetBiographyByVetId_WhenNotFound_ReturnsNotFound() throws Exception {
         mockMvc.perform(get(BIOGRAPHIES + GET_BIOGRAPHY_BY_VET_ID, 11L))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Информация о ветеринаре пока отсутствует, но вскоре появится!"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.VETERINARIAN_INFO_NOT_AVAILABLE))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -53,7 +54,7 @@ public class VetBiographyControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Биография успешно сохранена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_SAVED_SUCCESS))
                 .andExpect(jsonPath("$.data.biography").value("New biography for veterinarian"));
     }
 
@@ -68,7 +69,7 @@ public class VetBiographyControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Ветеринар не найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.VETERINARIAN_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -83,7 +84,7 @@ public class VetBiographyControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Биография успешно обновлена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_UPDATED_SUCCESS))
                 .andExpect(jsonPath("$.data.biography").value("Updated biography for veterinarian"));
     }
 
@@ -98,7 +99,7 @@ public class VetBiographyControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Биография не найдена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -106,7 +107,7 @@ public class VetBiographyControllerIntegrationTest {
     public void deleteVetBiography_WhenSuccess_ReturnsSuccessMessage() throws Exception {
         mockMvc.perform(delete(BIOGRAPHIES + DELETE_BIOGRAPHY, 4L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Биография успешно удалена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_DELETED_SUCCESS))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -114,7 +115,7 @@ public class VetBiographyControllerIntegrationTest {
     public void deleteVetBiography_WhenNotFound_ReturnsNotFound() throws Exception {
         mockMvc.perform(delete(BIOGRAPHIES + DELETE_BIOGRAPHY, 100L))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Биография не найдена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 }

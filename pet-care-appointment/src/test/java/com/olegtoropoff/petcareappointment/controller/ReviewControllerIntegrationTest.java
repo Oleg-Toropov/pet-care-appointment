@@ -2,6 +2,7 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.olegtoropoff.petcareappointment.model.Review;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.JwtTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ class ReviewControllerIntegrationTest {
                         .param("veterinarianId", "7")
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Отзыв успешно отправлен"));
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.REVIEW_SUBMIT_SUCCESS));
     }
 
     @Test
@@ -62,7 +63,7 @@ class ReviewControllerIntegrationTest {
                         .param("veterinarianId", "7")
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message").value("Ветеринары не могут оставлять отзывы о себе"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.CANNOT_REVIEW))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -79,7 +80,7 @@ class ReviewControllerIntegrationTest {
                         .param("veterinarianId", "8")
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Вы уже оставили отзыв этому ветеринару, вы можете удалить предыдущий отзыв и написать новый"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.ALREADY_REVIEWED))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -96,7 +97,7 @@ class ReviewControllerIntegrationTest {
                         .param("veterinarianId", "8")
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Ветеринар или пациент не найдены"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.VET_OR_PATIENT_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -113,7 +114,7 @@ class ReviewControllerIntegrationTest {
                         .param("veterinarianId", "11")
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isNotAcceptable())
-                .andExpect(jsonPath("$.message").value("Извините, оставить отзыв могут только пациенты, у которых была завершенная запись с этим ветеринаром"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.REVIEW_NOT_ALLOWED))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -122,7 +123,7 @@ class ReviewControllerIntegrationTest {
         mockMvc.perform(delete(REVIEWS + DELETE_REVIEW, 4L)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Отзыв успешно удален"));
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.REVIEW_DELETE_SUCCESS));
     }
 
     @Test
@@ -130,6 +131,6 @@ class ReviewControllerIntegrationTest {
         mockMvc.perform(delete(REVIEWS + DELETE_REVIEW, 100L)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Отзыв(ы) не найден(ы)"));
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.REVIEW_NOT_FOUND));
     }
 }

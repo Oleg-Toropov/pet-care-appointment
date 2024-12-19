@@ -58,13 +58,13 @@ public class VeterinarianControllerTest {
         ResponseEntity<ApiResponse> response = veterinarianController.getAllVeterinarians();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Ресурс найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(veterinarians, response.getBody().getData());
     }
 
     @Test
     public void getAllVeterinarians_InternalErrorOccurs_ReturnsInternalServerError() {
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(veterinarianService).getAllVeterinariansWithDetails();
 
@@ -93,7 +93,7 @@ public class VeterinarianControllerTest {
         ResponseEntity<ApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Ресурс найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(availableVets, response.getBody().getData());
     }
 
@@ -109,7 +109,7 @@ public class VeterinarianControllerTest {
         ResponseEntity<ApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("По выбранной специальности на указанную дату и время нет доступных ветеринаров", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.NO_VETS_AVAILABLE, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -118,7 +118,7 @@ public class VeterinarianControllerTest {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.of(10, 0);
         String specialization = "Хирург";
-        String errorMessage = "В системе не найден ветеринар со специализацией Хирург";
+        String errorMessage =  String.format(FeedBackMessage.SPECIALIZATION_NOT_FOUND, specialization);
         doThrow(new ResourceNotFoundException(errorMessage))
                 .when(veterinarianService).findAvailableVeterinariansForAppointments(specialization, date, time);
 
@@ -137,13 +137,13 @@ public class VeterinarianControllerTest {
         ResponseEntity<ApiResponse> response = veterinarianController.getAllSpecializations();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Ресурс найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(specializations, response.getBody().getData());
     }
 
     @Test
     public void getAllSpecializations_InternalErrorOccurs_ReturnsInternalServerError() {
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(veterinarianService).getSpecializations();
 
@@ -184,7 +184,7 @@ public class VeterinarianControllerTest {
     public void getAvailableTimeForBookAppointment_WhenExceptionOccurs_ReturnsInternalServerError() {
         Long vetId = 1L;
         LocalDate date = LocalDate.now();
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(veterinarianService).getAvailableTimeForBookAppointment(vetId, date);
 

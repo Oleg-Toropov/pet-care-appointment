@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,7 +32,7 @@ public class PatientControllerIntegrationTest {
         mockMvc.perform(get(PATIENTS + GET_ALL_PATIENTS)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data.length()", greaterThan(0)))
                 .andExpect(jsonPath("$.data[0].id").isNumber())

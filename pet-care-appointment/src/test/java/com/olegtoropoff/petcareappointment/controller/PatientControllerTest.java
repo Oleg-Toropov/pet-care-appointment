@@ -3,6 +3,7 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.response.ApiResponse;
 import com.olegtoropoff.petcareappointment.service.patient.IPatientService;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -62,7 +63,7 @@ public class PatientControllerTest {
         ResponseEntity<ApiResponse> response = patientController.getAllPatients();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Ресурс найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(emptyPatients, response.getBody().getData());
     }
 }

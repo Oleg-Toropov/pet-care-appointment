@@ -45,14 +45,14 @@ public class VetBiographyControllerTest {
         ResponseEntity<ApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Биография найдена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.BIOGRAPHY_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(biography, response.getBody().getData());
     }
 
     @Test
     public void getVetBiographyByVetId_WhenNotFound_ThrowsResourceNotFoundException() {
         Long vetId = 100L;
-        String errorMessage = "Информация о ветеринаре пока отсутствует, но вскоре появится!";
+        String errorMessage = FeedBackMessage.VETERINARIAN_INFO_NOT_AVAILABLE;
         when(vetBiographyService.getVetBiographyByVetId(vetId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
         ResponseEntity<ApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
@@ -65,7 +65,7 @@ public class VetBiographyControllerTest {
     @Test
     public void getVetBiographyByVetId_InternalErrorOccurs_ReturnsInternalServerError() {
         Long vetId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).getVetBiographyByVetId(vetId);
 
@@ -92,7 +92,7 @@ public class VetBiographyControllerTest {
         ResponseEntity<ApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Биография успешно сохранена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.BIOGRAPHY_SAVED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(savedBiography, response.getBody().getData());
     }
 
@@ -101,7 +101,7 @@ public class VetBiographyControllerTest {
         Long vetId = 1L;
         VetBiography request = new VetBiography();
         request.setBiography("New biography");
-        String errorMessage = "Ветеринар не найден";
+        String errorMessage = FeedBackMessage.VET_OR_PATIENT_NOT_FOUND;
 
         when(vetBiographyService.saveVetBiography(request, vetId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -116,7 +116,7 @@ public class VetBiographyControllerTest {
     public void saveVetBiography_InternalErrorOccurs_ReturnsInternalServerError() {
         Long vetId = 1L;
         VetBiography request = new VetBiography();
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).saveVetBiography(request, vetId);
 
@@ -142,7 +142,7 @@ public class VetBiographyControllerTest {
         ResponseEntity<ApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals( "Биография успешно обновлена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals( FeedBackMessage.BIOGRAPHY_UPDATED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(updatedBiography, response.getBody().getData());
     }
 
@@ -151,7 +151,7 @@ public class VetBiographyControllerTest {
         Long biographyId = 1L;
         VetBiography request = new VetBiography();
         request.setBiography("Updated biography");
-        String errorMessage = "Биография не найдена";
+        String errorMessage = FeedBackMessage.BIOGRAPHY_NOT_FOUND;
 
         when(vetBiographyService.updateVetBiography(request, biographyId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -166,7 +166,7 @@ public class VetBiographyControllerTest {
     public void updateVetBiography_InternalErrorOccurs_ReturnsInternalServerError() {
         Long biographyId = 1L;
         VetBiography request = new VetBiography();
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).updateVetBiography(request, biographyId);
 
@@ -185,26 +185,26 @@ public class VetBiographyControllerTest {
         ResponseEntity<ApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Биография успешно удалена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.BIOGRAPHY_DELETED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
     @Test
     public void deleteVetBiography_WhenNotFound_ThrowsResourceNotFoundException() {
         Long biographyId = 100L;
-        doThrow(new ResourceNotFoundException("Биография не найдена")).when(vetBiographyService).deleteVetBiography(biographyId);
+        doThrow(new ResourceNotFoundException(FeedBackMessage.BIOGRAPHY_NOT_FOUND)).when(vetBiographyService).deleteVetBiography(biographyId);
 
         ResponseEntity<ApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Биография не найдена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.BIOGRAPHY_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
     @Test
     public void deleteVetBiography_InternalErrorOccurs_ReturnsInternalServerError() {
         Long biographyId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).deleteVetBiography(biographyId);
 

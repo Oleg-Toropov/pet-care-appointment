@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,7 +32,7 @@ public class VeterinarianControllerIntegrationTest {
     public void getAllVeterinarians_ReturnsVeterinarians() throws Exception {
         mockMvc.perform(get(VETERINARIANS + GET_ALL_VETERINARIANS))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data.length()").value(5));
     }
@@ -46,7 +47,7 @@ public class VeterinarianControllerIntegrationTest {
                         .param("time", time.toString())
                         .param("specialization", "Хирург"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data.length()").value(1));
     }
@@ -61,14 +62,14 @@ public class VeterinarianControllerIntegrationTest {
                         .param("time", time.toString())
                         .param("specialization", "Диагност"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("По выбранной специальности на указанную дату и время нет доступных ветеринаров"));
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.NO_VETS_AVAILABLE));
     }
 
     @Test
     public void getAllSpecializations_ReturnsSpecializations() throws Exception {
         mockMvc.perform(get(VETERINARIANS + GET_ALL_SPECIALIZATIONS))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasItems("Хирург", "Терапевт", "Диагност")));
     }
@@ -93,7 +94,7 @@ public class VeterinarianControllerIntegrationTest {
         mockMvc.perform(get(VETERINARIANS + GET_AVAILABLE_TIME_FOR_BOOK_APPOINTMENT, 9L)
                         .param("date", date.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Доступное время для приема успешно найдено"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.AVAILABLE_TIME_FOR_APPOINTMENT_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasItems("10:00:00", "11:00:00")));
     }

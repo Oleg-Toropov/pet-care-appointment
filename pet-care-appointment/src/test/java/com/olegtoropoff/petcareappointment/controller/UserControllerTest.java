@@ -64,14 +64,14 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.getById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Пользователь найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.USER_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(userDto, response.getBody().getData());
     }
 
     @Test
     public void getById_WhenUserNotFound_ReturnsStatusNotFound() throws SQLException {
         Long userId = 100L;
-        String errorMessage = "Извините, пользователь не найден";
+        String errorMessage = FeedBackMessage.USER_NOT_FOUND;
         when(userService.getUserWithDetails(userId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.getById(userId);
@@ -89,7 +89,7 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.getById(userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Произошла ошибка", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -101,14 +101,14 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.deleteById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Учетная запись пользователя успешно удалена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.DELETE_USER_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
     @Test
     public void deleteById_WhenUserNotFound_ReturnsNotFound() {
         Long userId = 100L;
-        String errorMessage = "Извините, пользователь не найден";
+        String errorMessage = FeedBackMessage.USER_NOT_FOUND;
         doThrow(new ResourceNotFoundException(errorMessage)).when(userService).deleteById(userId);
 
         ResponseEntity<ApiResponse> response = userController.deleteById(userId);
@@ -126,7 +126,7 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.deleteById(userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Произошла ошибка", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -172,12 +172,12 @@ public class UserControllerTest {
         updateRequest.setLastName("UpdatedLastName");
         updateRequest.setPhoneNumber("891000000");
         when(userService.update(userId, updateRequest))
-                .thenThrow(new IllegalArgumentException("Упс! Кажется, в номере телефона ошибка. Проверьте, что номер телефона введён правильно."));
+                .thenThrow(new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT));
 
         ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Упс! Кажется, в номере телефона ошибка. Проверьте, что номер телефона введён правильно.", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.INVALID_PHONE_FORMAT, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -189,12 +189,12 @@ public class UserControllerTest {
         updateRequest.setLastName("UpdatedLastName");
         updateRequest.setPhoneNumber("89124000000");
         when(userService.update(userId, updateRequest))
-                .thenThrow(new ResourceNotFoundException("Извините, пользователь не найден"));
+                .thenThrow(new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
 
         ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Извините, пользователь не найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.USER_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -210,7 +210,7 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Произошла ошибка", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -232,13 +232,13 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.getAllUsers();
 
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals("Пользователи найдены", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.USERS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(usersDto, response.getBody().getData());
     }
 
     @Test
     public void getAllUsers_WhenExceptionOccurs_ReturnsInternalServerError() {
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         when(userService.getAllUsers()).thenThrow(new RuntimeException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.getAllUsers();
@@ -270,7 +270,7 @@ public class UserControllerTest {
         registeredUserDto.setFirstName(savedUser.getFirstName());
         registeredUserDto.setLastName(savedUser.getLastName());
 
-        String successMassage = "Учетная запись пользователя успешно создана для завершения регистрации перейдите по ссылке которая была отправлена на указанный при регистрации электронный адрес";
+        String successMassage = FeedBackMessage.CREATE_USER_SUCCESS;
 
         when(userService.register(request)).thenReturn(savedUser);
         when(entityConverter.mapEntityToDto(savedUser, UserDto.class)).thenReturn(registeredUserDto);
@@ -288,7 +288,7 @@ public class UserControllerTest {
     public void register_WhenUserAlreadyExists_ReturnsConflict() {
         RegistrationRequest request = new RegistrationRequest();
         request.setEmail("test@gmail.com");
-        String errorMessage = "Пользователь с таким email уже существует";
+        String errorMessage = FeedBackMessage.USER_ALREADY_EXISTS;
         when(userService.register(request)).thenThrow(new UserAlreadyExistsException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.register(request);
@@ -302,7 +302,7 @@ public class UserControllerTest {
     public void register_WhenInvalidData_ReturnsBadRequest() {
         RegistrationRequest request = new RegistrationRequest();
         request.setPassword("123");
-        String errorMessage = "Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!";
+        String errorMessage = FeedBackMessage.INVALID_PASSWORD_FORMAT;
         when(userService.register(request)).thenThrow(new IllegalArgumentException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.register(request);
@@ -316,7 +316,7 @@ public class UserControllerTest {
     public void register_WhenInternalErrorOccurs_ReturnsInternalServerError() {
         RegistrationRequest request = new RegistrationRequest();
         request.setEmail("test@gmail.com");
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         when(userService.register(request)).thenThrow(new RuntimeException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.register(request);
@@ -350,7 +350,7 @@ public class UserControllerTest {
         request.setCurrentPassword("WrongPassword");
         request.setNewPassword("NewPassword123");
         request.setConfirmNewPassword("NewPassword123");
-        String errorMessage = "Текущий пароль указан неверно";
+        String errorMessage = FeedBackMessage.CURRENT_PASSWORD_WRONG;
         doThrow(new IllegalArgumentException(errorMessage))
                 .when(changePasswordService).changePassword(userId, request);
 
@@ -368,7 +368,7 @@ public class UserControllerTest {
         request.setCurrentPassword("Password12345");
         request.setNewPassword("NewPassword123");
         request.setConfirmNewPassword("NewPassword123");
-        String errorMessage = "Извините, пользователь не найден";
+        String errorMessage = FeedBackMessage.USER_NOT_FOUND;
         doThrow(new ResourceNotFoundException(errorMessage))
                 .when(changePasswordService).changePassword(userId, request);
 
@@ -386,7 +386,7 @@ public class UserControllerTest {
         request.setCurrentPassword("Password12345");
         request.setNewPassword("NewPassword123");
         request.setConfirmNewPassword("NewPassword123");
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage))
                 .when(changePasswordService).changePassword(userId, request);
 
@@ -445,7 +445,7 @@ public class UserControllerTest {
 
     @Test
     public void aggregateUserByMonthAndType_WhenExceptionOccurs_ReturnsInternalServerError() {
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         when(userService.aggregateUsersByMonthAndType()).thenThrow(new RuntimeException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.aggregateUserByMonthAndType();
@@ -481,7 +481,7 @@ public class UserControllerTest {
 
     @Test
     public void getAggregateUsersByEnabledStatus_WhenExceptionOccurs_ReturnsInternalServerError() {
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         when(userService.aggregateUsersByEnabledStatusAndType()).thenThrow(new RuntimeException(errorMessage));
 
         ResponseEntity<ApiResponse> response = userController.getAggregateUsersByEnabledStatus();
@@ -499,14 +499,14 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.lockUserAccount(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Учетная запись успешно заблокирована", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.LOCKED_ACCOUNT_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
     @Test
     public void lockUserAccount_WhenExceptionOccurs_ReturnsInternalServerError() {
         Long userId = 5L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage)).when(userService).lockUserAccount(userId);
 
         ResponseEntity<ApiResponse> response = userController.lockUserAccount(userId);
@@ -524,14 +524,14 @@ public class UserControllerTest {
         ResponseEntity<ApiResponse> response = userController.unLockUserAccount(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Учетная запись успешно разблокирована", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
     @Test
     public void unLockUserAccount_WhenExceptionOccurs_ReturnsInternalServerError() {
         Long userId = 6L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage)).when(userService).unLockUserAccount(userId);
 
         ResponseEntity<ApiResponse> response = userController.unLockUserAccount(userId);

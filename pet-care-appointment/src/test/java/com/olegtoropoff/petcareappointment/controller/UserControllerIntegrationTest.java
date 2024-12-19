@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
+import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,7 +36,7 @@ public class UserControllerIntegrationTest {
     public void testGetById_ValidUserId_ReturnsUser() throws Exception {
         mockMvc.perform(get(USERS + GET_USER_BY_ID, 4L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Пользователь найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_FOUND))
                 .andExpect(jsonPath("$.data.id").value(4));
     }
 
@@ -43,7 +44,7 @@ public class UserControllerIntegrationTest {
     public void testGetById_InvalidUserId_ReturnsNotFound() throws Exception {
         mockMvc.perform(get(USERS + GET_USER_BY_ID, 100L))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -51,7 +52,7 @@ public class UserControllerIntegrationTest {
     public void testDeleteById_ValidUserId_ReturnsSuccess() throws Exception {
         mockMvc.perform(delete(USERS + DELETE_USER_BY_ID, 5L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Учетная запись пользователя успешно удалена"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.DELETE_USER_SUCCESS))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -59,7 +60,7 @@ public class UserControllerIntegrationTest {
     public void testDeleteById_InvalidUserId_ReturnsNotFound() throws Exception {
         mockMvc.perform(delete(USERS + DELETE_USER_BY_ID, 100L))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -76,7 +77,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Пользователь успешно обновлен"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_UPDATE_SUCCESS))
                 .andExpect(jsonPath("$.data.id").value(4))
                 .andExpect(jsonPath("$.data.firstName").value("Updatedname"))
                 .andExpect(jsonPath("$.data.lastName").value("Updatedlastname"))
@@ -96,7 +97,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Упс! Кажется, в номере телефона ошибка. Проверьте, что номер телефона введён правильно."))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.INVALID_PHONE_FORMAT))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -113,7 +114,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -121,7 +122,7 @@ public class UserControllerIntegrationTest {
     public void testGetAllUsers_ReturnsAllUsers() throws Exception {
         mockMvc.perform(get(USERS + GET_ALL_USERS))
                 .andExpect(status().isFound())
-                .andExpect(jsonPath("$.message").value("Пользователи найдены"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USERS_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data.length()").value(11));
     }
@@ -145,7 +146,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Учетная запись пользователя успешно создана для завершения регистрации перейдите по ссылке которая была отправлена на указанный при регистрации электронный адрес"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.CREATE_USER_SUCCESS))
                 .andExpect(jsonPath("$.data.firstName").value("Иван"))
                 .andExpect(jsonPath("$.data.lastName").value("Иванов"))
                 .andExpect(jsonPath("$.data.gender").value("Male"))
@@ -173,7 +174,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Пользователь с таким email уже существует"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_ALREADY_EXISTS))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -195,7 +196,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Пароль должен быть не менее 8 символов и содержать буквы и цифры латинского алфавита!"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.INVALID_PASSWORD_FORMAT))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -212,7 +213,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Пароль успешно изменен, теперь можно закрыть форму."))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.PASSWORD_CHANGE_SUCCESS))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -229,7 +230,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Текущий пароль указан неверно"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.CURRENT_PASSWORD_WRONG))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -246,7 +247,7 @@ public class UserControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -275,7 +276,7 @@ public class UserControllerIntegrationTest {
     public void testAggregateUserByMonthAndType_ReturnsAggregatedData() throws Exception {
         mockMvc.perform(get(USERS + AGGREGATE_USERS))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isMap())
                 .andExpect(jsonPath("$.data.January").exists())
                 .andExpect(jsonPath("$.data.January.VET").isNumber())
@@ -286,7 +287,7 @@ public class UserControllerIntegrationTest {
     public void testGetAggregateUsersByEnabledStatus_ReturnsAggregatedData() throws Exception {
         mockMvc.perform(get(USERS + AGGREGATE_USERS_BY_STATUS))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Ресурс найден"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isMap())
                 .andExpect(jsonPath("$.data.Enabled").exists())
                 .andExpect(jsonPath("$.data.Non-Enabled").exists())
@@ -300,7 +301,7 @@ public class UserControllerIntegrationTest {
     public void testLockUserAccount_ReturnsSuccess() throws Exception {
         mockMvc.perform(put(USERS + LOCK_USER_ACCOUNT, 5L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Учетная запись успешно заблокирована"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.LOCKED_ACCOUNT_SUCCESS))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -308,7 +309,7 @@ public class UserControllerIntegrationTest {
     public void testUnLockUserAccount_ReturnsSuccess() throws Exception {
         mockMvc.perform(put(USERS + UNLOCK_USER_ACCOUNT, 6L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Учетная запись успешно разблокирована"))
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 }

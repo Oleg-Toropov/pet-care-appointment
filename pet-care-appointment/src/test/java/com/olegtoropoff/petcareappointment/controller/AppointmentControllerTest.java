@@ -66,7 +66,7 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись успешно зарегистрирована", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         verify(rabbitMQProducer, times(1)).sendMessage("AppointmentBookedEvent:1");
     }
 
@@ -75,7 +75,7 @@ class AppointmentControllerTest {
         BookAppointmentRequest request = new BookAppointmentRequest();
         Long senderId = 1L;
         Long recipientId = 2L;
-        String errorMessage = "Отправитель или получатель не найдены";
+        String errorMessage = FeedBackMessage.SENDER_RECIPIENT_NOT_FOUND;
 
         when(appointmentService.createAppointment(request, senderId, recipientId))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
@@ -93,7 +93,7 @@ class AppointmentControllerTest {
         BookAppointmentRequest request = new BookAppointmentRequest();
         Long senderId = 1L;
         Long recipientId = 1L;
-        String errorMessage = "Запись на прием для ветеринаров недоступна";
+        String errorMessage = FeedBackMessage.VET_APPOINTMENT_NOT_ALLOWED;
 
         when(appointmentService.createAppointment(request, senderId, recipientId))
                 .thenThrow(new IllegalStateException(errorMessage));
@@ -113,12 +113,12 @@ class AppointmentControllerTest {
         Long recipientId = 2L;
 
         when(appointmentService.createAppointment(request, senderId, recipientId))
-                .thenThrow(new RuntimeException("Произошла ошибка"));
+                .thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
         ResponseEntity<ApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Произошла ошибка", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
         verify(rabbitMQProducer, times(0)).sendMessage(anyString());
     }
@@ -135,13 +135,13 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.updateAppointment(1L, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись успешно обновлена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
     }
 
     @Test
     void updateAppointment_ThrowsIllegalStateException() {
         AppointmentUpdateRequest request = new AppointmentUpdateRequest();
-        String errorMessage = "Невозможно обновить или отменить запись";
+        String errorMessage = FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED;
 
         when(appointmentService.updateAppointment(1L, request)).thenThrow(new IllegalStateException(errorMessage));
 
@@ -155,7 +155,7 @@ class AppointmentControllerTest {
     @Test
     void updateAppointment_ThrowsResourceNotFoundException() {
         AppointmentUpdateRequest request = new AppointmentUpdateRequest();
-        String errorMessage = "Запись не найдена";
+        String errorMessage = FeedBackMessage.APPOINTMENT_NOT_FOUND;
 
         when(appointmentService.updateAppointment(1L, request)).thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -170,12 +170,12 @@ class AppointmentControllerTest {
     void updateAppointment_ThrowsGenericException() {
         AppointmentUpdateRequest request = new AppointmentUpdateRequest();
 
-        when(appointmentService.updateAppointment(1L, request)).thenThrow(new RuntimeException("Произошла ошибка"));
+        when(appointmentService.updateAppointment(1L, request)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
         ResponseEntity<ApiResponse> response = appointmentController.updateAppointment(1L, request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Произошла ошибка", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -189,12 +189,12 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.getAllAppointments(0, 10);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Записи найдены", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENTS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
     }
 
     @Test
     void getAllAppointments_ThrowsGenericException() {
-        doThrow(new RuntimeException("Произошла ошибка"))
+        doThrow(new RuntimeException(FeedBackMessage.ERROR))
                 .when(appointmentService).getAllAppointments(any(Pageable.class));
 
         ResponseEntity<ApiResponse> response = appointmentController.getAllAppointments(0, 10);
@@ -214,13 +214,13 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.getAppointmentById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись найдена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
     }
 
     @Test
     void getAppointmentById_ThrowsResourceNotFoundException() {
         Long appointmentId = 1L;
-        String errorMessage = "Запись не найдена";
+        String errorMessage = FeedBackMessage.APPOINTMENT_NOT_FOUND;
 
         when(appointmentService.getAppointmentById(appointmentId))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
@@ -235,7 +235,7 @@ class AppointmentControllerTest {
     @Test
     void getAppointmentById_ThrowsGenericException() {
         Long appointmentId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         when(appointmentService.getAppointmentById(appointmentId))
                 .thenThrow(new RuntimeException(errorMessage));
@@ -254,13 +254,13 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.deleteAppointmentById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись успешно удалена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_DELETE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
     }
 
     @Test
     void deleteAppointmentById_ThrowsResourceNotFoundException() {
         Long appointmentId = 1L;
-        String errorMessage = "Запись не найдена";
+        String errorMessage = FeedBackMessage.APPOINTMENT_NOT_FOUND;
 
         doThrow(new ResourceNotFoundException(errorMessage)).when(appointmentService).deleteAppointment(appointmentId);
 
@@ -274,7 +274,7 @@ class AppointmentControllerTest {
     @Test
     void deleteAppointmentById_ThrowsGenericException() {
         Long appointmentId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         doThrow(new RuntimeException(errorMessage)).when(appointmentService).deleteAppointment(appointmentId);
 
@@ -299,14 +299,14 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.approveAppointment(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись успешно подтверждена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         verify(rabbitMQProducer, times(1)).sendMessage("AppointmentApprovedEvent:1");
     }
 
     @Test
     void approveAppointment_ThrowsIllegalStateException() {
         Long appointmentId = 1L;
-        String errorMessage = "Операция не разрешена";
+        String errorMessage = FeedBackMessage.OPERATION_NOT_ALLOWED;
 
         when(appointmentService.approveAppointment(appointmentId)).thenThrow(new IllegalStateException(errorMessage));
 
@@ -320,7 +320,7 @@ class AppointmentControllerTest {
     @Test
     void approveAppointment_ThrowsGenericException() {
         Long appointmentId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         when(appointmentService.approveAppointment(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
@@ -348,13 +348,13 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.getAppointmentSummary();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Успешно", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(summary, response.getBody().getData());
     }
 
     @Test
     void getAppointmentSummary_ThrowsGenericException() {
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         when(appointmentService.getAppointmentSummary()).thenThrow(new RuntimeException(""));
 
@@ -380,14 +380,14 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.declineAppointment(appointmentId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись отклонена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         verify(rabbitMQProducer, times(1)).sendMessage("AppointmentDeclinedEvent:2");
     }
 
     @Test
     void declineAppointment_ThrowsIllegalStateException() {
         Long appointmentId = 1L;
-        String errorMessage = "Операция не разрешена";
+        String errorMessage = FeedBackMessage.OPERATION_NOT_ALLOWED;
 
         when(appointmentService.declineAppointment(appointmentId)).thenThrow(new IllegalStateException(errorMessage));
 
@@ -401,14 +401,14 @@ class AppointmentControllerTest {
     @Test
     void declineAppointment_ThrowsGenericException() {
         Long appointmentId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         when(appointmentService.declineAppointment(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
         ResponseEntity<ApiResponse> response = appointmentController.declineAppointment(appointmentId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Произошла ошибка", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
 
@@ -428,14 +428,14 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.cancelAppointment(appointmentId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Запись отменена", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         verify(rabbitMQProducer, times(1)).sendMessage("AppointmentCanceledEvent:2#12345");
     }
 
     @Test
     void cancelAppointment_ThrowsIllegalStateException() {
         Long appointmentId = 1L;
-        String errorMessage = "Невозможно обновить или отменить запись";
+        String errorMessage = FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED;
 
         when(appointmentService.cancelAppointment(appointmentId)).thenThrow(new IllegalStateException(errorMessage));
 
@@ -449,7 +449,7 @@ class AppointmentControllerTest {
     @Test
     void cancelAppointment_ThrowsGenericException() {
         Long appointmentId = 1L;
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         when(appointmentService.cancelAppointment(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
@@ -473,7 +473,7 @@ class AppointmentControllerTest {
         ResponseEntity<ApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Питомец успешно добавлен к записи", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.PET_ADDED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(appointment, response.getBody().getData());
     }
 
@@ -481,7 +481,7 @@ class AppointmentControllerTest {
     void addPetForAppointment_ThrowsIllegalStateException() {
         Long appointmentId = 1L;
         Pet pet = new Pet();
-        String errorMessage = "Добавление питомца невозможно";
+        String errorMessage = FeedBackMessage.OPERATION_NOT_ALLOWED;
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenThrow(new IllegalStateException(errorMessage));
 
@@ -496,7 +496,7 @@ class AppointmentControllerTest {
     void addPetForAppointment_ThrowsResourceNotFoundException() {
         Long appointmentId = 1L;
         Pet pet = new Pet();
-        String errorMessage = "Запись не найдена";
+        String errorMessage = FeedBackMessage.APPOINTMENT_NOT_FOUND;
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenThrow(new ResourceNotFoundException(errorMessage));
 
@@ -510,7 +510,7 @@ class AppointmentControllerTest {
     void addPetForAppointment_ThrowsGenericException() {
         Long appointmentId = 1L;
         Pet pet = new Pet();
-        String errorMessage = "Произошла ошибка";
+        String errorMessage = FeedBackMessage.ERROR;
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenThrow(new RuntimeException(errorMessage));
 
