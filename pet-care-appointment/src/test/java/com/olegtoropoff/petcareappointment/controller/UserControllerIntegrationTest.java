@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -32,7 +33,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testGetById_ValidUserId_ReturnsUser() throws Exception {
-        mockMvc.perform(get("/api/v1/users/user/4"))
+        mockMvc.perform(get(USERS + GET_USER_BY_ID, 4L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Пользователь найден"))
                 .andExpect(jsonPath("$.data.id").value(4));
@@ -40,7 +41,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testGetById_InvalidUserId_ReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/api/v1/users/user/100"))
+        mockMvc.perform(get(USERS + GET_USER_BY_ID, 100L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
@@ -48,7 +49,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testDeleteById_ValidUserId_ReturnsSuccess() throws Exception {
-        mockMvc.perform(delete("/api/v1/users/user/5/delete"))
+        mockMvc.perform(delete(USERS + DELETE_USER_BY_ID, 5L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Учетная запись пользователя успешно удалена"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
@@ -56,7 +57,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testDeleteById_InvalidUserId_ReturnsNotFound() throws Exception {
-        mockMvc.perform(delete("/api/v1/users/user/100/delete"))
+        mockMvc.perform(delete(USERS + DELETE_USER_BY_ID, 100L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Извините, пользователь не найден"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
@@ -71,7 +72,7 @@ public class UserControllerIntegrationTest {
                     "phoneNumber": "89124000000"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/users/user/4/update")
+        mockMvc.perform(put(USERS + UPDATE_USER, 4L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
                 .andExpect(status().isOk())
@@ -91,7 +92,7 @@ public class UserControllerIntegrationTest {
                     "phoneNumber": "891000000"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/users/user/4/update")
+        mockMvc.perform(put(USERS + UPDATE_USER, 4L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
                 .andExpect(status().isBadRequest())
@@ -108,7 +109,7 @@ public class UserControllerIntegrationTest {
                     "phoneNumber": "89124000000"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/users/user/100/update")
+        mockMvc.perform(put(USERS + UPDATE_USER, 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateRequestJson))
                 .andExpect(status().isNotFound())
@@ -118,7 +119,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testGetAllUsers_ReturnsAllUsers() throws Exception {
-        mockMvc.perform(get("/api/v1/users/all-users"))
+        mockMvc.perform(get(USERS + GET_ALL_USERS))
                 .andExpect(status().isFound())
                 .andExpect(jsonPath("$.message").value("Пользователи найдены"))
                 .andExpect(jsonPath("$.data").isArray())
@@ -140,7 +141,7 @@ public class UserControllerIntegrationTest {
                 }
                 """;
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
-        mockMvc.perform(post("/api/v1/users/register")
+        mockMvc.perform(post(USERS + REGISTER_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
                 .andExpect(status().isOk())
@@ -168,7 +169,7 @@ public class UserControllerIntegrationTest {
                     "specialization": "Хирург" 
                 }
                 """;
-        mockMvc.perform(post("/api/v1/users/register")
+        mockMvc.perform(post(USERS + REGISTER_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
                 .andExpect(status().isConflict())
@@ -190,7 +191,7 @@ public class UserControllerIntegrationTest {
                     "specialization": "Хирург" 
                 }
                 """;
-        mockMvc.perform(post("/api/v1/users/register")
+        mockMvc.perform(post(USERS + REGISTER_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registrationRequestJson))
                 .andExpect(status().isBadRequest())
@@ -207,7 +208,7 @@ public class UserControllerIntegrationTest {
                     "confirmNewPassword": "NewPassword123"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/users/user/4/change-password")
+        mockMvc.perform(put(USERS + CHANGE_PASSWORD, 4L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
                 .andExpect(status().isOk())
@@ -224,7 +225,7 @@ public class UserControllerIntegrationTest {
                     "confirmNewPassword": "NewPassword123"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/users/user/4/change-password")
+        mockMvc.perform(put(USERS + CHANGE_PASSWORD, 4L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
                 .andExpect(status().isBadRequest())
@@ -241,7 +242,7 @@ public class UserControllerIntegrationTest {
                     "confirmNewPassword": "NewPassword321"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/users/user/100/change-password")
+        mockMvc.perform(put(USERS + CHANGE_PASSWORD, 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changePasswordRequestJson))
                 .andExpect(status().isNotFound())
@@ -251,28 +252,28 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testCountVeterinarians_ReturnsCorrectCount() throws Exception {
-        mockMvc.perform(get("/api/v1/users/count/veterinarians"))
+        mockMvc.perform(get(USERS + COUNT_ALL_VETERINARIANS))
                 .andExpect(status().isOk())
                 .andExpect(content().string(anyOf(is("5"), is("6"))));
     }
 
     @Test
     public void testCountPatients_ReturnsCorrectCount() throws Exception {
-        mockMvc.perform(get("/api/v1/users/count/patients"))
+        mockMvc.perform(get(USERS + COUNT_ALL_PATIENTS))
                 .andExpect(status().isOk())
                 .andExpect(content().string(anyOf(is("4"), is("5"))));
     }
 
     @Test
     public void testCountUsers_ReturnsCorrectCount() throws Exception {
-        mockMvc.perform(get("/api/v1/users/count/users"))
+        mockMvc.perform(get(USERS + COUNT_ALL_USERS))
                 .andExpect(status().isOk())
                 .andExpect(content().string(anyOf(is("10"), is("11"), is("12"))));
     }
 
     @Test
     public void testAggregateUserByMonthAndType_ReturnsAggregatedData() throws Exception {
-        mockMvc.perform(get("/api/v1/users/aggregated-users"))
+        mockMvc.perform(get(USERS + AGGREGATE_USERS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Ресурс найден"))
                 .andExpect(jsonPath("$.data").isMap())
@@ -283,7 +284,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testGetAggregateUsersByEnabledStatus_ReturnsAggregatedData() throws Exception {
-        mockMvc.perform(get("/api/v1/users/account/aggregated-by-status"))
+        mockMvc.perform(get(USERS + AGGREGATE_USERS_BY_STATUS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Ресурс найден"))
                 .andExpect(jsonPath("$.data").isMap())
@@ -297,7 +298,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testLockUserAccount_ReturnsSuccess() throws Exception {
-        mockMvc.perform(put("/api/v1/users/account/5/lock-user-account"))
+        mockMvc.perform(put(USERS + LOCK_USER_ACCOUNT, 5L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Учетная запись успешно заблокирована"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
@@ -305,7 +306,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testUnLockUserAccount_ReturnsSuccess() throws Exception {
-        mockMvc.perform(put("/api/v1/users/account/6/unLock-user-account"))
+        mockMvc.perform(put(USERS + UNLOCK_USER_ACCOUNT, 6L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Учетная запись успешно разблокирована"))
                 .andExpect(jsonPath("$.data").value(nullValue()));

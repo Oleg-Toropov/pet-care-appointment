@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,7 +27,7 @@ class RoleControllerIntegrationTest {
 
     @Test
     void getAllRoles_ReturnsListOfRoles() throws Exception {
-        mockMvc.perform(get("/api/v1/roles/all-roles")
+        mockMvc.perform(get(ROLES + GET_ALL_ROLES)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(3)))
@@ -37,7 +38,7 @@ class RoleControllerIntegrationTest {
 
     @Test
     void getRoleById_ReturnsRole() throws Exception {
-        mockMvc.perform(get("/api/v1/roles/role/get-by-id/role")
+        mockMvc.perform(get(ROLES + GET_ROLE_BY_ID)
                         .param("id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -46,7 +47,7 @@ class RoleControllerIntegrationTest {
 
     @Test
     void getRoleByName_ReturnsRole() throws Exception {
-        mockMvc.perform(get("/api/v1/roles/role/get-by-name")
+        mockMvc.perform(get(ROLES + GET_ROLE_BY_NAME)
                         .param("roleName", "ROLE_PATIENT")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

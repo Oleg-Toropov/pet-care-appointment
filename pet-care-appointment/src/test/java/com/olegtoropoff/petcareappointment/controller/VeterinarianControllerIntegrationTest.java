@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,7 +29,7 @@ public class VeterinarianControllerIntegrationTest {
 
     @Test
     public void getAllVeterinarians_ReturnsVeterinarians() throws Exception {
-        mockMvc.perform(get("/api/v1/veterinarians/get-all-veterinarians"))
+        mockMvc.perform(get(VETERINARIANS + GET_ALL_VETERINARIANS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Ресурс найден"))
                 .andExpect(jsonPath("$.data").isArray())
@@ -40,7 +41,7 @@ public class VeterinarianControllerIntegrationTest {
         LocalDate date = LocalDate.of(2024, 12, 20);
         LocalTime time = LocalTime.of(14, 30);
 
-        mockMvc.perform(get("/api/v1/veterinarians/search-veterinarian")
+        mockMvc.perform(get(VETERINARIANS + SEARCH_VETERINARIAN_FOR_APPOINTMENT)
                         .param("date", date.toString())
                         .param("time", time.toString())
                         .param("specialization", "Хирург"))
@@ -55,7 +56,7 @@ public class VeterinarianControllerIntegrationTest {
         LocalDate date = LocalDate.of(2025, 1, 5);
         LocalTime time = LocalTime.of(17, 0);
 
-        mockMvc.perform(get("/api/v1/veterinarians/search-veterinarian")
+        mockMvc.perform(get(VETERINARIANS + SEARCH_VETERINARIAN_FOR_APPOINTMENT)
                         .param("date", date.toString())
                         .param("time", time.toString())
                         .param("specialization", "Диагност"))
@@ -65,7 +66,7 @@ public class VeterinarianControllerIntegrationTest {
 
     @Test
     public void getAllSpecializations_ReturnsSpecializations() throws Exception {
-        mockMvc.perform(get("/api/v1/veterinarians/vet/get-all-specialization"))
+        mockMvc.perform(get(VETERINARIANS + GET_ALL_SPECIALIZATIONS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Ресурс найден"))
                 .andExpect(jsonPath("$.data").isArray())
@@ -74,7 +75,7 @@ public class VeterinarianControllerIntegrationTest {
 
     @Test
     public void aggregateVetsBySpecialization_ReturnsAggregatedData() throws Exception {
-        mockMvc.perform(get("/api/v1/veterinarians/vet/get-by-specialization"))
+        mockMvc.perform(get(VETERINARIANS + AGGREGATE_VETERINARIANS_BY_SPECIALIZATION))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].specialization").value("Диагност"))
                 .andExpect(jsonPath("$[0].count").value(1))
@@ -89,7 +90,7 @@ public class VeterinarianControllerIntegrationTest {
         LocalDate date = LocalDate.now();
         date = date.plusDays(1);
 
-        mockMvc.perform(get("/api/v1/veterinarians/9/available-times")
+        mockMvc.perform(get(VETERINARIANS + GET_AVAILABLE_TIME_FOR_BOOK_APPOINTMENT, 9L)
                         .param("date", date.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Доступное время для приема успешно найдено"))

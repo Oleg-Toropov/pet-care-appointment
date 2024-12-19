@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -61,10 +62,10 @@ class AppointmentControllerIntegrationTest {
 
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        mockMvc.perform(post("/api/v1/appointments/book-appointment")
+        mockMvc.perform(post(APPOINTMENTS + BOOK_APPOINTMENT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("senderId", "3")
-                        .param("recipientId", "7")
+                        .param("senderId", "5")
+                        .param("recipientId", "9")
                         .content(objectMapper.writeValueAsString(request))
                         .header("Authorization", jwtTestUtils.generateDefaultToken(3L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
@@ -87,7 +88,7 @@ class AppointmentControllerIntegrationTest {
 
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        mockMvc.perform(post("/api/v1/appointments/book-appointment")
+        mockMvc.perform(post(APPOINTMENTS + BOOK_APPOINTMENT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("senderId", "3")
                         .param("recipientId", "100")
@@ -113,7 +114,7 @@ class AppointmentControllerIntegrationTest {
 
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        mockMvc.perform(post("/api/v1/appointments/book-appointment")
+        mockMvc.perform(post(APPOINTMENTS + BOOK_APPOINTMENT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("senderId", "2")
                         .param("recipientId", "7")
@@ -130,7 +131,7 @@ class AppointmentControllerIntegrationTest {
         request.setAppointmentDate(String.valueOf(LocalDate.now().plusDays(1)));
         request.setAppointmentTime("19:00:00");
 
-        mockMvc.perform(put("/api/v1/appointments/appointment/8/update")
+        mockMvc.perform(put(APPOINTMENTS + UPDATE_APPOINTMENT, 8L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -144,7 +145,7 @@ class AppointmentControllerIntegrationTest {
         request.setAppointmentDate(String.valueOf(LocalDate.now().plusDays(1)));
         request.setAppointmentTime("19:00:00");
 
-        mockMvc.perform(put("/api/v1/appointments/appointment/10/update")
+        mockMvc.perform(put(APPOINTMENTS + UPDATE_APPOINTMENT, 10L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotAcceptable())
@@ -158,7 +159,7 @@ class AppointmentControllerIntegrationTest {
         request.setAppointmentDate(String.valueOf(LocalDate.now().plusDays(1)));
         request.setAppointmentTime("19:00:00");
 
-        mockMvc.perform(put("/api/v1/appointments/appointment/100/update")
+        mockMvc.perform(put(APPOINTMENTS + UPDATE_APPOINTMENT, 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
@@ -171,7 +172,7 @@ class AppointmentControllerIntegrationTest {
         Pet pet = new Pet();
         pet.setName("Барсик");
 
-        mockMvc.perform(put("/api/v1/appointments/appointment/8/add-pet")
+        mockMvc.perform(put(APPOINTMENTS + ADD_PET_APPOINTMENT, 8L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isOk())
@@ -184,7 +185,7 @@ class AppointmentControllerIntegrationTest {
         Pet pet = new Pet();
         pet.setName("Барсик");
 
-        mockMvc.perform(put("/api/v1/appointments/appointment/100/add-pet")
+        mockMvc.perform(put(APPOINTMENTS + ADD_PET_APPOINTMENT, 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isNotFound())
@@ -197,7 +198,7 @@ class AppointmentControllerIntegrationTest {
         Pet pet = new Pet();
         pet.setName("Барсик");
 
-        mockMvc.perform(put("/api/v1/appointments/appointment/9/add-pet")
+        mockMvc.perform(put(APPOINTMENTS + ADD_PET_APPOINTMENT, 9L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isNotAcceptable())
@@ -207,7 +208,7 @@ class AppointmentControllerIntegrationTest {
 
     @Test
     void getAllAppointments_ReturnsPagedResponse() throws Exception {
-        mockMvc.perform(get("/api/v1/appointments/all")
+        mockMvc.perform(get(APPOINTMENTS + ALL_APPOINTMENT)
                         .param("page", "0")
                         .param("size", "5"))
                 .andExpect(status().isOk())
@@ -217,7 +218,7 @@ class AppointmentControllerIntegrationTest {
 
     @Test
     void getAppointmentById_ReturnsSuccessResponse() throws Exception {
-        mockMvc.perform(get("/api/v1/appointments/appointment/8/fetch/appointment"))
+        mockMvc.perform(get(APPOINTMENTS + GET_APPOINTMENT_BY_ID, 8L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Запись найдена")))
                 .andExpect(jsonPath("$.data.id", is(8)));
@@ -225,77 +226,77 @@ class AppointmentControllerIntegrationTest {
 
     @Test
     void getAppointmentById_ThrowsNotFoundException() throws Exception {
-        mockMvc.perform(get("/api/v1/appointments/appointment/100/fetch/appointment"))
+        mockMvc.perform(get(APPOINTMENTS + GET_APPOINTMENT_BY_ID, 100L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Запись не найдена")));
     }
 
     @Test
     void deleteAppointmentById_ReturnsSuccessResponse() throws Exception {
-        mockMvc.perform(delete("/api/v1/appointments/appointment/4/delete"))
+        mockMvc.perform(delete(APPOINTMENTS + DELETE_APPOINTMENT, 4L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Запись успешно удалена")));
     }
 
     @Test
     void deleteAppointmentById_ThrowsNotFoundException() throws Exception {
-        mockMvc.perform(delete("/api/v1/appointments/appointment/100/delete"))
+        mockMvc.perform(delete(APPOINTMENTS + DELETE_APPOINTMENT, 100L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Запись не найдена")));
     }
 
     @Test
     void cancelAppointment_ReturnsSuccessResponse() throws Exception {
-        mockMvc.perform(put("/api/v1/appointments/appointment/12/cancel"))
+        mockMvc.perform(put(APPOINTMENTS + CANCEL_APPOINTMENT, 12L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Запись отменена")));
     }
 
     @Test
     void cancelAppointment_ThrowsIllegalStateException() throws Exception {
-        mockMvc.perform(put("/api/v1/appointments/appointment/11/cancel"))
+        mockMvc.perform(put(APPOINTMENTS + CANCEL_APPOINTMENT, 11L))
                 .andExpect(status().isNotAcceptable())
                 .andExpect(jsonPath("$.message", is("Невозможно обновить или отменить запись")));
     }
 
     @Test
     void approveAppointment_ReturnsSuccessResponse() throws Exception {
-        mockMvc.perform(put("/api/v1/appointments/appointment/13/approve"))
+        mockMvc.perform(put(APPOINTMENTS + APPROVE_APPOINTMENT, 13L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Запись успешно подтверждена")));
     }
 
     @Test
     void approveAppointment_ThrowsIllegalStateException() throws Exception {
-        mockMvc.perform(put("/api/v1/appointments/appointment/6/approve"))
+        mockMvc.perform(put(APPOINTMENTS + APPROVE_APPOINTMENT, 6L))
                 .andExpect(status().isNotAcceptable())
                 .andExpect(jsonPath("$.message", is("Операция не разрешена")));
     }
 
     @Test
     void declineAppointment_ReturnsSuccessResponse() throws Exception {
-        mockMvc.perform(put("/api/v1/appointments/appointment/14/decline"))
+        mockMvc.perform(put(APPOINTMENTS + DECLINE_APPOINTMENT, 14L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Запись отклонена")));
     }
 
     @Test
     void declineAppointment_ThrowsIllegalStateException() throws Exception {
-        mockMvc.perform(put("/api/v1/appointments/appointment/6/decline"))
+        mockMvc.perform(put(APPOINTMENTS + DECLINE_APPOINTMENT, 6L))
                 .andExpect(status().isNotAcceptable())
                 .andExpect(jsonPath("$.message", is("Операция не разрешена")));
     }
 
     @Test
     void countAppointments_ReturnsCount() throws Exception {
-        mockMvc.perform(get("/api/v1/appointments/count/appointments"))
+        mockMvc.perform(get(APPOINTMENTS + COUNT_APPOINTMENT))
                 .andExpect(status().isOk())
                 .andExpect(content().string(anyOf(is("13"), is("14"), is("15"))));
     }
 
     @Test
     void getAppointmentSummary_ReturnsSummary() throws Exception {
-        mockMvc.perform(get("/api/v1/appointments/summary/appointments-summary"))
+        mockMvc.perform(get(APPOINTMENTS + APPOINTMENT_SUMMARY))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Успешно")))
                 .andExpect(jsonPath("$.data").isArray());

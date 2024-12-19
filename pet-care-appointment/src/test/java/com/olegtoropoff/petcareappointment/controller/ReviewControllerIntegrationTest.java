@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,7 +39,7 @@ class ReviewControllerIntegrationTest {
         review.setStars(5);
         review.setFeedback("Great service!");
 
-        mockMvc.perform(post("/api/v1/reviews/submit-review")
+        mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
@@ -54,7 +55,7 @@ class ReviewControllerIntegrationTest {
         review.setStars(5);
         review.setFeedback("Great service!");
 
-        mockMvc.perform(post("/api/v1/reviews/submit-review")
+        mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "7")
@@ -71,7 +72,7 @@ class ReviewControllerIntegrationTest {
         review.setStars(5);
         review.setFeedback("Great service!");
 
-        mockMvc.perform(post("/api/v1/reviews/submit-review")
+        mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
@@ -88,7 +89,7 @@ class ReviewControllerIntegrationTest {
         review.setStars(5);
         review.setFeedback("Great service!");
 
-        mockMvc.perform(post("/api/v1/reviews/submit-review")
+        mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "100")
@@ -105,7 +106,7 @@ class ReviewControllerIntegrationTest {
         review.setStars(5);
         review.setFeedback("Great service!");
 
-        mockMvc.perform(post("/api/v1/reviews/submit-review")
+        mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
@@ -118,7 +119,7 @@ class ReviewControllerIntegrationTest {
 
     @Test
     void deleteReview_ReturnsSuccess() throws Exception {
-        mockMvc.perform(delete("/api/v1/reviews/review/4/delete")
+        mockMvc.perform(delete(REVIEWS + DELETE_REVIEW, 4L)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Отзыв успешно удален"));
@@ -126,7 +127,7 @@ class ReviewControllerIntegrationTest {
 
     @Test
     void deleteReview_ThrowsResourceNotFoundException() throws Exception {
-        mockMvc.perform(delete("/api/v1/reviews/review/100/delete")
+        mockMvc.perform(delete(REVIEWS + DELETE_REVIEW, 100L)
                         .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Отзыв(ы) не найден(ы)"));

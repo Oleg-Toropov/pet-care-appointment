@@ -9,6 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.GET_ALL_PATIENTS;
+import static com.olegtoropoff.petcareappointment.utils.UrlMapping.PATIENTS;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,7 +28,7 @@ public class PatientControllerIntegrationTest {
 
     @Test
     public void getAllPatients_WhenPatientsExist_ReturnsResourceFound() throws Exception {
-        mockMvc.perform(get("/api/v1/patients/get-all-patients")
+        mockMvc.perform(get(PATIENTS + GET_ALL_PATIENTS)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Ресурс найден"))

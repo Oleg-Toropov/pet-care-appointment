@@ -19,6 +19,7 @@ public class UrlMapping {
     public static final String LOCK_USER_ACCOUNT = "/account/{userId}/lock-user-account";
     public static final String UNLOCK_USER_ACCOUNT = "/account/{userId}/unLock-user-account";
     public static final String GET_PHOTO_BY_USER_ID = "/user/{userId}/photo";
+    public static final String CHANGE_PASSWORD = "/user/{userId}/change-password";
     /*========================= End User API ================================*/
 
     /*========================== Start Appointment API =================================*/
@@ -69,10 +70,6 @@ public class UrlMapping {
     public static final String AGGREGATE_VETERINARIANS_BY_SPECIALIZATION = "/vet/get-by-specialization";
     public static final String GET_AVAILABLE_TIME_FOR_BOOK_APPOINTMENT = "/{vetId}/available-times";
     /*============================ End Veterinarian API ===================================*/
-
-    /*============================ Start Change Password API ===================================*/
-    public static final String CHANGE_PASSWORD = "/user/{userId}/change-password";
-    /*============================ End Change Password API ===================================*/
 
     /*============================ Start Patient ===================================*/
     public static final String PATIENTS = API + "/patients";
