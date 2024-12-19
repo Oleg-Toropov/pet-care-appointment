@@ -59,10 +59,7 @@ public class UrlMapping {
     /*============================ Start Review API ===================================*/
     public static final String REVIEWS = API + "/reviews";
     public static final String SUBMIT_REVIEW = "/submit-review";
-    public static final String GET_USER_REVIEWS = "/user/{userId}/reviews";
-    public static final String UPDATE_REVIEW = "/review/{reviewId}/update";
     public static final String DELETE_REVIEW = "/review/{reviewId}/delete";
-    public static final String GET_AVERAGE_RATING = "/vet/{vetId}/get-average-rating";
     /*============================ End Review API ===================================*/
 
     /*============================ Start Veterinarian API ===================================*/

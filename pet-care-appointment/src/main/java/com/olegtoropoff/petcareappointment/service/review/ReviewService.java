@@ -8,7 +8,6 @@ import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
-import com.olegtoropoff.petcareappointment.request.ReviewUpdateRequest;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,16 +53,6 @@ public class ReviewService implements IReviewService {
         review.setPatient(patient);
 
         return reviewRepository.save(review);
-    }
-
-    @Override
-    public Review updateReview(Long reviewId, ReviewUpdateRequest review) {
-        return reviewRepository.findById(reviewId)
-                .map(existingReview -> {
-                    existingReview.setStars(review.getStars());
-                    existingReview.setFeedback(review.getFeedback());
-                    return reviewRepository.save(existingReview);
-                }).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.REVIEW_NOT_FOUND));
     }
 
     @Override

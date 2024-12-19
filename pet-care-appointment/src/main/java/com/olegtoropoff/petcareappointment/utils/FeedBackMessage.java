@@ -53,14 +53,12 @@ public class FeedBackMessage {
 
     /*======================== Start Review API =====================================*/
     public static final String REVIEW_NOT_ALLOWED = "Извините, оставить отзыв могут только пациенты, у которых была завершенная запись с этим ветеринаром";
-    public static final String ALREADY_REVIEWED = "Вы уже оставили отзыв этому ветеринару, вы можете редактировать предыдущий отзыв";
+    public static final String ALREADY_REVIEWED = "Вы уже оставили отзыв этому ветеринару, вы можете удалить предыдущий отзыв и написать новый";
     public static final String CANNOT_REVIEW = "Ветеринары не могут оставлять отзывы о себе";
     public static final String VET_OR_PATIENT_NOT_FOUND = "Ветеринар или пациент не найдены";
     public static final String NO_VETS_AVAILABLE = "По выбранной специальности на указанную дату и время нет доступных ветеринаров";
     public static final String REVIEW_SUBMIT_SUCCESS = "Отзыв успешно отправлен";
-    public static final String REVIEW_UPDATE_SUCCESS = "Отзыв успешно обновлен";
     public static final String REVIEW_DELETE_SUCCESS = "Отзыв успешно удален";
-    public static final String REVIEW_FOUND = "Отзыв(ы) найден(ы)";
     public static final String REVIEW_NOT_FOUND = "Отзыв(ы) не найден(ы)";
     /*======================== End Review API =====================================*/
 
