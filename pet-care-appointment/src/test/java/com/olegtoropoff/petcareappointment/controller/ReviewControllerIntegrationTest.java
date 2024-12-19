@@ -39,7 +39,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post("/api/v1/reviews/submit-review")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken())
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
                         .param("veterinarianId", "7")
@@ -55,7 +55,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post("/api/v1/reviews/submit-review")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken())
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "7")
                         .param("veterinarianId", "7")
@@ -72,7 +72,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post("/api/v1/reviews/submit-review")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken())
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
                         .param("veterinarianId", "8")
@@ -89,7 +89,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post("/api/v1/reviews/submit-review")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken())
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "100")
                         .param("veterinarianId", "8")
@@ -106,7 +106,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post("/api/v1/reviews/submit-review")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken())
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
                         .param("veterinarianId", "11")
@@ -119,7 +119,7 @@ class ReviewControllerIntegrationTest {
     @Test
     void deleteReview_ReturnsSuccess() throws Exception {
         mockMvc.perform(delete("/api/v1/reviews/review/4/delete")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken()))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Отзыв успешно удален"));
     }
@@ -127,7 +127,7 @@ class ReviewControllerIntegrationTest {
     @Test
     void deleteReview_ThrowsResourceNotFoundException() throws Exception {
         mockMvc.perform(delete("/api/v1/reviews/review/100/delete")
-                        .header("Authorization", jwtTestUtils.generateDefaultToken()))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Отзыв(ы) не найден(ы)"));
     }

@@ -36,7 +36,7 @@ public class JwtTestUtils {
                 .compact();
     }
 
-    public String generateDefaultToken() {
-        return generateToken("alexey@gmail.com", 2L, List.of("ROLE_PATIENT"));
+    public String generateDefaultToken(Long userId, String role) {
+        return generateToken("alexey@gmail.com", userId, List.of(role));
     }
 }

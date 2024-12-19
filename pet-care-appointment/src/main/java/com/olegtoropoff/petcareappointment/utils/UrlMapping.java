@@ -28,9 +28,8 @@ public class UrlMapping {
     public static final String ADD_PET_APPOINTMENT = "/appointment/{id}/add-pet";
     public static final String ALL_APPOINTMENT = "/all";
     public static final String GET_APPOINTMENT_BY_ID = "/appointment/{id}/fetch/appointment";
-    public static final String GET_APPOINTMENT_BY_NO = "/appointment/{appointmentNo}/appointment";
     public static final String DELETE_APPOINTMENT = "/appointment/{id}/delete";
-    public static final String CANCEL_APPOINTMENT = "appointment/{id}/cancel";
+    public static final String CANCEL_APPOINTMENT = "/appointment/{id}/cancel";
     public static final String APPROVE_APPOINTMENT = "/appointment/{id}/approve";
     public static final String DECLINE_APPOINTMENT = "/appointment/{id}/decline";
     public static final String COUNT_APPOINTMENT = "/count/appointments";

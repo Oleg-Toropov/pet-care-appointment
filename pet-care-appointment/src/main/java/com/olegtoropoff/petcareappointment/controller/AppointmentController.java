@@ -106,18 +106,6 @@ public class AppointmentController {
         }
     }
 
-    @GetMapping(UrlMapping.GET_APPOINTMENT_BY_NO)
-    public ResponseEntity<ApiResponse> getAppointmentByNo(@PathVariable String appointmentNo) {
-        try {
-            Appointment appointment = appointmentService.getAppointmentByNo(appointmentNo);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_FOUND, appointment));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
-        }
-    }
-
     @DeleteMapping(UrlMapping.DELETE_APPOINTMENT)
     public ResponseEntity<ApiResponse> deleteAppointmentById(@PathVariable Long id) {
         try {

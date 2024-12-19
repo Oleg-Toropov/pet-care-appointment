@@ -12,10 +12,8 @@ import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    Optional<Appointment> findByAppointmentNo(String appointmentNo);
 
     @Query("SELECT a FROM Appointment a WHERE a.patient.id =:userId OR a.veterinarian.id =:userId")
     List<Appointment> findAllByUserId(@Param("userId") Long userId);

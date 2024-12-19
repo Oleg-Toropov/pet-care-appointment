@@ -117,12 +117,6 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Appointment getAppointmentByNo(String appointmentNo) {
-        return appointmentRepository.findByAppointmentNo(appointmentNo)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.APPOINTMENT_NOT_FOUND));
-    }
-
-    @Override
     public void deleteAppointment(Long id) {
         appointmentRepository.findById(id)
                 .ifPresentOrElse(appointmentRepository::delete, () -> {
