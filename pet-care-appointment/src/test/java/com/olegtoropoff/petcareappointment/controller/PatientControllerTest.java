@@ -51,7 +51,7 @@ public class PatientControllerTest {
         ResponseEntity<ApiResponse> response = patientController.getAllPatients();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Ресурс найден", Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
         assertEquals(patients, response.getBody().getData());
     }
 
