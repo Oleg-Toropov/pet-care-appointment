@@ -28,8 +28,6 @@ public class PhotoController {
         try {
             Long id = photoService.savePhoto(file, userId);
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PHOTO_UPDATE_SUCCESS, id));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (IOException | SQLException e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
         }
