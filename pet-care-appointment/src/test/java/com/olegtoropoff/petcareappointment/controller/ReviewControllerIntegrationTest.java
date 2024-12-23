@@ -41,7 +41,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com", 2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
                         .param("veterinarianId", "7")
@@ -57,7 +57,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com",2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "7")
                         .param("veterinarianId", "7")
@@ -74,7 +74,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com",2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
                         .param("veterinarianId", "8")
@@ -91,7 +91,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com",2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "100")
                         .param("veterinarianId", "8")
@@ -108,7 +108,7 @@ class ReviewControllerIntegrationTest {
         review.setFeedback("Great service!");
 
         mockMvc.perform(post(REVIEWS + SUBMIT_REVIEW)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT"))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com",2L, "ROLE_PATIENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("reviewerId", "2")
                         .param("veterinarianId", "11")
@@ -121,7 +121,7 @@ class ReviewControllerIntegrationTest {
     @Test
     void deleteReview_ReturnsSuccess() throws Exception {
         mockMvc.perform(delete(REVIEWS + DELETE_REVIEW, 4L)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com",2L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.REVIEW_DELETE_SUCCESS));
     }
@@ -129,7 +129,7 @@ class ReviewControllerIntegrationTest {
     @Test
     void deleteReview_ThrowsResourceNotFoundException() throws Exception {
         mockMvc.perform(delete(REVIEWS + DELETE_REVIEW, 100L)
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com",2L, "ROLE_PATIENT")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.REVIEW_NOT_FOUND));
     }

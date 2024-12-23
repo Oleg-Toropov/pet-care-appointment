@@ -20,7 +20,7 @@ VALUES ('Алексей', 'Петров', 'Male', '89121234567', 'alexey@gmail.c
        ('Игорь', 'Кузнецов', 'Male', '89122222222', 'igor@gmail.com',
         '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', TRUE, '2024-01-04'),
        ('Ольга', 'Иванова', 'Female', '89123333333', 'olga@gmail.com',
-        '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', TRUE, '2024-01-05'),
+        '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', FALSE, '2024-01-05'),
        ('Анна', 'Смирнова', 'Female', '89124444444', 'anna@gmail.com',
         '$2a$10$DkRHrrjcLKSz8biLdUGBjO8EUdJ9r9.kkgj6hgFZbGltQuhicA8KW', 'PATIENT', FALSE, '2024-01-06');
 

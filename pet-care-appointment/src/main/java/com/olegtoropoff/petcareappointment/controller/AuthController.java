@@ -81,7 +81,7 @@ public class AuthController {
             rabbitMQProducer.sendMessage("RegistrationCompleteEvent:" + verificationToken.getUser().getId());
             return ResponseEntity.ok(new ApiResponse(FeedBackMessage.NEW_VERIFICATION_TOKEN_SENT, null));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.internalServerError().body(new ApiResponse(e.getMessage(), null));
         }
     }
 

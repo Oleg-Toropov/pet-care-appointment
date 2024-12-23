@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class JwtTestUtils {
                 .compact();
     }
 
-    public String generateDefaultToken(Long userId, String role) {
-        return generateToken("alexey@gmail.com", userId, List.of(role));
+    public String generateDefaultToken(String username, Long userId, String role) {
+        return generateToken(username, userId, List.of(role));
     }
 }

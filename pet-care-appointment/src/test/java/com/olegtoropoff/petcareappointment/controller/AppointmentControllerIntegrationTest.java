@@ -68,7 +68,7 @@ class AppointmentControllerIntegrationTest {
                         .param("senderId", "5")
                         .param("recipientId", "9")
                         .content(objectMapper.writeValueAsString(request))
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(3L, "ROLE_PATIENT")))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("maria@gmail.com", 3L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS)))
                 .andExpect(jsonPath("$.data").isNotEmpty());
@@ -94,7 +94,7 @@ class AppointmentControllerIntegrationTest {
                         .param("senderId", "3")
                         .param("recipientId", "100")
                         .content(objectMapper.writeValueAsString(request))
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(3L, "ROLE_PATIENT")))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("maria@gmail.com", 3L, "ROLE_PATIENT")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is(FeedBackMessage.SENDER_RECIPIENT_NOT_FOUND)))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -120,7 +120,7 @@ class AppointmentControllerIntegrationTest {
                         .param("senderId", "2")
                         .param("recipientId", "7")
                         .content(objectMapper.writeValueAsString(request))
-                        .header("Authorization", jwtTestUtils.generateDefaultToken(2L, "ROLE_PATIENT")))
+                        .header("Authorization", jwtTestUtils.generateDefaultToken("alexey@gmail.com", 2L, "ROLE_PATIENT")))
                 .andExpect(status().isNotAcceptable())
                 .andExpect(jsonPath("$.message", is(FeedBackMessage.TOO_MANY_ACTIVE_APPOINTMENTS)))
                 .andExpect(jsonPath("$.data").isEmpty());
