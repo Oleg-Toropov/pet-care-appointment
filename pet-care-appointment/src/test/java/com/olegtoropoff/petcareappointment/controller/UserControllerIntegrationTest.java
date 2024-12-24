@@ -1,12 +1,14 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.config.TestConfig;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -19,17 +21,19 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Tag("integration")
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Sql(scripts = "/clean_database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "/test_pet_care_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Import(TestConfig.class)
 public class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private RabbitMQProducer rabbitMQProducer;
 
     @Test
@@ -138,7 +142,7 @@ public class UserControllerIntegrationTest {
                     "email": "test@gmail.com",
                     "password": "TestPassword123",
                     "userType": "VET",
-                    "specialization": "Хирург" 
+                    "specialization": "Хирург"
                 }
                 """;
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
@@ -167,7 +171,7 @@ public class UserControllerIntegrationTest {
                     "email": "dmitry@gmail.com",
                     "password": "TestPassword123",
                     "userType": "VET",
-                    "specialization": "Хирург" 
+                    "specialization": "Хирург"
                 }
                 """;
         mockMvc.perform(post(USERS + REGISTER_USER)
@@ -189,7 +193,7 @@ public class UserControllerIntegrationTest {
                     "email": "test@gmail.com",
                     "password": "TestPassword",
                     "userType": "VET",
-                    "specialization": "Хирург" 
+                    "specialization": "Хирург"
                 }
                 """;
         mockMvc.perform(post(USERS + REGISTER_USER)

@@ -1,26 +1,25 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.olegtoropoff.petcareappointment.config.TestConfig;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
-import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.repository.VerificationTokenRepository;
 import com.olegtoropoff.petcareappointment.request.LoginRequest;
 import com.olegtoropoff.petcareappointment.request.PasswordResetRequest;
-import com.olegtoropoff.petcareappointment.service.password.IPasswordResetService;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.service.user.UserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.JwtTestUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,12 +37,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Tag("integration")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Sql(scripts = "/clean_database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "/test_pet_care_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Import(TestConfig.class)
 class AuthControllerIntegrationTest {
 
     @Autowired
@@ -64,7 +65,7 @@ class AuthControllerIntegrationTest {
     @Autowired
     private UserService userService;
 
-    @MockBean
+    @Autowired
     private RabbitMQProducer rabbitMQProducer;
 
     @Test

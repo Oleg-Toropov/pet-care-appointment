@@ -3,6 +3,7 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.model.Role;
 import com.olegtoropoff.petcareappointment.service.role.IRoleService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@Tag("unit")
 class RoleControllerTest {
 
     @InjectMocks

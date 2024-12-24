@@ -7,13 +7,13 @@ import com.olegtoropoff.petcareappointment.response.ApiResponse;
 import com.olegtoropoff.petcareappointment.service.pet.IPetService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
-
+@Tag("unit")
 class PetControllerTest {
     @InjectMocks
     private PetController petController;
@@ -50,7 +50,7 @@ class PetControllerTest {
     }
 
     @Test
-    public void savePets_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() throws SQLException {
+    public void savePets_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
         List<Pet> petsToSave = Arrays.asList(new Pet(), new Pet());
         when(petService.savePetForAppointment(petsToSave)).thenThrow(new RuntimeException());
 
@@ -87,7 +87,7 @@ class PetControllerTest {
     }
 
     @Test
-    public void getPetById_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() throws SQLException {
+    public void getPetById_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
         when(petService.getPetById(1L)).thenThrow(new RuntimeException());
 
         ResponseEntity<ApiResponse> response = petController.getPetById(1L);
