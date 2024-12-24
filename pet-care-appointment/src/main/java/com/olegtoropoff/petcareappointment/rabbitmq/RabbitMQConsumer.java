@@ -1,11 +1,9 @@
 package com.olegtoropoff.petcareappointment.rabbitmq;
 
 import com.olegtoropoff.petcareappointment.email.EmailService;
-import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.model.Veterinarian;
-import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentService;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
@@ -23,7 +21,6 @@ public class RabbitMQConsumer {
     private final IUserService userService;
     private final IVerificationTokenService tokenService;
     private final EmailService emailService;
-    private final IAppointmentService appointmentService;
 
     @Value("${frontend.base.url}")
     private String frontendBaseUrl;

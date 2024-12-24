@@ -2,7 +2,6 @@ package com.olegtoropoff.petcareappointment.service.appointment;
 
 import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
 import com.olegtoropoff.petcareappointment.dto.EntityConverter;
-import com.olegtoropoff.petcareappointment.dto.PetDto;
 import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
@@ -37,7 +36,6 @@ public class AppointmentService implements IAppointmentService {
     private final UserRepository userRepository;
     private final IPetService petService;
     private final EntityConverter<Appointment, AppointmentDto> entityConverter;
-    private final EntityConverter<Pet, PetDto> petEntityConverter;
     private final ModelMapper modelMapper;
 
     @Transactional
@@ -128,13 +126,7 @@ public class AppointmentService implements IAppointmentService {
     public List<AppointmentDto> getUserAppointments(Long userId) {
         List<Appointment> appointments = appointmentRepository.findAllByUserId(userId);
         return appointments.stream()
-                .map(appointment -> {
-                    AppointmentDto appointmentDto = entityConverter.mapEntityToDto(appointment, AppointmentDto.class);
-                    List<PetDto> petDtos = appointment.getPets().stream()
-                            .map(pet -> petEntityConverter.mapEntityToDto(pet, PetDto.class)).toList();
-                    appointmentDto.setPets(petDtos);
-                    return appointmentDto;
-                }).toList();
+                .map(appointment -> entityConverter.mapEntityToDto(appointment, AppointmentDto.class)).toList();
     }
 
     @Override
