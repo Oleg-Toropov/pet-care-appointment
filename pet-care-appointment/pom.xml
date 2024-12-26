@@ -37,14 +37,22 @@
         <xmlunit-core.version>2.10.0</xmlunit-core.version>
         <amqp.version>3.3.5</amqp.version>
         <h2database.version>2.3.232</h2database.version>
+        <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
         <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M8</maven-failsafe-plugin.version>
+        <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.5.15</version>
         </dependency>
 
         <dependency>
@@ -137,6 +145,12 @@
             <version>${amqp.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -179,6 +193,15 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <source>17</source>
                 </configuration>
             </plugin>
         </plugins>
