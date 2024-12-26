@@ -38,6 +38,8 @@
         <amqp.version>3.3.5</amqp.version>
         <h2database.version>2.3.232</h2database.version>
         <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
+        <logback-core.version>1.5.15</logback-core.version>
+        <logback-classic.version>1.5.15</logback-classic.version>
         <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M8</maven-failsafe-plugin.version>
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
@@ -47,12 +49,28 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.15</version>
+            <version>${logback-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
         </dependency>
 
         <dependency>
