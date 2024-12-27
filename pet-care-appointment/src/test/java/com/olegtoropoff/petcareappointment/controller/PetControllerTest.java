@@ -3,7 +3,7 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Pet;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.pet.IPetService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class PetControllerTest {
         List<Pet> petsToSave = Arrays.asList(new Pet(), new Pet());
         when(petService.savePetForAppointment(petsToSave)).thenReturn(petsToSave);
 
-        ResponseEntity<ApiResponse> response = petController.savePets(petsToSave);
+        ResponseEntity<CustomApiResponse> response = petController.savePets(petsToSave);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_ADDED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -54,7 +54,7 @@ class PetControllerTest {
         List<Pet> petsToSave = Arrays.asList(new Pet(), new Pet());
         when(petService.savePetForAppointment(petsToSave)).thenThrow(new RuntimeException());
 
-        ResponseEntity<ApiResponse> response = petController.savePets(petsToSave);
+        ResponseEntity<CustomApiResponse> response = petController.savePets(petsToSave);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -67,7 +67,7 @@ class PetControllerTest {
         pet1.setId(1L);
         when(petService.getPetById(1L)).thenReturn(pet1);
 
-        ResponseEntity<ApiResponse> response = petController.getPetById(1L);
+        ResponseEntity<CustomApiResponse> response = petController.getPetById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -79,7 +79,7 @@ class PetControllerTest {
     void getPetById_WhenPetNotFound_ReturnsStatusNotFound() {
         when(petService.getPetById(100L)).thenThrow(new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
 
-        ResponseEntity<ApiResponse> response = petController.getPetById(100L);
+        ResponseEntity<CustomApiResponse> response = petController.getPetById(100L);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -90,7 +90,7 @@ class PetControllerTest {
     public void getPetById_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
         when(petService.getPetById(1L)).thenThrow(new RuntimeException());
 
-        ResponseEntity<ApiResponse> response = petController.getPetById(1L);
+        ResponseEntity<CustomApiResponse> response = petController.getPetById(1L);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -101,7 +101,7 @@ class PetControllerTest {
     void deletePetById_WhenValidPetId_ReturnsSuccess() {
         doNothing().when(petService).deletePet(1L);
 
-        ResponseEntity<ApiResponse> response = petController.deletePetById(1L);
+        ResponseEntity<CustomApiResponse> response = petController.deletePetById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_DELETE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -113,7 +113,7 @@ class PetControllerTest {
     void deletePetById_WhenPetNotFound_ReturnsStatusNotFound() {
         doThrow(new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND)).when(petService).deletePet(100L);
 
-        ResponseEntity<ApiResponse> response = petController.deletePetById(100L);
+        ResponseEntity<CustomApiResponse> response = petController.deletePetById(100L);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -126,7 +126,7 @@ class PetControllerTest {
         doThrow(new PetDeletionNotAllowedException(FeedBackMessage.NOT_ALLOWED_TO_DELETE_LAST_PET))
                 .when(petService).deletePet(1L);
 
-        ResponseEntity<ApiResponse> response = petController.deletePetById(1L);
+        ResponseEntity<CustomApiResponse> response = petController.deletePetById(1L);
 
         assertEquals(CONFLICT, response.getStatusCode());
         assertEquals(FeedBackMessage.NOT_ALLOWED_TO_DELETE_LAST_PET, Objects.requireNonNull(response.getBody()).getMessage());
@@ -137,7 +137,7 @@ class PetControllerTest {
     void deletePetById_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
         doThrow(new RuntimeException(FeedBackMessage.ERROR)).when(petService).deletePet(1L);
 
-        ResponseEntity<ApiResponse> response = petController.deletePetById(1L);
+        ResponseEntity<CustomApiResponse> response = petController.deletePetById(1L);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -150,7 +150,7 @@ class PetControllerTest {
         updatePet.setName("Мурка");
         when(petService.updatePet(updatePet, 1L)).thenReturn(updatePet);
 
-        ResponseEntity<ApiResponse> response = petController.updatePetById(1L, updatePet);
+        ResponseEntity<CustomApiResponse> response = petController.updatePetById(1L, updatePet);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -163,7 +163,7 @@ class PetControllerTest {
         Pet updatePet = new Pet();
         when(petService.updatePet(updatePet, 100L)).thenThrow(new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
 
-        ResponseEntity<ApiResponse> response = petController.updatePetById(100L, updatePet);
+        ResponseEntity<CustomApiResponse> response = petController.updatePetById(100L, updatePet);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -175,7 +175,7 @@ class PetControllerTest {
         Pet updatePet = new Pet();
         when(petService.updatePet(updatePet, 1L)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = petController.updatePetById(1L, updatePet);
+        ResponseEntity<CustomApiResponse> response = petController.updatePetById(1L, updatePet);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -187,7 +187,7 @@ class PetControllerTest {
         List<String> petTypes = Arrays.asList("Cat", "Dog", "Parrot");
         when(petService.getPetTypes()).thenReturn(petTypes);
 
-        ResponseEntity<ApiResponse> response = petController.getAllPetTypes();
+        ResponseEntity<CustomApiResponse> response = petController.getAllPetTypes();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -198,7 +198,7 @@ class PetControllerTest {
     void getAllPetTypes_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
         when(petService.getPetTypes()).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = petController.getAllPetTypes();
+        ResponseEntity<CustomApiResponse> response = petController.getAllPetTypes();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -211,7 +211,7 @@ class PetControllerTest {
         List<String> colors = Arrays.asList("Black", "White", "Brown");
         when(petService.getPetColors()).thenReturn(colors);
 
-        ResponseEntity<ApiResponse> response = petController.getAllPetColors();
+        ResponseEntity<CustomApiResponse> response = petController.getAllPetColors();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -223,7 +223,7 @@ class PetControllerTest {
     void getAllPetColors_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
         when(petService.getPetColors()).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = petController.getAllPetColors();
+        ResponseEntity<CustomApiResponse> response = petController.getAllPetColors();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -236,7 +236,7 @@ class PetControllerTest {
         List<String> dogBreeds = Arrays.asList("Labrador", "Beagle");
         when(petService.getPetBreeds(petType)).thenReturn(dogBreeds);
 
-        ResponseEntity<ApiResponse> response = petController.getAllPetBreeds(petType);
+        ResponseEntity<CustomApiResponse> response = petController.getAllPetBreeds(petType);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -249,7 +249,7 @@ class PetControllerTest {
         String petType = "Cat";
         when(petService.getPetBreeds(petType)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = petController.getAllPetBreeds(petType);
+        ResponseEntity<CustomApiResponse> response = petController.getAllPetBreeds(petType);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());

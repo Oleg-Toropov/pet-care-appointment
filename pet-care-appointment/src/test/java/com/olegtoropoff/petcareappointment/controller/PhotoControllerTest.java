@@ -2,7 +2,7 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Photo;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.photo.IPhotoService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +45,7 @@ public class PhotoControllerTest {
         Long savedPhotoId = 2L;
         when(photoService.savePhoto(fileMock, userId)).thenReturn(savedPhotoId);
 
-        ResponseEntity<ApiResponse> response = photoController.savePhoto(fileMock, userId);
+        ResponseEntity<CustomApiResponse> response = photoController.savePhoto(fileMock, userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PHOTO_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -58,7 +58,7 @@ public class PhotoControllerTest {
         Long userId = 2L;
         when(photoService.savePhoto(fileMock, userId)).thenThrow(new IOException());
 
-        ResponseEntity<ApiResponse> response = photoController.savePhoto(fileMock, userId);
+        ResponseEntity<CustomApiResponse> response = photoController.savePhoto(fileMock, userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -77,7 +77,7 @@ public class PhotoControllerTest {
         when(photoService.getPhotoById(photoId)).thenReturn(photo);
         when(photoService.getImageData(photoId)).thenReturn(bytes);
 
-        ResponseEntity<ApiResponse> response = photoController.getPhotoById(photoId);
+        ResponseEntity<CustomApiResponse> response = photoController.getPhotoById(photoId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -91,7 +91,7 @@ public class PhotoControllerTest {
         Long photoId = 100L;
         when(photoService.getPhotoById(photoId)).thenThrow(new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
 
-        ResponseEntity<ApiResponse> response = photoController.getPhotoById(photoId);
+        ResponseEntity<CustomApiResponse> response = photoController.getPhotoById(photoId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -104,7 +104,7 @@ public class PhotoControllerTest {
         Long photoId = 2L;
         when(photoService.getPhotoById(photoId)).thenThrow(new RuntimeException());
 
-        ResponseEntity<ApiResponse> response = photoController.getPhotoById(photoId);
+        ResponseEntity<CustomApiResponse> response = photoController.getPhotoById(photoId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -119,7 +119,7 @@ public class PhotoControllerTest {
         Long deletedPhotoId = 10L;
         when(photoService.deletePhoto(photoId, userId)).thenReturn(deletedPhotoId);
 
-        ResponseEntity<ApiResponse> response = photoController.deletePhoto(photoId, userId);
+        ResponseEntity<CustomApiResponse> response = photoController.deletePhoto(photoId, userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PHOTO_REMOVE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -133,7 +133,7 @@ public class PhotoControllerTest {
         Long userId = 5L;
         when(photoService.deletePhoto(photoId, userId)).thenThrow(new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
 
-        ResponseEntity<ApiResponse> response = photoController.deletePhoto(photoId, userId);
+        ResponseEntity<CustomApiResponse> response = photoController.deletePhoto(photoId, userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -147,7 +147,7 @@ public class PhotoControllerTest {
         Long userId = 5L;
         when(photoService.deletePhoto(photoId, userId)).thenThrow(new SQLException("SQL Error"));
 
-        ResponseEntity<ApiResponse> response = photoController.deletePhoto(photoId, userId);
+        ResponseEntity<CustomApiResponse> response = photoController.deletePhoto(photoId, userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -161,7 +161,7 @@ public class PhotoControllerTest {
         Long userId = 5L;
         when(photoService.deletePhoto(photoId, userId)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = photoController.deletePhoto(photoId, userId);
+        ResponseEntity<CustomApiResponse> response = photoController.deletePhoto(photoId, userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -175,7 +175,7 @@ public class PhotoControllerTest {
         Long updatedPhotoId = 3L;
         when(photoService.updatePhoto(photoId, fileMock)).thenReturn(updatedPhotoId);
 
-        ResponseEntity<ApiResponse> response = photoController.updatePhoto(photoId, fileMock);
+        ResponseEntity<CustomApiResponse> response = photoController.updatePhoto(photoId, fileMock);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PHOTO_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -188,7 +188,7 @@ public class PhotoControllerTest {
         Long photoId = 10L;
         when(photoService.updatePhoto(photoId, fileMock)).thenThrow(new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
 
-        ResponseEntity<ApiResponse> response = photoController.updatePhoto(photoId, fileMock);
+        ResponseEntity<CustomApiResponse> response = photoController.updatePhoto(photoId, fileMock);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -201,7 +201,7 @@ public class PhotoControllerTest {
         Long photoId = 10L;
         when(photoService.updatePhoto(photoId, fileMock)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = photoController.updatePhoto(photoId, fileMock);
+        ResponseEntity<CustomApiResponse> response = photoController.updatePhoto(photoId, fileMock);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());

@@ -9,7 +9,7 @@ import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.password.IChangePasswordService;
 import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
@@ -34,82 +34,82 @@ public class UserController {
     private final RabbitMQProducer rabbitMQProducer;
 
     @PostMapping(UrlMapping.REGISTER_USER)
-    public ResponseEntity<ApiResponse> register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<CustomApiResponse> register(@RequestBody RegistrationRequest request) {
         try {
             User user = userService.register(request);
             rabbitMQProducer.sendMessage("RegistrationCompleteEvent:" + user.getId());
             UserDto registeredUserDto = entityConverter.mapEntityToDto(user, UserDto.class);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.CREATE_USER_SUCCESS, registeredUserDto));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.CREATE_USER_SUCCESS, registeredUserDto));
         } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(CONFLICT).body(new CustomApiResponse(e.getMessage(), null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(BAD_REQUEST).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.UPDATE_USER)
-    public ResponseEntity<ApiResponse> update(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<CustomApiResponse> update(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
         try {
             User user = userService.update(userId, request);
             UserDto updatedUserDto = entityConverter.mapEntityToDto(user, UserDto.class);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.USER_UPDATE_SUCCESS, updatedUserDto));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.USER_UPDATE_SUCCESS, updatedUserDto));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(BAD_REQUEST).body(new CustomApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.GET_ALL_USERS)
-    public ResponseEntity<ApiResponse> getAllUsers() {
+    public ResponseEntity<CustomApiResponse> getAllUsers() {
         try {
             List<UserDto> usersDto = userService.getAllUsers();
-            return ResponseEntity.status(FOUND).body(new ApiResponse(FeedBackMessage.USERS_FOUND, usersDto));
+            return ResponseEntity.status(FOUND).body(new CustomApiResponse(FeedBackMessage.USERS_FOUND, usersDto));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.GET_USER_BY_ID)
-    public ResponseEntity<ApiResponse> getById(@PathVariable Long userId) {
+    public ResponseEntity<CustomApiResponse> getById(@PathVariable Long userId) {
         try {
             UserDto userDto = userService.getUserWithDetails(userId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.USER_FOUND, userDto));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.USER_FOUND, userDto));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @DeleteMapping(UrlMapping.DELETE_USER_BY_ID)
-    public ResponseEntity<ApiResponse> deleteById(@PathVariable Long userId) {
+    public ResponseEntity<CustomApiResponse> deleteById(@PathVariable Long userId) {
         try {
             userService.deleteById(userId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.DELETE_USER_SUCCESS, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.DELETE_USER_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.CHANGE_PASSWORD)
-    public ResponseEntity<ApiResponse> changePassword(@PathVariable Long userId,
-                                                      @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<CustomApiResponse> changePassword(@PathVariable Long userId,
+                                                            @RequestBody ChangePasswordRequest request) {
         try {
             changePasswordService.changePassword(userId, request);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PASSWORD_CHANGE_SUCCESS, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PASSWORD_CHANGE_SUCCESS, null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(BAD_REQUEST).body(new CustomApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
@@ -129,42 +129,42 @@ public class UserController {
     }
 
     @GetMapping(UrlMapping.AGGREGATE_USERS)
-    public ResponseEntity<ApiResponse> aggregateUserByMonthAndType() {
+    public ResponseEntity<CustomApiResponse> aggregateUserByMonthAndType() {
         try {
             Map<String, Map<String, Long>> aggregateUsers = userService.aggregateUsersByMonthAndType();
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, aggregateUsers));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, aggregateUsers));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.AGGREGATE_USERS_BY_STATUS)
-    public ResponseEntity<ApiResponse> getAggregateUsersByEnabledStatus() {
+    public ResponseEntity<CustomApiResponse> getAggregateUsersByEnabledStatus() {
         try {
             Map<String, Map<String, Long>> aggregateData = userService.aggregateUsersByEnabledStatusAndType();
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, aggregateData));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, aggregateData));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.LOCK_USER_ACCOUNT)
-    public ResponseEntity<ApiResponse> lockUserAccount(@PathVariable Long userId) {
+    public ResponseEntity<CustomApiResponse> lockUserAccount(@PathVariable Long userId) {
         try {
             userService.lockUserAccount(userId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.LOCKED_ACCOUNT_SUCCESS, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.LOCKED_ACCOUNT_SUCCESS, null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.UNLOCK_USER_ACCOUNT)
-    public ResponseEntity<ApiResponse> unLockUserAccount(@PathVariable Long userId) {
+    public ResponseEntity<CustomApiResponse> unLockUserAccount(@PathVariable Long userId) {
         try {
             userService.unLockUserAccount(userId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS, null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 

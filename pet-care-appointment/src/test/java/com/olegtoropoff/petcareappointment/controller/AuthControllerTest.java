@@ -6,7 +6,7 @@ import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.LoginRequest;
 import com.olegtoropoff.petcareappointment.request.PasswordResetRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.response.JwtResponse;
 import com.olegtoropoff.petcareappointment.security.jwt.JwtUtils;
 import com.olegtoropoff.petcareappointment.security.user.UPCUserDetails;
@@ -88,7 +88,7 @@ class AuthControllerTest {
         when(authenticationManager.authenticate(any())).thenReturn(mockAuth);
         when(jwtUtils.generateTokenForUser(mockAuth)).thenReturn("jwt-token-value");
 
-        ResponseEntity<ApiResponse> response = authController.login(loginRequest);
+        ResponseEntity<CustomApiResponse> response = authController.login(loginRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -109,7 +109,7 @@ class AuthControllerTest {
         when(authenticationManager.authenticate(any()))
                 .thenThrow(new DisabledException("Account disabled"));
 
-        ResponseEntity<ApiResponse> response = authController.login(loginRequest);
+        ResponseEntity<CustomApiResponse> response = authController.login(loginRequest);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals(FeedBackMessage.ACCOUNT_DISABLED, Objects.requireNonNull(response.getBody()).getMessage());
@@ -121,7 +121,7 @@ class AuthControllerTest {
         when(authenticationManager.authenticate(any()))
                 .thenThrow(new BadCredentialsException("Bad credentials"));
 
-        ResponseEntity<ApiResponse> response = authController.login(loginRequest);
+        ResponseEntity<CustomApiResponse> response = authController.login(loginRequest);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Bad credentials", Objects.requireNonNull(response.getBody()).getMessage());
@@ -132,7 +132,7 @@ class AuthControllerTest {
     void verifyEmail_WhenValidToken_ReturnsVALID() {
         when(tokenService.validateToken("token-123")).thenReturn("VALID");
 
-        ResponseEntity<ApiResponse> response = authController.verifyEmail("token-123");
+        ResponseEntity<CustomApiResponse> response = authController.verifyEmail("token-123");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.VALID_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -143,7 +143,7 @@ class AuthControllerTest {
     void verifyEmail_WhenAlreadyVerified_ReturnsTOKEN_ALREADY_VERIFIED() {
         when(tokenService.validateToken("token-123")).thenReturn("VERIFIED");
 
-        ResponseEntity<ApiResponse> response = authController.verifyEmail("token-123");
+        ResponseEntity<CustomApiResponse> response = authController.verifyEmail("token-123");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.TOKEN_ALREADY_VERIFIED, Objects.requireNonNull(response.getBody()).getMessage());
@@ -154,7 +154,7 @@ class AuthControllerTest {
     void verifyEmail_WhenExpiredToken_Returns410() {
         when(tokenService.validateToken("token-123")).thenReturn("EXPIRED");
 
-        ResponseEntity<ApiResponse> response = authController.verifyEmail("token-123");
+        ResponseEntity<CustomApiResponse> response = authController.verifyEmail("token-123");
 
         assertEquals(HttpStatus.GONE, response.getStatusCode());
         assertEquals(FeedBackMessage.EXPIRED_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -165,7 +165,7 @@ class AuthControllerTest {
     void verifyEmail_WhenInvalidToken_Returns410() {
         when(tokenService.validateToken("token-123")).thenReturn("INVALID");
 
-        ResponseEntity<ApiResponse> response = authController.verifyEmail("token-123");
+        ResponseEntity<CustomApiResponse> response = authController.verifyEmail("token-123");
 
         assertEquals(HttpStatus.GONE, response.getStatusCode());
         assertEquals(FeedBackMessage.INVALID_VERIFICATION_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -176,7 +176,7 @@ class AuthControllerTest {
     void verifyEmail_WhenUnknownError_Returns500() {
         when(tokenService.validateToken("token-123")).thenReturn("SOME_UNKNOWN_RESULT");
 
-        ResponseEntity<ApiResponse> response = authController.verifyEmail("token-123");
+        ResponseEntity<CustomApiResponse> response = authController.verifyEmail("token-123");
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -192,7 +192,7 @@ class AuthControllerTest {
         when(tokenService.generateNewVerificationToken("old-token")).thenReturn(mockToken);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        ResponseEntity<ApiResponse> response = authController.resendVerificationToken("old-token");
+        ResponseEntity<CustomApiResponse> response = authController.resendVerificationToken("old-token");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.NEW_VERIFICATION_TOKEN_SENT, Objects.requireNonNull(response.getBody()).getMessage());
@@ -205,7 +205,7 @@ class AuthControllerTest {
     void resendVerificationToken_WhenAnyOtherError_Returns500() {
         doThrow(new RuntimeException("DB error")).when(tokenService).generateNewVerificationToken("old-token");
 
-        ResponseEntity<ApiResponse> response = authController.resendVerificationToken("old-token");
+        ResponseEntity<CustomApiResponse> response = authController.resendVerificationToken("old-token");
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("DB error", Objects.requireNonNull(response.getBody()).getMessage());
@@ -219,7 +219,7 @@ class AuthControllerTest {
 
         doNothing().when(passwordResetService).requestPasswordReset("test@mail.com");
 
-        ResponseEntity<ApiResponse> response = authController.requestPasswordReset(request);
+        ResponseEntity<CustomApiResponse> response = authController.requestPasswordReset(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PASSWORD_RESET_EMAIL_SENT, Objects.requireNonNull(response.getBody()).getMessage());
@@ -233,7 +233,7 @@ class AuthControllerTest {
 
         doThrow(new ResourceNotFoundException("User not found")).when(passwordResetService).requestPasswordReset("test@mail.com");
 
-        ResponseEntity<ApiResponse> response = authController.requestPasswordReset(request);
+        ResponseEntity<CustomApiResponse> response = authController.requestPasswordReset(request);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("User not found", Objects.requireNonNull(response.getBody()).getMessage());
@@ -247,7 +247,7 @@ class AuthControllerTest {
 
         doThrow(new RuntimeException("DB error")).when(passwordResetService).requestPasswordReset("test@mail.com");
 
-        ResponseEntity<ApiResponse> response = authController.requestPasswordReset(req);
+        ResponseEntity<CustomApiResponse> response = authController.requestPasswordReset(req);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("DB error", Objects.requireNonNull(response.getBody()).getMessage());
@@ -262,7 +262,7 @@ class AuthControllerTest {
         when(passwordResetService.findUserByPasswordResetToken("reset-token", "NewPassword123")).thenReturn(user);
         when(passwordResetService.resetPassword("NewPassword123", user)).thenReturn(FeedBackMessage.PASSWORD_RESET_SUCCESS);
 
-        ResponseEntity<ApiResponse> response = authController.resetPassword(passwordResetRequest);
+        ResponseEntity<CustomApiResponse> response = authController.resetPassword(passwordResetRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PASSWORD_RESET_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -275,7 +275,7 @@ class AuthControllerTest {
         when(passwordResetService.findUserByPasswordResetToken("reset-token", "NewPassword123"))
                 .thenThrow(new IllegalArgumentException("Token invalid"));
 
-        ResponseEntity<ApiResponse> response = authController.resetPassword(passwordResetRequest);
+        ResponseEntity<CustomApiResponse> response = authController.resetPassword(passwordResetRequest);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Token invalid", Objects.requireNonNull(response.getBody()).getMessage());

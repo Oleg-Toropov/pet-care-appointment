@@ -9,7 +9,7 @@ import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.password.IChangePasswordService;
 import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
@@ -63,7 +63,7 @@ public class UserControllerTest {
         userDto.setLastName("Иванов");
         when(userService.getUserWithDetails(userId)).thenReturn(userDto);
 
-        ResponseEntity<ApiResponse> response = userController.getById(userId);
+        ResponseEntity<CustomApiResponse> response = userController.getById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.USER_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -76,7 +76,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.USER_NOT_FOUND;
         when(userService.getUserWithDetails(userId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.getById(userId);
+        ResponseEntity<CustomApiResponse> response = userController.getById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -88,7 +88,7 @@ public class UserControllerTest {
         Long userId = 4L;
         when(userService.getUserWithDetails(userId)).thenThrow(new RuntimeException());
 
-        ResponseEntity<ApiResponse> response = userController.getById(userId);
+        ResponseEntity<CustomApiResponse> response = userController.getById(userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -100,7 +100,7 @@ public class UserControllerTest {
         Long userId = 5L;
         doNothing().when(userService).deleteById(userId);
 
-        ResponseEntity<ApiResponse> response = userController.deleteById(userId);
+        ResponseEntity<CustomApiResponse> response = userController.deleteById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.DELETE_USER_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -113,7 +113,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.USER_NOT_FOUND;
         doThrow(new ResourceNotFoundException(errorMessage)).when(userService).deleteById(userId);
 
-        ResponseEntity<ApiResponse> response = userController.deleteById(userId);
+        ResponseEntity<CustomApiResponse> response = userController.deleteById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -125,7 +125,7 @@ public class UserControllerTest {
         Long userId = 5L;
         doThrow(new RuntimeException()).when(userService).deleteById(userId);
 
-        ResponseEntity<ApiResponse> response = userController.deleteById(userId);
+        ResponseEntity<CustomApiResponse> response = userController.deleteById(userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -159,7 +159,7 @@ public class UserControllerTest {
         when(userService.update(userId, updateRequest)).thenReturn(updatedUser);
         when(entityConverter.mapEntityToDto(updatedUser, UserDto.class)).thenReturn(updatedUserDto);
 
-        ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
+        ResponseEntity<CustomApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.USER_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -176,7 +176,7 @@ public class UserControllerTest {
         when(userService.update(userId, updateRequest))
                 .thenThrow(new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT));
 
-        ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
+        ResponseEntity<CustomApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(FeedBackMessage.INVALID_PHONE_FORMAT, Objects.requireNonNull(response.getBody()).getMessage());
@@ -193,7 +193,7 @@ public class UserControllerTest {
         when(userService.update(userId, updateRequest))
                 .thenThrow(new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
 
-        ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
+        ResponseEntity<CustomApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.USER_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -209,7 +209,7 @@ public class UserControllerTest {
         updateRequest.setPhoneNumber("89124000000");
         doThrow(new RuntimeException()).when(userService).update(userId, updateRequest);
 
-        ResponseEntity<ApiResponse> response = userController.update(userId, updateRequest);
+        ResponseEntity<CustomApiResponse> response = userController.update(userId, updateRequest);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -231,7 +231,7 @@ public class UserControllerTest {
         List<UserDto> usersDto = Arrays.asList(user1, user2);
         when(userService.getAllUsers()).thenReturn(usersDto);
 
-        ResponseEntity<ApiResponse> response = userController.getAllUsers();
+        ResponseEntity<CustomApiResponse> response = userController.getAllUsers();
 
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.USERS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -243,7 +243,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.ERROR;
         when(userService.getAllUsers()).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.getAllUsers();
+        ResponseEntity<CustomApiResponse> response = userController.getAllUsers();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -278,7 +278,7 @@ public class UserControllerTest {
         when(entityConverter.mapEntityToDto(savedUser, UserDto.class)).thenReturn(registeredUserDto);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        ResponseEntity<ApiResponse> response = userController.register(request);
+        ResponseEntity<CustomApiResponse> response = userController.register(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(successMassage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -293,7 +293,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.USER_ALREADY_EXISTS;
         when(userService.register(request)).thenThrow(new UserAlreadyExistsException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.register(request);
+        ResponseEntity<CustomApiResponse> response = userController.register(request);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -307,7 +307,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.INVALID_PASSWORD_FORMAT;
         when(userService.register(request)).thenThrow(new IllegalArgumentException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.register(request);
+        ResponseEntity<CustomApiResponse> response = userController.register(request);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -321,7 +321,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.ERROR;
         when(userService.register(request)).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.register(request);
+        ResponseEntity<CustomApiResponse> response = userController.register(request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -338,7 +338,7 @@ public class UserControllerTest {
         request.setConfirmNewPassword("NewPassword123");
         doNothing().when(changePasswordService).changePassword(userId, request);
 
-        ResponseEntity<ApiResponse> response = userController.changePassword(userId, request);
+        ResponseEntity<CustomApiResponse> response = userController.changePassword(userId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PASSWORD_CHANGE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -356,7 +356,7 @@ public class UserControllerTest {
         doThrow(new IllegalArgumentException(errorMessage))
                 .when(changePasswordService).changePassword(userId, request);
 
-        ResponseEntity<ApiResponse> response = userController.changePassword(userId, request);
+        ResponseEntity<CustomApiResponse> response = userController.changePassword(userId, request);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -374,7 +374,7 @@ public class UserControllerTest {
         doThrow(new ResourceNotFoundException(errorMessage))
                 .when(changePasswordService).changePassword(userId, request);
 
-        ResponseEntity<ApiResponse> response = userController.changePassword(userId, request);
+        ResponseEntity<CustomApiResponse> response = userController.changePassword(userId, request);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -392,7 +392,7 @@ public class UserControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(changePasswordService).changePassword(userId, request);
 
-        ResponseEntity<ApiResponse> response = userController.changePassword(userId, request);
+        ResponseEntity<CustomApiResponse> response = userController.changePassword(userId, request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -438,7 +438,7 @@ public class UserControllerTest {
         aggregatedData.put("January", januaryData);
         when(userService.aggregateUsersByMonthAndType()).thenReturn(aggregatedData);
 
-        ResponseEntity<ApiResponse> response = userController.aggregateUserByMonthAndType();
+        ResponseEntity<CustomApiResponse> response = userController.aggregateUserByMonthAndType();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -450,7 +450,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.ERROR;
         when(userService.aggregateUsersByMonthAndType()).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.aggregateUserByMonthAndType();
+        ResponseEntity<CustomApiResponse> response = userController.aggregateUserByMonthAndType();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -474,7 +474,7 @@ public class UserControllerTest {
 
         when(userService.aggregateUsersByEnabledStatusAndType()).thenReturn(aggregateData);
 
-        ResponseEntity<ApiResponse> response = userController.getAggregateUsersByEnabledStatus();
+        ResponseEntity<CustomApiResponse> response = userController.getAggregateUsersByEnabledStatus();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -486,7 +486,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.ERROR;
         when(userService.aggregateUsersByEnabledStatusAndType()).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = userController.getAggregateUsersByEnabledStatus();
+        ResponseEntity<CustomApiResponse> response = userController.getAggregateUsersByEnabledStatus();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -498,7 +498,7 @@ public class UserControllerTest {
         Long userId = 5L;
         doNothing().when(userService).lockUserAccount(userId);
 
-        ResponseEntity<ApiResponse> response = userController.lockUserAccount(userId);
+        ResponseEntity<CustomApiResponse> response = userController.lockUserAccount(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.LOCKED_ACCOUNT_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -511,7 +511,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage)).when(userService).lockUserAccount(userId);
 
-        ResponseEntity<ApiResponse> response = userController.lockUserAccount(userId);
+        ResponseEntity<CustomApiResponse> response = userController.lockUserAccount(userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -523,7 +523,7 @@ public class UserControllerTest {
         Long userId = 6L;
         doNothing().when(userService).unLockUserAccount(userId);
 
-        ResponseEntity<ApiResponse> response = userController.unLockUserAccount(userId);
+        ResponseEntity<CustomApiResponse> response = userController.unLockUserAccount(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.UNLOCKED_ACCOUNT_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -536,7 +536,7 @@ public class UserControllerTest {
         String errorMessage = FeedBackMessage.ERROR;
         doThrow(new RuntimeException(errorMessage)).when(userService).unLockUserAccount(userId);
 
-        ResponseEntity<ApiResponse> response = userController.unLockUserAccount(userId);
+        ResponseEntity<CustomApiResponse> response = userController.unLockUserAccount(userId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());

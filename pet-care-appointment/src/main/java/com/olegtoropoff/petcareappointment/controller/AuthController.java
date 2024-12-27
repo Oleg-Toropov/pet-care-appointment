@@ -6,7 +6,7 @@ import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.LoginRequest;
 import com.olegtoropoff.petcareappointment.request.PasswordResetRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.response.JwtResponse;
 import com.olegtoropoff.petcareappointment.security.jwt.JwtUtils;
 import com.olegtoropoff.petcareappointment.security.user.UPCUserDetails;
@@ -41,7 +41,7 @@ public class AuthController {
     private final RabbitMQProducer rabbitMQProducer;
 
     @PostMapping(UrlMapping.LOGIN)
-    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<CustomApiResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
             Authentication authentication =
                     authenticationManager
@@ -50,62 +50,62 @@ public class AuthController {
             String jwt = jwtUtils.generateTokenForUser(authentication);
             UPCUserDetails userDetails = (UPCUserDetails) authentication.getPrincipal();
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.AUTHENTICATION_SUCCESS, jwtResponse));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.AUTHENTICATION_SUCCESS, jwtResponse));
         } catch (DisabledException e) {
             return ResponseEntity.status(UNAUTHORIZED)
-                    .body(new ApiResponse(FeedBackMessage.ACCOUNT_DISABLED, null));
+                    .body(new CustomApiResponse(FeedBackMessage.ACCOUNT_DISABLED, null));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(UNAUTHORIZED)
-                    .body(new ApiResponse(e.getMessage(), FeedBackMessage.INVALID_PASSWORD));
+                    .body(new CustomApiResponse(e.getMessage(), FeedBackMessage.INVALID_PASSWORD));
         }
     }
 
     @GetMapping(UrlMapping.VERIFY_EMAIL)
-    public ResponseEntity<ApiResponse> verifyEmail(@RequestParam("token") String token) {
+    public ResponseEntity<CustomApiResponse> verifyEmail(@RequestParam("token") String token) {
         String result = tokenService.validateToken(token);
         return switch (result) {
-            case "VALID" -> ResponseEntity.ok(new ApiResponse(FeedBackMessage.VALID_TOKEN, null));
-            case "VERIFIED" -> ResponseEntity.ok(new ApiResponse(FeedBackMessage.TOKEN_ALREADY_VERIFIED, null));
+            case "VALID" -> ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.VALID_TOKEN, null));
+            case "VERIFIED" -> ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.TOKEN_ALREADY_VERIFIED, null));
             case "EXPIRED" ->
-                    ResponseEntity.status(HttpStatus.GONE).body(new ApiResponse(FeedBackMessage.EXPIRED_TOKEN, null));
+                    ResponseEntity.status(HttpStatus.GONE).body(new CustomApiResponse(FeedBackMessage.EXPIRED_TOKEN, null));
             case "INVALID" ->
-                    ResponseEntity.status(HttpStatus.GONE).body(new ApiResponse(FeedBackMessage.INVALID_VERIFICATION_TOKEN, null));
-            default -> ResponseEntity.internalServerError().body(new ApiResponse(FeedBackMessage.ERROR, null));
+                    ResponseEntity.status(HttpStatus.GONE).body(new CustomApiResponse(FeedBackMessage.INVALID_VERIFICATION_TOKEN, null));
+            default -> ResponseEntity.internalServerError().body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         };
     }
 
     @PutMapping(UrlMapping.RESEND_VERIFICATION_TOKEN)
-    public ResponseEntity<ApiResponse> resendVerificationToken(@RequestParam("token") String oldToken) {
+    public ResponseEntity<CustomApiResponse> resendVerificationToken(@RequestParam("token") String oldToken) {
         try {
             VerificationToken verificationToken = tokenService.generateNewVerificationToken(oldToken);
             rabbitMQProducer.sendMessage("RegistrationCompleteEvent:" + verificationToken.getUser().getId());
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.NEW_VERIFICATION_TOKEN_SENT, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.NEW_VERIFICATION_TOKEN_SENT, null));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.internalServerError().body(new CustomApiResponse(e.getMessage(), null));
         }
     }
 
     @PostMapping(UrlMapping.REQUEST_PASSWORD_RESET)
-    public ResponseEntity<ApiResponse> requestPasswordReset(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<CustomApiResponse> requestPasswordReset(@RequestBody Map<String, String> requestBody) {
         try {
             passwordResetService.requestPasswordReset(requestBody.get("email"));
             return ResponseEntity.
-                    ok(new ApiResponse(FeedBackMessage.PASSWORD_RESET_EMAIL_SENT, null));
+                    ok(new CustomApiResponse(FeedBackMessage.PASSWORD_RESET_EMAIL_SENT, null));
         } catch (IllegalArgumentException | ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.internalServerError().body(new CustomApiResponse(e.getMessage(), null));
         }
     }
 
     @PostMapping(UrlMapping.RESET_PASSWORD)
-    public ResponseEntity<ApiResponse> resetPassword(@RequestBody PasswordResetRequest request) {
+    public ResponseEntity<CustomApiResponse> resetPassword(@RequestBody PasswordResetRequest request) {
         try {
             User user = passwordResetService.findUserByPasswordResetToken(request.getToken(), request.getNewPassword());
             String message = passwordResetService.resetPassword(request.getNewPassword(), user);
-            return ResponseEntity.ok(new ApiResponse(message, null));
+            return ResponseEntity.ok(new CustomApiResponse(message, null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new CustomApiResponse(e.getMessage(), null));
         }
     }
 }

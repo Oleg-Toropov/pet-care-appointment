@@ -3,7 +3,7 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.VetBiography;
 import com.olegtoropoff.petcareappointment.model.Veterinarian;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.vetbiography.IVetBiographyService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ public class VetBiographyControllerTest {
         biography.setBiography("Experienced veterinarian");
         when(vetBiographyService.getVetBiographyByVetId(vetId)).thenReturn(biography);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.BIOGRAPHY_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -57,7 +57,7 @@ public class VetBiographyControllerTest {
         String errorMessage = FeedBackMessage.VETERINARIAN_INFO_NOT_AVAILABLE;
         when(vetBiographyService.getVetBiographyByVetId(vetId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -71,7 +71,7 @@ public class VetBiographyControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).getVetBiographyByVetId(vetId);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -91,7 +91,7 @@ public class VetBiographyControllerTest {
 
         when(vetBiographyService.saveVetBiography(request, vetId)).thenReturn(savedBiography);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.BIOGRAPHY_SAVED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -107,7 +107,7 @@ public class VetBiographyControllerTest {
 
         when(vetBiographyService.saveVetBiography(request, vetId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -122,7 +122,7 @@ public class VetBiographyControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).saveVetBiography(request, vetId);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -141,7 +141,7 @@ public class VetBiographyControllerTest {
 
         when(vetBiographyService.updateVetBiography(request, biographyId)).thenReturn(updatedBiography);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals( FeedBackMessage.BIOGRAPHY_UPDATED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -157,7 +157,7 @@ public class VetBiographyControllerTest {
 
         when(vetBiographyService.updateVetBiography(request, biographyId)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -172,7 +172,7 @@ public class VetBiographyControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).updateVetBiography(request, biographyId);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -184,7 +184,7 @@ public class VetBiographyControllerTest {
         Long biographyId = 1L;
         doNothing().when(vetBiographyService).deleteVetBiography(biographyId);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.BIOGRAPHY_DELETED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -196,7 +196,7 @@ public class VetBiographyControllerTest {
         Long biographyId = 100L;
         doThrow(new ResourceNotFoundException(FeedBackMessage.BIOGRAPHY_NOT_FOUND)).when(vetBiographyService).deleteVetBiography(biographyId);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.BIOGRAPHY_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -210,7 +210,7 @@ public class VetBiographyControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(vetBiographyService).deleteVetBiography(biographyId);
 
-        ResponseEntity<ApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
+        ResponseEntity<CustomApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());

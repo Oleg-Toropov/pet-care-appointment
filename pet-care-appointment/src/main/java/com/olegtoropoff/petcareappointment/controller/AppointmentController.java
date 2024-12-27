@@ -7,7 +7,7 @@ import com.olegtoropoff.petcareappointment.model.Pet;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
@@ -33,127 +33,127 @@ public class AppointmentController {
 
 
     @PostMapping(UrlMapping.BOOK_APPOINTMENT)
-    public ResponseEntity<ApiResponse> bookAppointment(
+    public ResponseEntity<CustomApiResponse> bookAppointment(
             @RequestBody BookAppointmentRequest request,
             @RequestParam Long senderId,
             @RequestParam Long recipientId) {
         try {
             Appointment appointment = appointmentService.createAppointment(request, senderId, recipientId);
             rabbitMQProducer.sendMessage("AppointmentBookedEvent:" + appointment.getVeterinarian().getId());
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, appointment));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, appointment));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.UPDATE_APPOINTMENT)
-    public ResponseEntity<ApiResponse> updateAppointment(
+    public ResponseEntity<CustomApiResponse> updateAppointment(
             @PathVariable Long id,
             @RequestBody AppointmentUpdateRequest request) {
         try {
             Appointment appointment = appointmentService.updateAppointment(id, request);
-            return ResponseEntity.ok((new ApiResponse(FeedBackMessage.APPOINTMENT_UPDATE_SUCCESS, appointment)));
+            return ResponseEntity.ok((new CustomApiResponse(FeedBackMessage.APPOINTMENT_UPDATE_SUCCESS, appointment)));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.ADD_PET_APPOINTMENT)
-    public ResponseEntity<ApiResponse> addPetForAppointment(
+    public ResponseEntity<CustomApiResponse> addPetForAppointment(
             @PathVariable Long id,
             @RequestBody Pet pet) {
         try {
             Appointment appointment = appointmentService.addPetForAppointment(id, pet);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.PET_ADDED_SUCCESS, appointment));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PET_ADDED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.ALL_APPOINTMENT)
-    public ResponseEntity<ApiResponse> getAllAppointments(@RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<CustomApiResponse> getAllAppointments(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"));
             Page<AppointmentDto> appointmentPage = appointmentService.getAllAppointments(pageable);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENTS_FOUND, appointmentPage));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENTS_FOUND, appointmentPage));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @GetMapping(UrlMapping.GET_APPOINTMENT_BY_ID)
-    public ResponseEntity<ApiResponse> getAppointmentById(@PathVariable Long id) {
+    public ResponseEntity<CustomApiResponse> getAppointmentById(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.getAppointmentById(id);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_FOUND, appointment));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_FOUND, appointment));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @DeleteMapping(UrlMapping.DELETE_APPOINTMENT)
-    public ResponseEntity<ApiResponse> deleteAppointmentById(@PathVariable Long id) {
+    public ResponseEntity<CustomApiResponse> deleteAppointmentById(@PathVariable Long id) {
         try {
             appointmentService.deleteAppointment(id);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_DELETE_SUCCESS, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_DELETE_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.CANCEL_APPOINTMENT)
-    public ResponseEntity<ApiResponse> cancelAppointment(@PathVariable Long id) {
+    public ResponseEntity<CustomApiResponse> cancelAppointment(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.cancelAppointment(id);
             rabbitMQProducer.sendMessage("AppointmentCanceledEvent:" +  appointment.getVeterinarian().getId() + "#" + appointment.getAppointmentNo());
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS, appointment));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.APPROVE_APPOINTMENT)
-    public ResponseEntity<ApiResponse> approveAppointment(@PathVariable Long id) {
+    public ResponseEntity<CustomApiResponse> approveAppointment(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.approveAppointment(id);
             rabbitMQProducer.sendMessage("AppointmentApprovedEvent:" + appointment.getPatient().getId());
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS, appointment));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     @PutMapping(UrlMapping.DECLINE_APPOINTMENT)
-    public ResponseEntity<ApiResponse> declineAppointment(@PathVariable Long id) {
+    public ResponseEntity<CustomApiResponse> declineAppointment(@PathVariable Long id) {
         try {
             Appointment appointment = appointmentService.declineAppointment(id);
             rabbitMQProducer.sendMessage("AppointmentDeclinedEvent:" + appointment.getPatient().getId());
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS, appointment));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
@@ -163,13 +163,13 @@ public class AppointmentController {
     }
 
     @GetMapping(UrlMapping.APPOINTMENT_SUMMARY)
-    public ResponseEntity<ApiResponse> getAppointmentSummary() {
+    public ResponseEntity<CustomApiResponse> getAppointmentSummary() {
         try {
             List<Map<String, Object>> summary = appointmentService.getAppointmentSummary();
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.SUCCESS, summary));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.SUCCESS, summary));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(FeedBackMessage.ERROR + e.getMessage(), null));
+                    .body(new CustomApiResponse(FeedBackMessage.ERROR + e.getMessage(), null));
         }
     }
 }

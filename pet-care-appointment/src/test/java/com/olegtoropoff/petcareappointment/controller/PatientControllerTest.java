@@ -1,7 +1,7 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.patient.IPatientService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +50,7 @@ public class PatientControllerTest {
 
         when(patientService.getPatients()).thenReturn(patients);
 
-        ResponseEntity<ApiResponse> response = patientController.getAllPatients();
+        ResponseEntity<CustomApiResponse> response = patientController.getAllPatients();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -62,7 +62,7 @@ public class PatientControllerTest {
         List<UserDto> emptyPatients = List.of();
         when(patientService.getPatients()).thenReturn(emptyPatients);
 
-        ResponseEntity<ApiResponse> response = patientController.getAllPatients();
+        ResponseEntity<CustomApiResponse> response = patientController.getAllPatients();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());

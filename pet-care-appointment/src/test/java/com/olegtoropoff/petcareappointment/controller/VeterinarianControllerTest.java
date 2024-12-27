@@ -2,7 +2,7 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.veterinarian.IVeterinarianService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ public class VeterinarianControllerTest {
 
         when(veterinarianService.getAllVeterinariansWithDetails()).thenReturn(veterinarians);
 
-        ResponseEntity<ApiResponse> response = veterinarianController.getAllVeterinarians();
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAllVeterinarians();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -70,7 +70,7 @@ public class VeterinarianControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(veterinarianService).getAllVeterinariansWithDetails();
 
-        ResponseEntity<ApiResponse> response = veterinarianController.getAllVeterinarians();
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAllVeterinarians();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -92,7 +92,7 @@ public class VeterinarianControllerTest {
         when(veterinarianService.findAvailableVeterinariansForAppointments(specialization, date, time))
                 .thenReturn(availableVets);
 
-        ResponseEntity<ApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
+        ResponseEntity<CustomApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -108,7 +108,7 @@ public class VeterinarianControllerTest {
         when(veterinarianService.findAvailableVeterinariansForAppointments(specialization, date, time))
                 .thenReturn(Collections.emptyList());
 
-        ResponseEntity<ApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
+        ResponseEntity<CustomApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.NO_VETS_AVAILABLE, Objects.requireNonNull(response.getBody()).getMessage());
@@ -124,7 +124,7 @@ public class VeterinarianControllerTest {
         doThrow(new ResourceNotFoundException(errorMessage))
                 .when(veterinarianService).findAvailableVeterinariansForAppointments(specialization, date, time);
 
-        ResponseEntity<ApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
+        ResponseEntity<CustomApiResponse> response = veterinarianController.searchVeterinariansForAppointment(date, time, specialization);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -136,7 +136,7 @@ public class VeterinarianControllerTest {
         List<String> specializations = List.of("Хирург", "Терапевт");
         when(veterinarianService.getSpecializations()).thenReturn(specializations);
 
-        ResponseEntity<ApiResponse> response = veterinarianController.getAllSpecializations();
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAllSpecializations();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -149,7 +149,7 @@ public class VeterinarianControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(veterinarianService).getSpecializations();
 
-        ResponseEntity<ApiResponse> response = veterinarianController.getAllSpecializations();
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAllSpecializations();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -175,7 +175,7 @@ public class VeterinarianControllerTest {
         List<LocalTime> availableTimes = List.of(LocalTime.of(10, 0), LocalTime.of(11, 0));
         when(veterinarianService.getAvailableTimeForBookAppointment(vetId, date)).thenReturn(availableTimes);
 
-        ResponseEntity<ApiResponse> response = veterinarianController.getAvailableTimeForBookAppointment(vetId, date);
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAvailableTimeForBookAppointment(vetId, date);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.AVAILABLE_TIME_FOR_APPOINTMENT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -190,7 +190,7 @@ public class VeterinarianControllerTest {
         doThrow(new RuntimeException(errorMessage))
                 .when(veterinarianService).getAvailableTimeForBookAppointment(vetId, date);
 
-        ResponseEntity<ApiResponse> response = veterinarianController.getAvailableTimeForBookAppointment(vetId, date);
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAvailableTimeForBookAppointment(vetId, date);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());

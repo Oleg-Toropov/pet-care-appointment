@@ -4,7 +4,7 @@ import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.request.VerificationTokenRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ public class VerificationTokenControllerTest {
         String token = "valid-token";
         when(verificationTokenService.validateToken(token)).thenReturn("VALID");
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.validateToken(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.validateToken(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.VALID_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -57,7 +57,7 @@ public class VerificationTokenControllerTest {
         String token = "verified-token";
         when(verificationTokenService.validateToken(token)).thenReturn("VERIFIED");
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.validateToken(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.validateToken(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.TOKEN_ALREADY_VERIFIED, Objects.requireNonNull(response.getBody()).getMessage());
@@ -70,7 +70,7 @@ public class VerificationTokenControllerTest {
         String token = "expired-token";
         when(verificationTokenService.validateToken(token)).thenReturn("EXPIRED");
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.validateToken(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.validateToken(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.EXPIRED_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -83,7 +83,7 @@ public class VerificationTokenControllerTest {
         String token = "invalid-token";
         when(verificationTokenService.validateToken(token)).thenReturn("INVALID");
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.validateToken(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.validateToken(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.INVALID_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -96,7 +96,7 @@ public class VerificationTokenControllerTest {
         String token = "unknown-token";
         when(verificationTokenService.validateToken(token)).thenReturn("UNKNOWN");
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.validateToken(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.validateToken(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.TOKEN_VALIDATION_ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -109,7 +109,7 @@ public class VerificationTokenControllerTest {
         String token = "valid-token";
         when(verificationTokenService.isTokenExpired(token)).thenReturn(false);
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.checkTokenExpiration(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.checkTokenExpiration(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.VALID_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -122,7 +122,7 @@ public class VerificationTokenControllerTest {
         String token = "expired-token";
         when(verificationTokenService.isTokenExpired(token)).thenReturn(true);
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.checkTokenExpiration(token);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.checkTokenExpiration(token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.EXPIRED_TOKEN, Objects.requireNonNull(response.getBody()).getMessage());
@@ -146,7 +146,7 @@ public class VerificationTokenControllerTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         doNothing().when(verificationTokenService).saveVerificationTokenForUser(token, user);
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.saveVerificationTokenForUser(request);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.saveVerificationTokenForUser(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.TOKEN_SAVED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -190,7 +190,7 @@ public class VerificationTokenControllerTest {
 
         when(verificationTokenService.generateNewVerificationToken(oldToken)).thenReturn(newToken);
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.generateNewVerificationToken(oldToken);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.generateNewVerificationToken(oldToken);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("", Objects.requireNonNull(response.getBody()).getMessage());
@@ -205,7 +205,7 @@ public class VerificationTokenControllerTest {
         Long userId = 5L;
         doNothing().when(verificationTokenService).deleteVerificationToken(userId);
 
-        ResponseEntity<ApiResponse> response = verificationTokenController.deleteUserToken(userId);
+        ResponseEntity<CustomApiResponse> response = verificationTokenController.deleteUserToken(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.TOKEN_DELETE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());

@@ -9,7 +9,7 @@ import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +65,7 @@ class AppointmentControllerTest {
         when(appointmentService.createAppointment(request, senderId, recipientId)).thenReturn(appointment);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        ResponseEntity<ApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -82,7 +82,7 @@ class AppointmentControllerTest {
         when(appointmentService.createAppointment(request, senderId, recipientId))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -100,7 +100,7 @@ class AppointmentControllerTest {
         when(appointmentService.createAppointment(request, senderId, recipientId))
                 .thenThrow(new IllegalStateException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -117,7 +117,7 @@ class AppointmentControllerTest {
         when(appointmentService.createAppointment(request, senderId, recipientId))
                 .thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -134,7 +134,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.updateAppointment(1L, request)).thenReturn(appointment);
 
-        ResponseEntity<ApiResponse> response = appointmentController.updateAppointment(1L, request);
+        ResponseEntity<CustomApiResponse> response = appointmentController.updateAppointment(1L, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -147,7 +147,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.updateAppointment(1L, request)).thenThrow(new IllegalStateException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.updateAppointment(1L, request);
+        ResponseEntity<CustomApiResponse> response = appointmentController.updateAppointment(1L, request);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -161,7 +161,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.updateAppointment(1L, request)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.updateAppointment(1L, request);
+        ResponseEntity<CustomApiResponse> response = appointmentController.updateAppointment(1L, request);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -174,7 +174,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.updateAppointment(1L, request)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
 
-        ResponseEntity<ApiResponse> response = appointmentController.updateAppointment(1L, request);
+        ResponseEntity<CustomApiResponse> response = appointmentController.updateAppointment(1L, request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -188,7 +188,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.getAllAppointments(pageable)).thenReturn(page);
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAllAppointments(0, 10);
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAllAppointments(0, 10);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENTS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -199,7 +199,7 @@ class AppointmentControllerTest {
         doThrow(new RuntimeException(FeedBackMessage.ERROR))
                 .when(appointmentService).getAllAppointments(any(Pageable.class));
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAllAppointments(0, 10);
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAllAppointments(0, 10);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -213,7 +213,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.getAppointmentById(1L)).thenReturn(appointment);
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAppointmentById(1L);
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -227,7 +227,7 @@ class AppointmentControllerTest {
         when(appointmentService.getAppointmentById(appointmentId))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAppointmentById(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentById(appointmentId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -242,7 +242,7 @@ class AppointmentControllerTest {
         when(appointmentService.getAppointmentById(appointmentId))
                 .thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAppointmentById(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentById(appointmentId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -253,7 +253,7 @@ class AppointmentControllerTest {
     void deleteAppointmentById_ReturnsSuccessResponse() {
         doNothing().when(appointmentService).deleteAppointment(1L);
 
-        ResponseEntity<ApiResponse> response = appointmentController.deleteAppointmentById(1L);
+        ResponseEntity<CustomApiResponse> response = appointmentController.deleteAppointmentById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_DELETE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -266,7 +266,7 @@ class AppointmentControllerTest {
 
         doThrow(new ResourceNotFoundException(errorMessage)).when(appointmentService).deleteAppointment(appointmentId);
 
-        ResponseEntity<ApiResponse> response = appointmentController.deleteAppointmentById(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.deleteAppointmentById(appointmentId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -280,7 +280,7 @@ class AppointmentControllerTest {
 
         doThrow(new RuntimeException(errorMessage)).when(appointmentService).deleteAppointment(appointmentId);
 
-        ResponseEntity<ApiResponse> response = appointmentController.deleteAppointmentById(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.deleteAppointmentById(appointmentId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -298,7 +298,7 @@ class AppointmentControllerTest {
         when(appointmentService.approveAppointment(1L)).thenReturn(appointment);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        ResponseEntity<ApiResponse> response = appointmentController.approveAppointment(1L);
+        ResponseEntity<CustomApiResponse> response = appointmentController.approveAppointment(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -312,7 +312,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.approveAppointment(appointmentId)).thenThrow(new IllegalStateException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.approveAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.approveAppointment(appointmentId);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -326,7 +326,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.approveAppointment(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.approveAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.approveAppointment(appointmentId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -347,7 +347,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.getAppointmentSummary()).thenReturn(summary);
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAppointmentSummary();
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentSummary();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -360,7 +360,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.getAppointmentSummary()).thenThrow(new RuntimeException(""));
 
-        ResponseEntity<ApiResponse> response = appointmentController.getAppointmentSummary();
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentSummary();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -379,7 +379,7 @@ class AppointmentControllerTest {
         when(appointmentService.declineAppointment(appointmentId)).thenReturn(appointment);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        ResponseEntity<ApiResponse> response = appointmentController.declineAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.declineAppointment(appointmentId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -393,7 +393,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.declineAppointment(appointmentId)).thenThrow(new IllegalStateException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.declineAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.declineAppointment(appointmentId);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -407,7 +407,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.declineAppointment(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.declineAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.declineAppointment(appointmentId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
@@ -427,7 +427,7 @@ class AppointmentControllerTest {
         when(appointmentService.cancelAppointment(appointmentId)).thenReturn(appointment);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
-        ResponseEntity<ApiResponse> response = appointmentController.cancelAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.cancelAppointment(appointmentId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -441,7 +441,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.cancelAppointment(appointmentId)).thenThrow(new IllegalStateException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.cancelAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.cancelAppointment(appointmentId);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -455,7 +455,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.cancelAppointment(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.cancelAppointment(appointmentId);
+        ResponseEntity<CustomApiResponse> response = appointmentController.cancelAppointment(appointmentId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -472,7 +472,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenReturn(appointment);
 
-        ResponseEntity<ApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
+        ResponseEntity<CustomApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_ADDED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
@@ -487,7 +487,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenThrow(new IllegalStateException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
+        ResponseEntity<CustomApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -502,7 +502,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenThrow(new ResourceNotFoundException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
+        ResponseEntity<CustomApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
@@ -516,7 +516,7 @@ class AppointmentControllerTest {
 
         when(appointmentService.addPetForAppointment(appointmentId, pet)).thenThrow(new RuntimeException(errorMessage));
 
-        ResponseEntity<ApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
+        ResponseEntity<CustomApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());

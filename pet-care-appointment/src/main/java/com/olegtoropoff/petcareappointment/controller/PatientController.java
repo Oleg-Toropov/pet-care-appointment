@@ -1,7 +1,7 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.patient.IPatientService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
@@ -20,9 +20,9 @@ public class PatientController {
     private final IPatientService patientService;
 
     @GetMapping(UrlMapping.GET_ALL_PATIENTS)
-    public ResponseEntity<ApiResponse> getAllPatients() {
+    public ResponseEntity<CustomApiResponse> getAllPatients() {
         List<UserDto> patients = patientService.getPatients();
-        return ResponseEntity.ok(new ApiResponse(FeedBackMessage.RESOURCE_FOUND, patients));
+        return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, patients));
     }
 }
 

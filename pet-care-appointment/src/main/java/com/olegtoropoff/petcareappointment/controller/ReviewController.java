@@ -3,7 +3,7 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
-import com.olegtoropoff.petcareappointment.response.ApiResponse;
+import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
@@ -22,27 +22,27 @@ public class ReviewController {
     private final ModelMapper modelMapper;
 
     @PostMapping(UrlMapping.SUBMIT_REVIEW)
-    public ResponseEntity<ApiResponse> saveReview(@RequestBody Review review, @RequestParam Long reviewerId,
-                                                  @RequestParam Long veterinarianId) {
+    public ResponseEntity<CustomApiResponse> saveReview(@RequestBody Review review, @RequestParam Long reviewerId,
+                                                        @RequestParam Long veterinarianId) {
         try {
             Review savedReview = reviewService.saveReview(review, reviewerId, veterinarianId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.REVIEW_SUBMIT_SUCCESS, savedReview.getId()));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.REVIEW_SUBMIT_SUCCESS, savedReview.getId()));
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
         } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(CONFLICT).body(new CustomApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         }
     }
 
     @DeleteMapping(UrlMapping.DELETE_REVIEW)
-    public ResponseEntity<ApiResponse> deleteReview(@PathVariable Long reviewId) {
+    public ResponseEntity<CustomApiResponse> deleteReview(@PathVariable Long reviewId) {
         try {
             reviewService.deleteReview(reviewId);
-            return ResponseEntity.ok(new ApiResponse(FeedBackMessage.REVIEW_DELETE_SUCCESS, null));
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.REVIEW_DELETE_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         }
     }
 }

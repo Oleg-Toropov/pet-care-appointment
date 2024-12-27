@@ -37,7 +37,7 @@
         <xmlunit-core.version>2.10.0</xmlunit-core.version>
         <amqp.version>3.3.5</amqp.version>
         <h2database.version>2.3.232</h2database.version>
-        <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <logback-core.version>1.5.15</logback-core.version>
         <logback-classic.version>1.5.15</logback-classic.version>
         <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
@@ -165,8 +165,8 @@
 
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi-ui.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
 
     </dependencies>
