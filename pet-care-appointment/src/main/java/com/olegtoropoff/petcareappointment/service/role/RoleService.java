@@ -11,27 +11,54 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Service class for managing roles in the application.
+ * Provides functionality to retrieve roles by ID, name, and assign roles based on user types.
+ */
 @Service
 @RequiredArgsConstructor
 public class RoleService implements IRoleService {
     private final RoleRepository roleRepository;
 
-
+    /**
+     * Retrieves all roles in the system.
+     *
+     * @return a list of all roles
+     */
     @Override
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 
+    /**
+     * Retrieves a role by its ID.
+     *
+     * @param id the ID of the role
+     * @return the role with the given ID, or {@code null} if not found
+     */
     @Override
     public Role getRoleById(Long id) {
         return roleRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Retrieves a role by its name.
+     *
+     * @param roleName the name of the role
+     * @return the role with the given name, or {@code null} if not found
+     */
     @Override
     public Role getRoleByName(String roleName) {
         return roleRepository.findByName(roleName).orElse(null);
     }
 
+    /**
+     * Assigns a role to a user based on their user type.
+     *
+     * @param userType the type of the user (e.g., "ADMIN", "PATIENT", "VET")
+     * @return a set of roles assigned to the user
+     * @throws ResourceNotFoundException if the role corresponding to the user type is not found
+     */
     @Override
     public Set<Role> setUserRole(String userType) {
         Set<Role> userRoles = new HashSet<>();

@@ -15,12 +15,22 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * REST controller for managing pets.
+ * Provides endpoints for CRUD operations and fetching pet attributes like types, colors, and breeds.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.PETS)
 public class PetController {
     private final IPetService petService;
 
+    /**
+     * Saves a list of pets associated with an appointment.
+     *
+     * @param pets the list of pets to save.
+     * @return a response containing the saved pets.
+     */
     @PostMapping(UrlMapping.SAVE_PETS_FOR_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> savePets(@RequestBody List<Pet> pets) {
         try {
@@ -31,6 +41,12 @@ public class PetController {
         }
     }
 
+    /**
+     * Fetches a pet by its ID.
+     *
+     * @param petId the ID of the pet.
+     * @return a response containing the pet details.
+     */
     @GetMapping(UrlMapping.GET_PET_BY_ID)
     public ResponseEntity<CustomApiResponse> getPetById(@PathVariable Long petId) {
         try {
@@ -43,6 +59,12 @@ public class PetController {
         }
     }
 
+    /**
+     * Deletes a pet by its ID.
+     *
+     * @param petId the ID of the pet to delete.
+     * @return a response indicating the result of the operation.
+     */
     @DeleteMapping(UrlMapping.DELETE_PET_BY_ID)
     public ResponseEntity<CustomApiResponse> deletePetById(@PathVariable Long petId) {
         try {
@@ -57,6 +79,13 @@ public class PetController {
         }
     }
 
+    /**
+     * Updates the details of a pet.
+     *
+     * @param petId the ID of the pet to update.
+     * @param pet   the updated pet details.
+     * @return a response containing the updated pet.
+     */
     @PutMapping(UrlMapping.UPDATE_PET)
     public ResponseEntity<CustomApiResponse> updatePetById(@PathVariable Long petId, @RequestBody Pet pet) {
         try {
@@ -69,6 +98,11 @@ public class PetController {
         }
     }
 
+    /**
+     * Fetches all distinct pet types.
+     *
+     * @return a response containing the list of pet types.
+     */
     @GetMapping(UrlMapping.GET_PET_TYPES)
     public ResponseEntity<CustomApiResponse> getAllPetTypes() {
         try {
@@ -78,6 +112,11 @@ public class PetController {
         }
     }
 
+    /**
+     * Fetches all distinct pet colors.
+     *
+     * @return a response containing the list of pet colors.
+     */
     @GetMapping(UrlMapping.GET_PET_COLORS)
     public ResponseEntity<CustomApiResponse> getAllPetColors() {
         try {
@@ -87,6 +126,12 @@ public class PetController {
         }
     }
 
+    /**
+     * Fetches all distinct breeds for a given pet type.
+     *
+     * @param petType the type of pet.
+     * @return a response containing the list of pet breeds for the specified type.
+     */
     @GetMapping(UrlMapping.GET_PET_BREEDS)
     public ResponseEntity<CustomApiResponse> getAllPetBreeds(@RequestParam String petType) {
         try {

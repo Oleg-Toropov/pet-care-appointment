@@ -24,6 +24,10 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * REST controller for managing appointment-related operations.
+ * Handles HTTP requests for booking, updating, deleting, and querying appointments.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.APPOINTMENTS)
@@ -31,7 +35,14 @@ public class AppointmentController {
     private final IAppointmentService appointmentService;
     private final RabbitMQProducer rabbitMQProducer;
 
-
+    /**
+     * Books a new appointment and sends an event message via RabbitMQ.
+     *
+     * @param request the appointment request details.
+     * @param senderId the ID of the user booking the appointment.
+     * @param recipientId the ID of the recipient of the appointment.
+     * @return a response indicating the success or failure of the operation.
+     */
     @PostMapping(UrlMapping.BOOK_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> bookAppointment(
             @RequestBody BookAppointmentRequest request,
@@ -50,6 +61,13 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Updates an existing appointment.
+     *
+     * @param id the ID of the appointment to update.
+     * @param request the updated appointment details.
+     * @return a response indicating the success or failure of the operation.
+     */
     @PutMapping(UrlMapping.UPDATE_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> updateAppointment(
             @PathVariable Long id,
@@ -66,6 +84,13 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Adds a new pet to an existing appointment.
+     *
+     * @param id the ID of the appointment.
+     * @param pet the pet details to add.
+     * @return a response indicating the success or failure of the operation.
+     */
     @PutMapping(UrlMapping.ADD_PET_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> addPetForAppointment(
             @PathVariable Long id,
@@ -82,6 +107,13 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Retrieves all appointments with pagination.
+     *
+     * @param page the page number (default: 0).
+     * @param size the number of records per page (default: 10).
+     * @return a paginated list of appointments.
+     */
     @GetMapping(UrlMapping.ALL_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> getAllAppointments(@RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "10") int size) {
@@ -94,6 +126,12 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Retrieves an appointment by its ID.
+     *
+     * @param id the ID of the appointment.
+     * @return the appointment details or an error message.
+     */
     @GetMapping(UrlMapping.GET_APPOINTMENT_BY_ID)
     public ResponseEntity<CustomApiResponse> getAppointmentById(@PathVariable Long id) {
         try {
@@ -106,6 +144,12 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Deletes an appointment by its ID.
+     *
+     * @param id the ID of the appointment.
+     * @return a response indicating the success or failure of the operation.
+     */
     @DeleteMapping(UrlMapping.DELETE_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> deleteAppointmentById(@PathVariable Long id) {
         try {
@@ -118,6 +162,12 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Cancels an appointment and sends an event message via RabbitMQ.
+     *
+     * @param id the ID of the appointment to cancel.
+     * @return the updated appointment details or an error message.
+     */
     @PutMapping(UrlMapping.CANCEL_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> cancelAppointment(@PathVariable Long id) {
         try {
@@ -131,6 +181,12 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Approves an appointment and sends an event message via RabbitMQ.
+     *
+     * @param id the ID of the appointment to approve.
+     * @return the updated appointment details or an error message.
+     */
     @PutMapping(UrlMapping.APPROVE_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> approveAppointment(@PathVariable Long id) {
         try {
@@ -144,6 +200,12 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Declines an appointment and sends an event message via RabbitMQ.
+     *
+     * @param id the ID of the appointment to decline.
+     * @return the updated appointment details or an error message.
+     */
     @PutMapping(UrlMapping.DECLINE_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> declineAppointment(@PathVariable Long id) {
         try {
@@ -157,11 +219,21 @@ public class AppointmentController {
         }
     }
 
+    /**
+     * Counts the total number of appointments in the system.
+     *
+     * @return the count of appointments.
+     */
     @GetMapping(UrlMapping.COUNT_APPOINTMENT)
     public long countAppointments() {
         return appointmentService.countAppointments();
     }
 
+    /**
+     * Retrieves a summary of appointments grouped by status.
+     *
+     * @return a list of appointment summaries.
+     */
     @GetMapping(UrlMapping.APPOINTMENT_SUMMARY)
     public ResponseEntity<CustomApiResponse> getAppointmentSummary() {
         try {

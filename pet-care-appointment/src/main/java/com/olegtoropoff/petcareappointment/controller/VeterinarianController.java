@@ -18,12 +18,20 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Controller for managing veterinarians. Provides endpoints to retrieve, search, and aggregate veterinarian data.
+ */
 @RestController
 @RequestMapping(UrlMapping.VETERINARIANS)
 @RequiredArgsConstructor
 public class VeterinarianController {
     private final IVeterinarianService veterinarianService;
 
+    /**
+     * Retrieves all veterinarians with their details.
+     *
+     * @return a {@link ResponseEntity} containing a list of all veterinarians or an error message
+     */
     @GetMapping(UrlMapping.GET_ALL_VETERINARIANS)
     public ResponseEntity<CustomApiResponse> getAllVeterinarians() {
         try {
@@ -34,6 +42,14 @@ public class VeterinarianController {
         }
     }
 
+    /**
+     * Searches for veterinarians available for an appointment based on specialization, date, and time.
+     *
+     * @param date the desired date of the appointment (optional)
+     * @param time the desired time of the appointment (optional)
+     * @param specialization the specialization of the veterinarian
+     * @return a {@link ResponseEntity} containing a list of available veterinarians or an error message
+     */
     @GetMapping(UrlMapping.SEARCH_VETERINARIAN_FOR_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> searchVeterinariansForAppointment(
             @RequestParam(required = false) LocalDate date,
@@ -50,6 +66,11 @@ public class VeterinarianController {
         }
     }
 
+    /**
+     * Retrieves a list of all specializations of veterinarians.
+     *
+     * @return a {@link ResponseEntity} containing a list of specializations or an error message
+     */
     @GetMapping(UrlMapping.GET_ALL_SPECIALIZATIONS)
     public ResponseEntity<CustomApiResponse> getAllSpecializations() {
         try {
@@ -60,12 +81,24 @@ public class VeterinarianController {
         }
     }
 
+    /**
+     * Aggregates the number of veterinarians by their specializations.
+     *
+     * @return a {@link ResponseEntity} containing the aggregated data
+     */
     @GetMapping(UrlMapping.AGGREGATE_VETERINARIANS_BY_SPECIALIZATION)
     public ResponseEntity<List<Map<String, Object>>> aggregateVetsBySpecialization() {
         List<Map<String, Object>> aggregatedVets = veterinarianService.aggregateVetsBySpecialization();
         return ResponseEntity.ok(aggregatedVets);
     }
 
+    /**
+     * Retrieves available appointment times for a veterinarian on a specific date.
+     *
+     * @param vetId the ID of the veterinarian
+     * @param date  the desired date for the appointment
+     * @return a {@link ResponseEntity} containing a list of available times or an error message
+     */
     @GetMapping(UrlMapping.GET_AVAILABLE_TIME_FOR_BOOK_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> getAvailableTimeForBookAppointment(@PathVariable Long vetId,
                                                                                 @RequestParam LocalDate date) {

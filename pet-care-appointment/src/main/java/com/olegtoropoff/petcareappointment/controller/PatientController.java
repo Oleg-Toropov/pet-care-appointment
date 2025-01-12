@@ -13,12 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST controller for handling patient-related operations.
+ * Provides endpoints for retrieving information about patients.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.PATIENTS)
 public class PatientController {
     private final IPatientService patientService;
 
+    /**
+     * Retrieves all registered patients.
+     *
+     * @return a response containing a list of patients in the form of `UserDto`.
+     */
     @GetMapping(UrlMapping.GET_ALL_PATIENTS)
     public ResponseEntity<CustomApiResponse> getAllPatients() {
         List<UserDto> patients = patientService.getPatients();

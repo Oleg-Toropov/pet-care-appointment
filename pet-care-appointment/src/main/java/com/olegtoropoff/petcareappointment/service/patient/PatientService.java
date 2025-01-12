@@ -10,12 +10,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service implementation for handling patient-related operations.
+ * Provides methods to retrieve patient information and transform it into DTOs.
+ */
 @Service
 @RequiredArgsConstructor
 public class PatientService implements IPatientService {
     private final PatientRepository patientRepository;
     private final EntityConverter<User, UserDto> entityConverter;
 
+    /**
+     * Retrieves all patients and converts them to {@link UserDto}.
+     *
+     * @return a list of {@link UserDto} objects representing all patients.
+     */
     @Override
     public List<UserDto> getPatients() {
         List<Patient> patients = patientRepository.findAll();

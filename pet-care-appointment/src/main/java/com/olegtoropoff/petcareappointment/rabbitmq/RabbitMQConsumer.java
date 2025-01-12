@@ -15,17 +15,55 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * RabbitMQ message consumer for handling various event-driven tasks.
+ * <p>
+ * This class listens to a specified RabbitMQ queue and processes incoming messages,
+ * performing actions such as sending emails for registration verification, appointment
+ * notifications, and password resets.
+ */
 @Service
 @RequiredArgsConstructor
 public class RabbitMQConsumer {
+
+    /**
+     * Service for user-related operations.
+     */
     private final IUserService userService;
+
+    /**
+     * Service for verification token management.
+     */
     private final IVerificationTokenService tokenService;
+
+    /**
+     * Service for email operations.
+     */
     private final EmailService emailService;
 
+    /**
+     * Base URL for the frontend application.
+     */
     @Value("${frontend.base.url}")
     private String frontendBaseUrl;
 
 
+    /**
+     * Processes incoming messages from the RabbitMQ queue.
+     * <p>
+     * The method parses the message and determines the action to perform based on the event type.
+     * Supported events include:
+     * <ul>
+     *     <li>RegistrationCompleteEvent</li>
+     *     <li>AppointmentBookedEvent</li>
+     *     <li>AppointmentCanceledEvent</li>
+     *     <li>AppointmentApprovedEvent</li>
+     *     <li>AppointmentDeclinedEvent</li>
+     *     <li>PasswordResetEvent</li>
+     * </ul>
+     *
+     * @param message The message received from the queue.
+     */
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void receiveMessage(String message) {
         try {
@@ -84,6 +122,13 @@ public class RabbitMQConsumer {
         }
     }
 
+    /**
+     * Sends a registration verification email to the user.
+     *
+     * @param data The ID of the user to whom the email will be sent.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws UnsupportedEncodingException If the email encoding is unsupported.
+     */
     private void sendRegistrationVerificationEmail(String data) throws MessagingException, UnsupportedEncodingException {
         Long userId = Long.parseLong(data);
         User user = userService.findById(userId);
@@ -100,6 +145,13 @@ public class RabbitMQConsumer {
         emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
     }
 
+    /**
+     * Sends a notification to the veterinarian about a booked appointment.
+     *
+     * @param data The ID of the veterinarian.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws UnsupportedEncodingException If the email encoding is unsupported.
+     */
     private void sendAppointmentBookedNotification(String data) throws MessagingException, UnsupportedEncodingException {
         Long veterinarianId = Long.parseLong(data);
         Veterinarian veterinarian = (Veterinarian) userService.findById(veterinarianId);
@@ -113,6 +165,13 @@ public class RabbitMQConsumer {
         emailService.sendEmail(veterinarian.getEmail(), subject, senderName, mailContent);
     }
 
+    /**
+     * Sends a notification to the veterinarian about a canceled appointment.
+     *
+     * @param data The ID of the veterinarian and appointment number.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws UnsupportedEncodingException If the email encoding is unsupported.
+     */
     private void sendAppointmentCanceledNotification(String data) throws MessagingException, UnsupportedEncodingException {
         String[] parts = data.split("#");
         Long veterinarianId = Long.parseLong(parts[0]);
@@ -128,6 +187,13 @@ public class RabbitMQConsumer {
         emailService.sendEmail(veterinarian.getEmail(), subject, senderName, mailContent);
     }
 
+    /**
+     * Sends a notification to the patient about an approved appointment.
+     *
+     * @param data The ID of the patient.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws UnsupportedEncodingException If the email encoding is unsupported.
+     */
     private void sendAppointmentApprovedNotification(String data) throws MessagingException, UnsupportedEncodingException {
         Long patientId = Long.parseLong(data);
         User patient = userService.findById(patientId);
@@ -141,6 +207,13 @@ public class RabbitMQConsumer {
         emailService.sendEmail(patient.getEmail(), subject, senderName, mailContent);
     }
 
+    /**
+     * Sends a notification to the patient about a declined appointment.
+     *
+     * @param data The ID of the patient.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws UnsupportedEncodingException If the email encoding is unsupported.
+     */
     private void sendAppointmentDeclinedNotification(String data) throws MessagingException, UnsupportedEncodingException {
         Long patientId = Long.parseLong(data);
         User patient = userService.findById(patientId);
@@ -154,6 +227,13 @@ public class RabbitMQConsumer {
         emailService.sendEmail(patient.getEmail(), subject, senderName, mailContent);
     }
 
+    /**
+     * Sends a password reset email to the user.
+     *
+     * @param data The ID of the user and the verification token.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws UnsupportedEncodingException If the email encoding is unsupported.
+     */
     private void sendPasswordResetEmail(String data) throws MessagingException, UnsupportedEncodingException {
         String[] parts = data.split("#");
         Long userId = Long.parseLong(parts[0]);

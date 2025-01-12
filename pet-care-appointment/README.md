@@ -45,7 +45,8 @@ Pet Care Appointment is a full-featured application designed for managing veteri
 - **RabbitMQ:** Asynchronous task handling.
 - **Logback:** Event logging within the application.
 - **ModelMapper:** Transforming data between DTOs and entities.
-- **Springdoc OpenAPI:** Generating Swagger UI for API documentation.
+- **Javadoc:** Internal documentation for all classes, methods, and APIs, providing a clear understanding of the project's structure and functionality for developers.
+
 
 ### Frontend
 - **JavaScript:** The primary language for developing the client-side.

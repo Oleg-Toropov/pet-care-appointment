@@ -25,10 +25,17 @@ import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Configuration class for application security.
+ * <p>
+ * This class sets up security configurations including authentication,
+ * authorization, CORS settings, and session management for the application.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class ApplicationSecurityConfig {
+
     private final UPCUserDetailsService upcUserDetailsService;
     private final JwtAuthEntryPoint authEntryPoint;
 
@@ -36,21 +43,43 @@ public class ApplicationSecurityConfig {
             "/api/v1/appointments/book-appointment",
             "/api/v1/reviews/**");
 
+    /**
+     * Bean definition for JWT authentication token filter.
+     *
+     * @return the {@link AuthTokenFilter} bean
+     */
     @Bean
     public AuthTokenFilter authTokenFilter() {
         return new AuthTokenFilter();
     }
 
+    /**
+     * Bean definition for password encoder using BCrypt hashing.
+     *
+     * @return the {@link PasswordEncoder} bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Bean definition for the authentication manager.
+     *
+     * @param authConfig the authentication configuration
+     * @return the {@link AuthenticationManager} bean
+     * @throws Exception if an error occurs while retrieving the authentication manager
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * Configures the DAO-based authentication provider.
+     *
+     * @return the {@link DaoAuthenticationProvider} bean
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
@@ -59,6 +88,13 @@ public class ApplicationSecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Configures the security filter chain for HTTP security.
+     *
+     * @param http the {@link HttpSecurity} object
+     * @return the {@link SecurityFilterChain} bean
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -73,7 +109,11 @@ public class ApplicationSecurityConfig {
         return http.build();
     }
 
-
+    /**
+     * Configures Cross-Origin Resource Sharing (CORS) settings.
+     *
+     * @return the {@link WebMvcConfigurer} bean
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

@@ -16,12 +16,22 @@ import java.sql.SQLException;
 
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * This controller handles CRUD operations for user photos.
+ */
 @RestController
 @RequestMapping(UrlMapping.PHOTOS)
 @RequiredArgsConstructor
 public class PhotoController {
     private final IPhotoService photoService;
 
+    /**
+     * Uploads a photo for a specified user.
+     *
+     * @param file   the photo file to be uploaded
+     * @param userId the ID of the user associated with the photo
+     * @return a response containing the ID of the saved photo
+     */
     @PostMapping(UrlMapping.UPLOAD_PHOTO)
     public ResponseEntity<CustomApiResponse> savePhoto(@RequestParam MultipartFile file,
                                                        @RequestParam Long userId) {
@@ -33,6 +43,12 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Retrieves a photo by its ID.
+     *
+     * @param photoId the ID of the photo to be retrieved
+     * @return a response containing the photo data as a byte array
+     */
     @GetMapping(value = UrlMapping.GET_PHOTO_BY_ID)
     public ResponseEntity<CustomApiResponse> getPhotoById(@PathVariable Long photoId) {
         try {
@@ -46,6 +62,13 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Deletes a photo by its ID.
+     *
+     * @param photoId the ID of the photo to be deleted
+     * @param userId  the ID of the user associated with the photo
+     * @return a response containing the ID of the deleted photo
+     */
     @DeleteMapping(UrlMapping.DELETE_PHOTO)
     public ResponseEntity<CustomApiResponse> deletePhoto(@PathVariable Long photoId, @PathVariable Long userId) {
         try {
@@ -58,6 +81,13 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Updates an existing photo.
+     *
+     * @param photoId the ID of the photo to be updated
+     * @param file    the new photo file to replace the old one
+     * @return a response containing the ID of the updated photo
+     */
     @PutMapping(UrlMapping.UPDATE_PHOTO)
     public ResponseEntity<CustomApiResponse> updatePhoto(@PathVariable Long photoId, @RequestBody MultipartFile file) {
         try {

@@ -18,6 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service for managing reviews.
+ * Handles the logic for creating, deleting, and retrieving reviews,
+ * as well as calculating average ratings for veterinarians.
+ */
 @Service
 @RequiredArgsConstructor
 public class ReviewService implements IReviewService {
@@ -25,6 +30,18 @@ public class ReviewService implements IReviewService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Saves a new review for a veterinarian.
+     *
+     * @param review the review to save.
+     * @param reviewerId the ID of the patient submitting the review.
+     * @param veterinarianId the ID of the veterinarian being reviewed.
+     * @return the saved review.
+     * @throws IllegalArgumentException if the reviewer is the veterinarian.
+     * @throws AlreadyExistsException  if the patient has already reviewed the veterinarian.
+     * @throws ResourceNotFoundException if the veterinarian or patient does not exist.
+     * @throws IllegalStateException if the patient has no completed appointments with the veterinarian.
+     */
     @Transactional
     @Override
     public Review saveReview(Review review, Long reviewerId, Long veterinarianId) {
@@ -55,6 +72,12 @@ public class ReviewService implements IReviewService {
         return reviewRepository.save(review);
     }
 
+    /**
+     * Deletes a review by its ID.
+     *
+     * @param reviewId the ID of the review to delete.
+     * @throws ResourceNotFoundException if the review does not exist.
+     */
     @Override
     public void deleteReview(Long reviewId) {
         reviewRepository.findById(reviewId).ifPresentOrElse(Review::removeRelationShip, () -> {
@@ -63,12 +86,26 @@ public class ReviewService implements IReviewService {
         reviewRepository.deleteById(reviewId);
     }
 
+    /**
+     * Retrieves a paginated list of reviews for a specific user.
+     *
+     * @param userId the ID of the user.
+     * @param page   the page number.
+     * @param size   the page size.
+     * @return a paginated list of reviews.
+     */
     @Override
     public Page<Review> findAllReviewsByUserId(Long userId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return reviewRepository.findAllByUserId(userId, pageRequest);
     }
 
+    /**
+     * Calculates the average rating for a veterinarian.
+     *
+     * @param veterinarianId the ID of the veterinarian.
+     * @return the average rating, or 0 if the veterinarian has no reviews.
+     */
     @Transactional
     @Override
     public double getAverageRatingForVet(Long veterinarianId) {

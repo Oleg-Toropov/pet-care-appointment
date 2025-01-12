@@ -30,6 +30,10 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+/**
+ * REST controller for managing authentication and authorization operations.
+ * Handles user login, email verification, password reset, and token-related actions.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.AUTH)
@@ -40,6 +44,12 @@ public class AuthController {
     private final IPasswordResetService passwordResetService;
     private final RabbitMQProducer rabbitMQProducer;
 
+    /**
+     * Authenticates the user and returns a JWT token upon successful login.
+     *
+     * @param request the login request containing email and password.
+     * @return a JWT token if authentication succeeds or an error message if it fails.
+     */
     @PostMapping(UrlMapping.LOGIN)
     public ResponseEntity<CustomApiResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
@@ -60,6 +70,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Verifies the user's email using the provided verification token.
+     *
+     * @param token the verification token.
+     * @return a success or error message based on the verification result.
+     */
     @GetMapping(UrlMapping.VERIFY_EMAIL)
     public ResponseEntity<CustomApiResponse> verifyEmail(@RequestParam("token") String token) {
         String result = tokenService.validateToken(token);
@@ -74,6 +90,12 @@ public class AuthController {
         };
     }
 
+    /**
+     * Resends a new verification token to the user.
+     *
+     * @param oldToken the old expired or invalid token.
+     * @return a success or error message based on the token regeneration process.
+     */
     @PutMapping(UrlMapping.RESEND_VERIFICATION_TOKEN)
     public ResponseEntity<CustomApiResponse> resendVerificationToken(@RequestParam("token") String oldToken) {
         try {
@@ -85,6 +107,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Initiates the password reset process by sending a reset email.
+     *
+     * @param requestBody the request containing the user's email.
+     * @return a success or error message indicating the status of the reset request.
+     */
     @PostMapping(UrlMapping.REQUEST_PASSWORD_RESET)
     public ResponseEntity<CustomApiResponse> requestPasswordReset(@RequestBody Map<String, String> requestBody) {
         try {
@@ -98,6 +126,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Resets the user's password using a valid reset token.
+     *
+     * @param request the password reset request containing the token and new password.
+     * @return a success or error message based on the reset process.
+     */
     @PostMapping(UrlMapping.RESET_PASSWORD)
     public ResponseEntity<CustomApiResponse> resetPassword(@RequestBody PasswordResetRequest request) {
         try {

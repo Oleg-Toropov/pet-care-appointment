@@ -13,12 +13,22 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Controller for managing veterinarian biographies. Provides endpoints to create, update, retrieve,
+ * and delete biographies of veterinarians.
+ */
 @RestController
 @RequestMapping(UrlMapping.BIOGRAPHIES)
 @RequiredArgsConstructor
 public class VetBiographyController {
     private final IVetBiographyService vetBiographyService;
 
+    /**
+     * Retrieves a veterinarian's biography by their ID.
+     *
+     * @param vetId the ID of the veterinarian
+     * @return a {@link ResponseEntity} containing the veterinarian biography or an error message
+     */
     @GetMapping(UrlMapping.GET_BIOGRAPHY_BY_VET_ID)
     public ResponseEntity<CustomApiResponse> getVetBiographyByVetId(@PathVariable Long vetId) {
         try {
@@ -31,6 +41,13 @@ public class VetBiographyController {
         }
     }
 
+    /**
+     * Saves a new biography for a veterinarian.
+     *
+     * @param vetId the ID of the veterinarian
+     * @param request the biography details
+     * @return a {@link ResponseEntity} containing the saved biography or an error message
+     */
     @PostMapping(UrlMapping.SAVE_BIOGRAPHY)
     public ResponseEntity<CustomApiResponse> saveVetBiography(@PathVariable Long vetId, @RequestBody VetBiography request) {
         try {
@@ -43,6 +60,13 @@ public class VetBiographyController {
         }
     }
 
+    /**
+     * Updates an existing biography for a veterinarian.
+     *
+     * @param id the ID of the biography to update
+     * @param request the updated biography details
+     * @return a {@link ResponseEntity} containing the updated biography or an error message
+     */
     @PutMapping(UrlMapping.UPDATE_BIOGRAPHY)
     public ResponseEntity<CustomApiResponse> updateVetBiography(@PathVariable Long id, @RequestBody VetBiography request) {
         try {
@@ -55,6 +79,12 @@ public class VetBiographyController {
         }
     }
 
+    /**
+     * Deletes a biography by its ID.
+     *
+     * @param id the ID of the biography to delete
+     * @return a {@link ResponseEntity} indicating the success of the operation or an error message
+     */
     @DeleteMapping(UrlMapping.DELETE_BIOGRAPHY)
     public ResponseEntity<CustomApiResponse>  deleteVetBiography(@PathVariable Long id) {
         try {

@@ -9,6 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Factory class for creating {@link User} instances based on the user type.
+ * <p>
+ * This factory supports the creation of different user roles such as Admins,
+ * Veterinarians, and Patients. It validates user uniqueness by email before
+ * delegating creation to specific factories for each user type.
+ */
 @Component
 @RequiredArgsConstructor
 public class SimpleUserFactory implements UserFactory {
@@ -18,6 +25,14 @@ public class SimpleUserFactory implements UserFactory {
     private final PatientFactory patientFactory;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Creates a new {@link User} instance based on the user type provided in the
+     * {@link RegistrationRequest}.
+     *
+     * @param registrationRequest the registration details including user type, email, and password
+     * @return a new {@link User} instance corresponding to the user type
+     * @throws UserAlreadyExistsException if a user with the same email already exists
+     */
     @Override
     public User createUser(RegistrationRequest registrationRequest) {
         if (userRepository.existsByEmail(registrationRequest.getEmail())) {

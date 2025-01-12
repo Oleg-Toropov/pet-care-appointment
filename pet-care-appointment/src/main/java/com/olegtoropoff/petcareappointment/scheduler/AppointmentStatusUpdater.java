@@ -7,25 +7,45 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Scheduler component for automating the update of appointment statuses.
+ * <p>
+ * This class runs a scheduled task to periodically check and update the status of
+ * appointments in the system. It uses a cron expression to define the schedule.
+ */
 @Component
 @RequiredArgsConstructor
 public class AppointmentStatusUpdater {
+
+    /**
+     * Service for managing appointments.
+     */
     private final IAppointmentService appointmentService;
+
+    /**
+     * Cron expression to schedule the task.
+     * <p>
+     * The cron expression {@code "0 0/5 * 1/1 * ?"} specifies the following:
+     * <ul>
+     *     <li><strong>Seconds:</strong> {@code 0} - Task runs at the 0th second of the minute.</li>
+     *     <li><strong>Minutes:</strong> {@code 0/5} - Task runs every 5 minutes.</li>
+     *     <li><strong>Hours:</strong> {@code *} - Task runs every hour.</li>
+     *     <li><strong>Day of month:</strong> {@code 1/1} - Task runs every day of the month.</li>
+     *     <li><strong>Month:</strong> {@code *} - Task runs every month.</li>
+     *     <li><strong>Day of week:</strong> {@code ?} - Task runs on any day of the week.</li>
+     * </ul>
+     * As a result, this task is executed every 5 minutes.
+     */
     private static final String CRON_EXPRESSION = "0 0/5 * 1/1 * ?";
 
-      /* In the cron expression "0 0/5 * 1/1 * ?", each field represents
-        a different unit of time.
-         Here's the breakdown:
-
-        Seconds: "0" - The task will run at 0 seconds of the minute.
-        Minutes: "0/5" - The task will run every 5 minutes, starting from the 0th minute.
-        Hours: Any * - The task can run at any hour.
-        Day of month: "1/1" - The task can run on any day of the month.
-        Month: Any * - The task can run in any month.
-        Day of week: Any - The task can run on any day of the week.
-        As a result, the task will run every 5 minutes, starting from the 0th minute, every
-        hour, every day of the month, every month, and every day of the week.    */
-
+    /**
+     * Scheduled task to automate the update of appointment statuses.
+     * <p>
+     * This method retrieves all appointment IDs and updates their statuses
+     * by delegating to the {@link IAppointmentService}.
+     * <p>
+     * The task runs according to the defined {@link #CRON_EXPRESSION}.
+     */
     @Scheduled(cron = CRON_EXPRESSION)
     public void automateAppointmentStatusUpdate(){
         List<Long> appointmentIds = appointmentService.getAppointmentIds();

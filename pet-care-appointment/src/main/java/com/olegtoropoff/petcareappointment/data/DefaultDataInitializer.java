@@ -17,6 +17,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Initializes default roles and user accounts in the application upon startup.
+ * <p>
+ * This component listens for the {@link ApplicationReadyEvent} and creates:
+ * <ul>
+ *     <li>Default roles (e.g., ADMIN, PATIENT, VET)</li>
+ *     <li>Default admin account</li>
+ *     <li>Sample veterinarian accounts</li>
+ *     <li>Sample patient accounts</li>
+ * </ul>
+ * The initialization is transactional to ensure consistency.
+ */
 @Component
 @Transactional
 @RequiredArgsConstructor
@@ -29,7 +41,13 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
     private final AdminRepository adminRepository;
     private final RoleService roleService;
 
-
+    /**
+     * Triggered when the application is fully started.
+     * <p>
+     * Creates default roles and accounts if they do not already exist.
+     *
+     * @param event the event indicating the application is ready
+     */
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         Set<String> defaultRoles = Set.of("ROLE_ADMIN", "ROLE_PATIENT", "ROLE_VET");
@@ -40,6 +58,11 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
 //        createDefaultPatientIfNotExits();
     }
 
+    /**
+     * Creates default veterinarian accounts if they do not already exist.
+     * <p>
+     * Each veterinarian has a unique email and a predefined password.
+     */
     private void createDefaultVetIfNotExits() {
         Role vetRole = roleService.getRoleByName("ROLE_VET");
         for (int i = 1; i <= 4; i++) {
@@ -63,6 +86,11 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         }
     }
 
+    /**
+     * Creates default patient accounts if they do not already exist.
+     * <p>
+     * Each patient has a unique email and a predefined password.
+     */
     private void createDefaultPatientIfNotExits() {
         Role patientRole = roleService.getRoleByName("ROLE_PATIENT");
         for (int i = 1; i <= 4; i++) {
@@ -85,6 +113,11 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         }
     }
 
+    /**
+     * Creates a default admin account if it does not already exist.
+     * <p>
+     * The admin account has a predefined email and password.
+     */
     private void createDefaultAdminIfNotExists() {
         Role adminRole = roleService.getRoleByName("ROLE_ADMIN");
         final String defaultAdminEmail = "admin@email.com";
@@ -106,7 +139,11 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         System.out.println("Default admin user created successfully.");
     }
 
-
+    /**
+     * Creates default roles if they do not already exist in the system.
+     *
+     * @param roles a set of role names to be created
+     */
     private void createDefaultRoleIfNotExits(Set<String> roles) {
         roles.stream()
                 .filter(role -> roleRepository.findByName(role).isEmpty())

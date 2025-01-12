@@ -24,6 +24,10 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * Controller for managing users in the system. Provides endpoints for user registration,
+ * updates, password changes, and data retrieval.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UrlMapping.USERS)
@@ -33,6 +37,12 @@ public class UserController {
     private final IChangePasswordService changePasswordService;
     private final RabbitMQProducer rabbitMQProducer;
 
+    /**
+     * Registers a new user.
+     *
+     * @param request the registration request containing user details
+     * @return a {@link ResponseEntity} containing the created user's details
+     */
     @PostMapping(UrlMapping.REGISTER_USER)
     public ResponseEntity<CustomApiResponse> register(@RequestBody RegistrationRequest request) {
         try {
@@ -49,6 +59,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Updates user details.
+     *
+     * @param userId the ID of the user to update
+     * @param request the update request containing new user details
+     * @return a {@link ResponseEntity} containing the updated user's details
+     */
     @PutMapping(UrlMapping.UPDATE_USER)
     public ResponseEntity<CustomApiResponse> update(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
         try {
@@ -64,6 +81,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves a list of all users.
+     *
+     * @return a {@link ResponseEntity} containing a list of all users
+     */
     @GetMapping(UrlMapping.GET_ALL_USERS)
     public ResponseEntity<CustomApiResponse> getAllUsers() {
         try {
@@ -74,6 +96,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves user details by ID.
+     *
+     * @param userId the ID of the user
+     * @return a {@link ResponseEntity} containing the user's details
+     */
     @GetMapping(UrlMapping.GET_USER_BY_ID)
     public ResponseEntity<CustomApiResponse> getById(@PathVariable Long userId) {
         try {
@@ -86,6 +114,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Deletes a user by ID.
+     *
+     * @param userId the ID of the user to delete
+     * @return a {@link ResponseEntity} indicating the success of the operation
+     */
     @DeleteMapping(UrlMapping.DELETE_USER_BY_ID)
     public ResponseEntity<CustomApiResponse> deleteById(@PathVariable Long userId) {
         try {
@@ -98,6 +132,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Changes a user's password.
+     *
+     * @param userId the ID of the user
+     * @param request the password change request containing current and new passwords
+     * @return a {@link ResponseEntity} indicating the success of the operation
+     */
     @PutMapping(UrlMapping.CHANGE_PASSWORD)
     public ResponseEntity<CustomApiResponse> changePassword(@PathVariable Long userId,
                                                             @RequestBody ChangePasswordRequest request) {
@@ -113,21 +154,41 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves the number of veterinarians in the system.
+     *
+     * @return the count of veterinarians
+     */
     @GetMapping(UrlMapping.COUNT_ALL_VETERINARIANS)
     public long countVeterinarians() {
         return userService.countVeterinarians();
     }
 
+    /**
+     * Retrieves the number of patients in the system.
+     *
+     * @return the count of patients
+     */
     @GetMapping(UrlMapping.COUNT_ALL_PATIENTS)
     public long countPatients() {
         return userService.countPatients();
     }
 
+    /**
+     * Retrieves the total number of users in the system.
+     *
+     * @return the count of users
+     */
     @GetMapping(UrlMapping.COUNT_ALL_USERS)
     public long countUsers() {
         return userService.countAllUsers();
     }
 
+    /**
+     * Aggregates users by month and type.
+     *
+     * @return a {@link ResponseEntity} containing aggregated user data
+     */
     @GetMapping(UrlMapping.AGGREGATE_USERS)
     public ResponseEntity<CustomApiResponse> aggregateUserByMonthAndType() {
         try {
@@ -138,6 +199,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Aggregates users by their enabled status.
+     *
+     * @return a {@link ResponseEntity} containing aggregated user data
+     */
     @GetMapping(UrlMapping.AGGREGATE_USERS_BY_STATUS)
     public ResponseEntity<CustomApiResponse> getAggregateUsersByEnabledStatus() {
         try {
@@ -148,6 +214,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Locks a user account.
+     *
+     * @param userId the ID of the user to lock
+     * @return a {@link ResponseEntity} indicating the success of the operation
+     */
     @PutMapping(UrlMapping.LOCK_USER_ACCOUNT)
     public ResponseEntity<CustomApiResponse> lockUserAccount(@PathVariable Long userId) {
         try {
@@ -158,6 +230,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Unlocks a user account.
+     *
+     * @param userId the ID of the user to unlock
+     * @return a {@link ResponseEntity} indicating the success of the operation
+     */
     @PutMapping(UrlMapping.UNLOCK_USER_ACCOUNT)
     public ResponseEntity<CustomApiResponse> unLockUserAccount(@PathVariable Long userId) {
         try {
@@ -168,6 +246,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves a user's photo by ID.
+     *
+     * @param userId the ID of the user
+     * @return a {@link ResponseEntity} containing the user's photo as a byte array
+     */
     @GetMapping(value = UrlMapping.GET_PHOTO_BY_USER_ID, produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getPhotoByUserId(@PathVariable Long userId) {
         try {
