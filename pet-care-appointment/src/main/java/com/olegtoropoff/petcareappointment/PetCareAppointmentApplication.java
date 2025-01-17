@@ -6,32 +6,48 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Pet Care Appointment Application.
+ * Entry point for the Pet Care Appointment Application.
  * <p>
- * Technology stack:
+ * This application provides an appointment scheduling system for veterinarians and pet owners, offering features like
+ * user management, appointment booking, and review systems. The technology stack includes:
  * <ul>
  *     <li>Backend: Java 17, Spring Boot, Hibernate, MySQL</li>
  *     <li>Frontend: React, Bootstrap, Axios</li>
  *     <li>Asynchronous processing: RabbitMQ</li>
  *     <li>Containerization: Docker</li>
  * </ul>
+ *
+ * Features include:
+ * <ul>
+ *     <li>Secure user authentication with JWT.</li>
+ *     <li>Photo storage integration with Yandex S3.</li>
+ *     <li>Task scheduling via Spring's @EnableScheduling.</li>
+ * </ul>
  */
-
 @SpringBootApplication
 @EnableScheduling
 public class PetCareAppointmentApplication {
 
 	/**
 	 * The entry point of the application.
-	 *
-	 * <p>Performs the following tasks:
+	 * <p>
+	 * This method initializes the application by:
 	 * <ul>
-	 *   <li>Loads environment variables from the `.env` file using the Dotenv library.</li>
-	 *   <li>Sets the system property "JWT_SECRET" if the corresponding environment variable is present.</li>
-	 *   <li>Logs a warning to the console if "JWT_SECRET" is not defined in the `.env` file.</li>
-	 *   <li>Starts the Spring Boot application.</li>
-	 *   <li>Displays a confirmation message in the console indicating that the application is running.</li>
+	 *     <li>Loading environment variables from a `.env` file using the Dotenv library.</li>
+	 *     <li>Setting critical system properties like `JWT_SECRET`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` from
+	 *     the environment variables.</li>
+	 *     <li>Starting the Spring Boot application using {@link SpringApplication#run(Class, String[])}.</li>
+	 *     <li>Displaying a confirmation message indicating the application is running successfully.</li>
 	 * </ul>
+	 *
+	 * <p><strong>Environment Variables:</strong>
+	 * <ul>
+	 *     <li>`JWT_SECRET`: Secret key used for generating and validating JWT tokens.</li>
+	 *     <li>`AWS_ACCESS_KEY_ID`: AWS access key for connecting to Yandex S3 (or AWS S3).</li>
+	 *     <li>`AWS_SECRET_ACCESS_KEY`: AWS secret access key for connecting to Yandex S3 (or AWS S3).</li>
+	 * </ul>
+	 *
+	 * <p>If any of the required environment variables are missing, a warning will be logged to the console.
 	 *
 	 * @param args Command-line arguments passed to the application.
 	 */
@@ -45,6 +61,20 @@ public class PetCareAppointmentApplication {
 			System.setProperty("JWT_SECRET", jwtSecret);
 		} else {
 			System.err.println("JWT_SECRET is not defined in .env file");
+		}
+
+		String awsAccessKeyId = dotenv.get("AWS_ACCESS_KEY_ID");
+		if (awsAccessKeyId != null) {
+			System.setProperty("AWS_ACCESS_KEY_ID", awsAccessKeyId);
+		} else {
+			System.err.println("AWS_ACCESS_KEY_ID is not defined in .env file");
+		}
+
+		String awsSecretAccessKey = dotenv.get("AWS_SECRET_ACCESS_KEY");
+		if (awsSecretAccessKey != null) {
+			System.setProperty("AWS_SECRET_ACCESS_KEY", awsSecretAccessKey);
+		} else {
+			System.err.println("AWS_SECRET_ACCESS_KEY is not defined in .env file");
 		}
 
 		SpringApplication.run(PetCareAppointmentApplication.class, args);

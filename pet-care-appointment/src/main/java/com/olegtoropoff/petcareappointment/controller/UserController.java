@@ -15,7 +15,6 @@ import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import com.olegtoropoff.petcareappointment.utils.UrlMapping;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -247,20 +246,20 @@ public class UserController {
     }
 
     /**
-     * Retrieves a user's photo by ID.
+     * Retrieves the URL of a user's photo by their ID.
      *
      * @param userId the ID of the user
-     * @return a {@link ResponseEntity} containing the user's photo as a byte array
+     * @return a {@link ResponseEntity} containing the URL of the user's photo
      */
-    @GetMapping(value = UrlMapping.GET_PHOTO_BY_USER_ID, produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getPhotoByUserId(@PathVariable Long userId) {
+    @GetMapping(value = UrlMapping.GET_PHOTO_BY_USER_ID)
+    public ResponseEntity<CustomApiResponse> getPhotoByUserId(@PathVariable Long userId) {
         try {
-            byte[] photoBytes = userService.getPhotoByUserId(userId);
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photoBytes);
+            String photoUrl = userService.getPhotoUrlByUserId(userId);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, photoUrl));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).build();
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 }

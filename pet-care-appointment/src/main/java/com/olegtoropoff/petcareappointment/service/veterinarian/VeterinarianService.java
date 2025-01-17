@@ -14,7 +14,6 @@ import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -139,10 +138,10 @@ public class VeterinarianService implements IVeterinarianService {
 
     /**
      * Maps a {@link Veterinarian} entity to a {@link UserDto} object, including additional details such as
-     * average rating, total reviewers, and photo.
+     * average rating, total reviewers, and photo URL.
      *
      * @param veterinarian the veterinarian entity to map.
-     * @return the mapped {@link UserDto} containing veterinarian details.
+     * @return the mapped {@link UserDto} containing veterinarian details, including a link to their photo if available.
      */
     private UserDto mapVeterinarianToUserDto(Veterinarian veterinarian) {
         UserDto userDto = entityConverter.mapEntityToDto(veterinarian, UserDto.class);
@@ -151,12 +150,8 @@ public class VeterinarianService implements IVeterinarianService {
         userDto.setAverageRating(averageRating);
         userDto.setTotalReviewers(totalReviewers);
         if (veterinarian.getPhoto() != null) {
-            try {
-                byte[] photoBytes = photoService.getImageData(veterinarian.getPhoto().getId());
-                userDto.setPhoto(photoBytes);
-            } catch (SQLException e) {
-                throw new RuntimeException(e.getMessage());
-            }
+            String photoUrl = photoService.getPhotoUrlById(veterinarian.getPhoto().getId());
+            userDto.setPhotoUrl(photoUrl);
         }
         return userDto;
     }
@@ -165,8 +160,8 @@ public class VeterinarianService implements IVeterinarianService {
      * Retrieves a list of veterinarians filtered by specialization and availability for a given date and time.
      *
      * @param specialization the specialization to filter veterinarians.
-     * @param date the requested appointment date.
-     * @param time the requested appointment time.
+     * @param date           the requested appointment date.
+     * @param time           the requested appointment time.
      * @return a list of available veterinarians matching the criteria.
      */
     private List<Veterinarian> getAvailableVeterinarians(String specialization, LocalDate date, LocalTime time) {

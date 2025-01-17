@@ -67,7 +67,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void getPhotoById_WhenPhotoExists_ReturnsPhotoBytes() throws SQLException {
+    public void getPhotoById_WhenPhotoExists_ReturnsPhotoUrlBytes() throws SQLException {
         Long photoId = 2L;
         Photo photo = new Photo();
         photo.setId(photoId);
@@ -77,7 +77,7 @@ public class PhotoControllerTest {
         when(photoService.getPhotoById(photoId)).thenReturn(photo);
         when(photoService.getImageData(photoId)).thenReturn(bytes);
 
-        ResponseEntity<CustomApiResponse> response = photoController.getPhotoById(photoId);
+        ResponseEntity<CustomApiResponse> response = photoController.getPhotoUrlById(photoId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -87,11 +87,11 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void getPhotoById_WhenNotFound_ReturnsNotFound() {
+    public void getPhotoUrlById_WhenNotFound_ReturnsNotFound() {
         Long photoId = 100L;
         when(photoService.getPhotoById(photoId)).thenThrow(new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
 
-        ResponseEntity<CustomApiResponse> response = photoController.getPhotoById(photoId);
+        ResponseEntity<CustomApiResponse> response = photoController.getPhotoUrlById(photoId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(FeedBackMessage.RESOURCE_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
@@ -100,11 +100,11 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void getPhotoById_WhenAnyOtherExceptionOccurs_ReturnsInternalServerError() {
+    public void getPhotoUrlById_WhenAnyOtherExceptionOccurs_ReturnsInternalServerError() {
         Long photoId = 2L;
         when(photoService.getPhotoById(photoId)).thenThrow(new RuntimeException());
 
-        ResponseEntity<CustomApiResponse> response = photoController.getPhotoById(photoId);
+        ResponseEntity<CustomApiResponse> response = photoController.getPhotoUrlById(photoId);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());

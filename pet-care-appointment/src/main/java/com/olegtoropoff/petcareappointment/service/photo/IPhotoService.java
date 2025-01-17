@@ -4,7 +4,6 @@ import com.olegtoropoff.petcareappointment.model.Photo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Interface for managing photo-related operations.
@@ -19,17 +18,16 @@ public interface IPhotoService {
      * @param userId the ID of the user to associate the photo with.
      * @return the ID of the saved photo.
      * @throws IOException if an I/O error occurs while reading the file.
-     * @throws SQLException if a database error occurs while saving the photo.
      */
-    Long savePhoto(MultipartFile file, Long userId) throws IOException, SQLException;
+    Long savePhoto(MultipartFile file, Long userId) throws IOException;
 
     /**
-     * Retrieves a photo by its ID.
+     * Retrieves the URL of a photo by its ID.
      *
      * @param id the ID of the photo to retrieve.
-     * @return the {@link Photo} entity.
+     * @return the URL of the photo.
      */
-    Photo getPhotoById(Long id);
+    String getPhotoUrlById(Long id);
 
     /**
      * Deletes a photo and removes its association with a user.
@@ -37,9 +35,8 @@ public interface IPhotoService {
      * @param id     the ID of the photo to delete.
      * @param userId the ID of the user associated with the photo.
      * @return the ID of the deleted photo.
-     * @throws SQLException if a database error occurs during the operation.
      */
-    Long deletePhoto(Long id, Long userId) throws SQLException;
+    Long deletePhoto(Long id, Long userId);
 
     /**
      * Updates an existing photo with new data.
@@ -48,16 +45,6 @@ public interface IPhotoService {
      * @param file the new photo file.
      * @return the ID of the updated photo.
      * @throws IOException if an I/O error occurs while reading the file.
-     * @throws SQLException if a database error occurs while saving the photo.
      */
-    Long updatePhoto(Long id, MultipartFile file) throws SQLException, IOException;
-
-    /**
-     * Retrieves the image data for a photo.
-     *
-     * @param id the ID of the photo.
-     * @return a byte array containing the image data.
-     * @throws SQLException if a database error occurs while retrieving the photo data.
-     */
-    byte[] getImageData(Long id) throws SQLException;
+    Long updatePhoto(Long id, MultipartFile file) throws IOException;
 }

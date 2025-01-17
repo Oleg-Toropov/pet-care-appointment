@@ -80,9 +80,9 @@ public class UserDto {
     private long photoId;
 
     /**
-     * The photo of the user, stored as a byte array.
+     * The URL of the photo associated with the user.
      */
-    private byte[] photo;
+    private String photoUrl;
 
     /**
      * The average rating of the user (applicable for veterinarians).

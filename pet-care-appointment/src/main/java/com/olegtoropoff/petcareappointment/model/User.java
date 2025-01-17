@@ -1,10 +1,7 @@
 package com.olegtoropoff.petcareappointment.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -128,14 +125,4 @@ public class User {
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<VerificationToken> verificationTokens = new ArrayList<>();
-
-    /**
-     * Removes the profile photo of the user.
-     * This method is used to disassociate and delete the photo if it exists.
-     */
-    public void removeUserPhoto() {
-        if (this.getPhoto() != null) {
-            this.setPhoto(null);
-        }
-    }
 }

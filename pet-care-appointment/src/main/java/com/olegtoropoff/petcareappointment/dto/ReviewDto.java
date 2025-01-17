@@ -47,12 +47,12 @@ public class ReviewDto {
     private String patientName;
 
     /**
-     * The image of the patient who provided the review, stored as a byte array.
+     * The URL of the image of the patient who provided the review.
      */
-    private byte[] patientImage;
+    private String patientImageUrl;
 
     /**
-     * The image of the veterinarian being reviewed, stored as a byte array.
+     * The URL of the image of the veterinarian being reviewed.
      */
-    private byte[] veterinarianImage;
+    private String veterinarianImageUrl;
 }

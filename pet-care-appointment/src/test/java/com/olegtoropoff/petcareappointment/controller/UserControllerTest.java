@@ -547,7 +547,7 @@ public class UserControllerTest {
     public void getPhotoByUserId_WhenUserExists_ReturnsPhoto() {
         Long userId = 4L;
         byte[] photoBytes = "fake-image-data".getBytes();
-        when(userService.getPhotoByUserId(userId)).thenReturn(photoBytes);
+        when(userService.getPhotoUrlByUserId(userId)).thenReturn(photoBytes);
 
         ResponseEntity<byte[]> response = userController.getPhotoByUserId(userId);
 
@@ -559,7 +559,7 @@ public class UserControllerTest {
     @Test
     public void getPhotoByUserId_WhenUserNotFound_ThrowsResourceNotFoundException() {
         Long userId = 100L;
-        when(userService.getPhotoByUserId(userId)).thenThrow(new ResourceNotFoundException(""));
+        when(userService.getPhotoUrlByUserId(userId)).thenThrow(new ResourceNotFoundException(""));
 
         ResponseEntity<byte[]> response = userController.getPhotoByUserId(userId);
 
@@ -569,7 +569,7 @@ public class UserControllerTest {
     @Test
     public void getPhotoByUserId_WhenInternalServerError_ThrowsException() {
         Long userId = 4L;
-        when(userService.getPhotoByUserId(userId)).thenThrow(new RuntimeException());
+        when(userService.getPhotoUrlByUserId(userId)).thenThrow(new RuntimeException());
 
         ResponseEntity<byte[]> response = userController.getPhotoByUserId(userId);
 

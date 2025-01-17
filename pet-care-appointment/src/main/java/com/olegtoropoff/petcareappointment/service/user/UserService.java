@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -124,6 +123,9 @@ public class UserService implements IUserService {
                     reviewRepository.deleteAll(reviews);
                     List<Appointment> appointments = new ArrayList<>(appointmentRepository.findAllByUserId(userId));
                     appointmentRepository.deleteAll(appointments);
+                    if (userToDelete.getPhoto() != null) {
+                        photoService.deletePhoto(userToDelete.getPhoto().getId(), userId);
+                    }
                     userRepository.deleteById(userId);
                 }, () -> {
                     throw new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND);
@@ -131,14 +133,13 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Retrieves a user along with their detailed information, including appointments, reviews, and photos.
+     * Retrieves a user along with their detailed information, including appointments, reviews, and photo URL.
      *
      * @param userId the ID of the user to retrieve.
-     * @return a {@link UserDto} containing user details.
-     * @throws SQLException if an error occurs while retrieving photo data.
+     * @return a {@link UserDto} containing user details, including links to photos, appointments, and reviews.
      */
     @Override
-    public UserDto getUserWithDetails(Long userId) throws SQLException {
+    public UserDto getUserWithDetails(Long userId) {
         User user = findById(userId);
         UserDto userDto = entityConverter.mapEntityToDto(user, UserDto.class);
         userDto.setTotalReviewers(reviewRepository.countByVeterinarianId(userId));
@@ -217,16 +218,17 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Sets the photo details for the given user DTO by fetching the photo data.
+     * Sets the photo details for the given user DTO by fetching the photo URL.
      *
-     * @param userDto the {@link UserDto} object where the photo will be set.
-     * @param user    the {@link User} whose photo data will be fetched.
-     * @throws SQLException if there is an error accessing the database.
+     * @param userDto the {@link UserDto} object where the photo details (ID and URL) will be set.
+     * @param user    the {@link User} whose photo URL will be fetched.
+     *                If the user has no associated photo, this method does nothing.
      */
-    private void setUserPhoto(UserDto userDto, User user) throws SQLException {
+    private void setUserPhoto(UserDto userDto, User user) {
         if (user.getPhoto() != null) {
             userDto.setPhotoId(user.getPhoto().getId());
-            userDto.setPhoto(photoService.getImageData(user.getPhoto().getId()));
+            String photoUrl = photoService.getPhotoUrlById(user.getPhoto().getId());
+            userDto.setPhotoUrl(photoUrl);
         }
     }
 
@@ -266,65 +268,39 @@ public class UserService implements IUserService {
 
     /**
      * Maps veterinarian information from a {@link Review} to a {@link ReviewDto}.
+     * This method sets the veterinarian's ID, full name, and photo URL in the given {@link ReviewDto}.
+     * If the veterinarian does not have an associated photo, the photo URL will not be set.
      *
      * @param reviewDto the {@link ReviewDto} where veterinarian information will be set.
-     * @param review    the {@link Review} containing veterinarian details.
+     * @param review    the {@link Review} containing veterinarian details, including ID, name, and photo.
      */
     private void mapVeterinarianInfo(ReviewDto reviewDto, Review review) {
         if (review.getVeterinarian() != null) {
             reviewDto.setVeterinarianId(review.getVeterinarian().getId());
             reviewDto.setVeterinarianName(review.getVeterinarian().getFirstName() + " " + review.getVeterinarian().getLastName());
-            setVeterinarianPhoto(reviewDto, review);
+            if (review.getVeterinarian().getPhoto() != null) {
+                String photoUrl = photoService.getPhotoUrlById(review.getVeterinarian().getPhoto().getId());
+                reviewDto.setVeterinarianImageUrl(photoUrl);
+            }
         }
     }
 
     /**
      * Maps patient information from a {@link Review} to a {@link ReviewDto}.
+     * This method sets the patient's ID, full name, and photo URL in the given {@link ReviewDto}.
+     * If the patient does not have an associated photo, the photo URL will not be set.
      *
      * @param reviewDto the {@link ReviewDto} where patient information will be set.
-     * @param review    the {@link Review} containing patient details.
+     * @param review    the {@link Review} containing patient details, including ID, name, and photo.
      */
     private void mapPatientInfo(ReviewDto reviewDto, Review review) {
         if (review.getPatient() != null) {
             reviewDto.setPatientId(review.getPatient().getId());
             reviewDto.setPatientName(review.getPatient().getFirstName() + " " + review.getPatient().getLastName());
-            setReviewerPhoto(reviewDto, review);
-        }
-    }
-
-    /**
-     * Sets the reviewer's photo for a given review DTO by fetching photo data.
-     *
-     * @param reviewDto the {@link ReviewDto} where the patient's photo will be set.
-     * @param review    the {@link Review} containing patient photo details.
-     */
-    private void setReviewerPhoto(ReviewDto reviewDto, Review review) {
-        if (review.getPatient().getPhoto() != null) {
-            try {
-                reviewDto.setPatientImage(photoService.getImageData(review.getPatient().getPhoto().getId()));
-            } catch (SQLException e) {
-                throw new RuntimeException(e.getMessage());
+            if (review.getPatient().getPhoto() != null) {
+                String photoUrl = photoService.getPhotoUrlById(review.getPatient().getPhoto().getId());
+                reviewDto.setPatientImageUrl(photoUrl);
             }
-        } else {
-            reviewDto.setPatientImage(null);
-        }
-    }
-
-    /**
-     * Sets the veterinarian's photo for a given review DTO by fetching photo data.
-     *
-     * @param reviewDto the {@link ReviewDto} where the veterinarian's photo will be set.
-     * @param review    the {@link Review} containing veterinarian photo details.
-     */
-    private void setVeterinarianPhoto(ReviewDto reviewDto, Review review) {
-        if (review.getVeterinarian().getPhoto() != null) {
-            try {
-                reviewDto.setVeterinarianImage(photoService.getImageData(review.getVeterinarian().getPhoto().getId()));
-            } catch (SQLException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        } else {
-            reviewDto.setVeterinarianImage(null);
         }
     }
 
@@ -362,7 +338,7 @@ public class UserService implements IUserService {
      * Aggregates the count of users by their creation month and user type.
      *
      * @return a nested map where the key is the month, the value is another map
-     *         where the key is the user type and the value is the count of users.
+     * where the key is the user type and the value is the count of users.
      */
     @Override
     public Map<String, Map<String, Long>> aggregateUsersByMonthAndType() {
@@ -378,8 +354,8 @@ public class UserService implements IUserService {
      * Aggregates the count of users by their enabled status and user type.
      *
      * @return a nested map where the key is the enabled status ("Enabled" or "Non-Enabled"),
-     *         and the value is another map where the key is the user type and the value
-     *         is the count of users.
+     * and the value is another map where the key is the user type and the value
+     * is the count of users.
      */
     @Override
     public Map<String, Map<String, Long>> aggregateUsersByEnabledStatusAndType() {
@@ -410,20 +386,19 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Retrieves the photo data for a given user's photo by user ID.
+     * Retrieves the URL of the photo associated with a specific user.
+     * If the user has an associated photo, this method returns the URL of the photo stored in the S3 bucket.
+     * If the user does not have a photo, it returns {@code null}.
      *
-     * @param userId the ID of the user whose photo data will be fetched.
-     * @return a byte array containing the photo data, or null if no photo exists.
+     * @param userId the ID of the user whose photo URL is to be retrieved.
+     * @return the URL of the user's photo, or {@code null} if the user has no associated photo.
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist.
      */
     @Override
-    public byte[] getPhotoByUserId(Long userId) {
+    public String getPhotoUrlByUserId(Long userId) {
         User user = findById(userId);
         if (user.getPhoto() != null) {
-            try {
-                return photoService.getImageData(user.getPhoto().getId());
-            } catch (SQLException e) {
-                throw new RuntimeException(e.getMessage());
-            }
+            return photoService.getPhotoUrlById(user.getPhoto().getId());
         }
         return null;
     }

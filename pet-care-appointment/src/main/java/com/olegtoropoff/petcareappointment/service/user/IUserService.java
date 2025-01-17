@@ -4,6 +4,7 @@ import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
+import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -120,10 +121,12 @@ public interface IUserService {
     void unLockUserAccount(Long userId);
 
     /**
-     * Retrieves the photo associated with a user.
+     * Retrieves the URL of the photo associated with a user.
      *
-     * @param userId the ID of the user whose photo is to be retrieved.
-     * @return a byte array representing the user's photo data, or {@code null} if the user has no photo.
+     * @param userId the ID of the user whose photo URL is to be retrieved.
+     * @return a {@link String} representing the URL of the user's photo,
+     *         or {@code null} if the user has no associated photo.
+     * @throws ResourceNotFoundException if the user with the specified ID is not found.
      */
-    byte[] getPhotoByUserId(Long userId);
+    String getPhotoUrlByUserId(Long userId);
 }

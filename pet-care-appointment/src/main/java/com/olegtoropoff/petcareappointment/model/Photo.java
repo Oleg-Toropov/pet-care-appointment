@@ -6,12 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Blob;
-
 /**
- * Represents a photo entity used to store image data associated with users or other entities.
- * <p>
- * The photo includes metadata such as file type and name, along with the binary image data stored as a {@link Blob}.
+ * Represents a photo entity used to store metadata and reference to the stored image in S3.
  */
 @Entity
 @Getter
@@ -42,10 +38,12 @@ public class Photo {
     private String fileName;
 
     /**
-     * The binary image data stored as a {@link Blob}.
+     * URL of the image stored in S3.
      * <p>
-     * This contains the actual image content.
+     * This is used to access the file from Yandex S3.
      */
-    @Lob
-    private Blob image;
+    private String s3Url;
+
+    @OneToOne(mappedBy = "photo")
+    private User user;
 }

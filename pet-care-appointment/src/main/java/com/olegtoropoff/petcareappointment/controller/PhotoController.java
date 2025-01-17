@@ -1,7 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
-import com.olegtoropoff.petcareappointment.model.Photo;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.photo.IPhotoService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
@@ -11,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * This controller handles CRUD operations for user photos.
@@ -26,10 +23,10 @@ public class PhotoController {
     private final IPhotoService photoService;
 
     /**
-     * Uploads a photo for a specified user.
+     * Uploads a photo for a specified user and saves it to the storage.
      *
      * @param file   the photo file to be uploaded
-     * @param userId the ID of the user associated with the photo
+     * @param userId the ID of the user to associate the photo with
      * @return a response containing the ID of the saved photo
      */
     @PostMapping(UrlMapping.UPLOAD_PHOTO)
@@ -38,25 +35,26 @@ public class PhotoController {
         try {
             Long id = photoService.savePhoto(file, userId);
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PHOTO_UPDATE_SUCCESS, id));
-        } catch (IOException | SQLException e) {
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
+        }catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
 
     /**
-     * Retrieves a photo by its ID.
+     * Retrieves a photo URL by its ID.
      *
      * @param photoId the ID of the photo to be retrieved
-     * @return a response containing the photo data as a byte array
+     * @return a response containing the photo URL as a string
      */
     @GetMapping(value = UrlMapping.GET_PHOTO_BY_ID)
-    public ResponseEntity<CustomApiResponse> getPhotoById(@PathVariable Long photoId) {
+    public ResponseEntity<CustomApiResponse> getPhotoUrlById(@PathVariable Long photoId) {
         try {
-            Photo photo = photoService.getPhotoById(photoId);
-            byte[] photoBytes = photoService.getImageData(photo.getId());
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, photoBytes));
-        } catch (ResourceNotFoundException | SQLException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
+            String photoUrl = photoService.getPhotoUrlById(photoId);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, photoUrl));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
@@ -74,8 +72,8 @@ public class PhotoController {
         try {
             Long id = photoService.deletePhoto(photoId, userId);
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PHOTO_REMOVE_SUCCESS, id));
-        } catch (ResourceNotFoundException | SQLException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
@@ -89,12 +87,12 @@ public class PhotoController {
      * @return a response containing the ID of the updated photo
      */
     @PutMapping(UrlMapping.UPDATE_PHOTO)
-    public ResponseEntity<CustomApiResponse> updatePhoto(@PathVariable Long photoId, @RequestBody MultipartFile file) {
+    public ResponseEntity<CustomApiResponse> updatePhoto(@PathVariable Long photoId, @RequestParam MultipartFile file) {
         try {
             Long id = photoService.updatePhoto(photoId, file);
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PHOTO_UPDATE_SUCCESS, id));
-        } catch (ResourceNotFoundException | SQLException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(FeedBackMessage.RESOURCE_NOT_FOUND, null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
