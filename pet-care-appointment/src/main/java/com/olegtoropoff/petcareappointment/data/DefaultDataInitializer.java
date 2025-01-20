@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.data;
 
+import com.olegtoropoff.petcareappointment.enums.AppointmentStatus;
 import com.olegtoropoff.petcareappointment.model.*;
 import com.olegtoropoff.petcareappointment.repository.*;
 import com.olegtoropoff.petcareappointment.service.photo.YandexS3Service;
@@ -14,9 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,6 +48,9 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
     private final PasswordEncoder passwordEncoder;
     private final PhotoRepository photoRepository;
     private final YandexS3Service yandexS3Service;
+    private final AppointmentRepository appointmentRepository;
+    private final PetRepository petRepository;
+    private final ReviewRepository reviewRepository;
 
     /**
      * Path to the directory containing default veterinarian photos.
@@ -102,6 +111,12 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         initializeAdmins(defaultUserData);
         initializeVeterinarians(defaultUserData);
         initializePatients(defaultUserData);
+
+        DefaultAppointmentData defaultAppointmentData = DefaultDataReader.readDefaultAppointmentData();
+        initializeAppointments(defaultAppointmentData);
+
+        DefaultReviewData defaultReviewData = DefaultDataReader.readDefaultReviewData();
+        initializeReviews(defaultReviewData);
     }
 
     /**
@@ -233,5 +248,75 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
                 }
             }
         }
+    }
+
+    private void initializeAppointments(DefaultAppointmentData defaultAppointmentData) {
+        defaultAppointmentData.getAppointments().forEach(appointmentData -> {
+            if (!appointmentRepository.existsByAppointmentNo(appointmentData.getAppointmentNo())) {
+                Optional<User> patient = userRepository.findByEmail(appointmentData.getPatientEmail());
+                Optional<User> veterinarian = userRepository.findByEmail(appointmentData.getVeterinarianEmail());
+
+                if (patient.isPresent() && veterinarian.isPresent()) {
+                    Appointment appointment = createAppointment(appointmentData, patient.get(), veterinarian.get());
+                    List<Pet> pets = savePets(appointmentData.getPets(), appointment);
+                    appointment.setPets(pets);
+                    appointmentRepository.save(appointment);
+                }
+            }
+        });
+    }
+
+    private Appointment createAppointment(DefaultAppointmentData.AppointmentData appointmentData, User patient, User veterinarian) {
+        Appointment appointment = new Appointment();
+        appointment.setReason(appointmentData.getReason());
+        appointment.setAppointmentDate(appointmentData.getAppointmentDate());
+        appointment.setAppointmentTime(appointmentData.getAppointmentTime());
+        appointment.addPatient(patient);
+        appointment.addVeterinarian(veterinarian);
+        appointment.setAppointmentNo(appointmentData.getAppointmentNo());
+        appointment.setStatus(determineStatus(appointmentData.getStatus()));
+        return appointment;
+    }
+
+    private List<Pet> savePets(List<DefaultAppointmentData.PetData> petsData, Appointment appointment) {
+        List<Pet> pets = petsData.stream()
+                .map(petData -> {
+                    Pet pet = new Pet();
+                    pet.setName(petData.getName());
+                    pet.setType(petData.getType());
+                    pet.setBreed(petData.getBreed());
+                    pet.setColor(petData.getColor());
+                    pet.setAge(petData.getAge());
+                    pet.setAppointment(appointment);
+                    return pet;
+                })
+                .toList();
+        return petRepository.saveAll(pets);
+    }
+
+    private AppointmentStatus determineStatus(String status) {
+        return switch (status) {
+            case "COMPLETED" -> AppointmentStatus.COMPLETED;
+            case "CANCELLED" -> AppointmentStatus.CANCELLED;
+            case "NOT_APPROVED" -> AppointmentStatus.NOT_APPROVED;
+            default -> throw new IllegalArgumentException("Unknown appointment status: " + status);
+        };
+    }
+
+    private void initializeReviews(DefaultReviewData defaultReviewData) {
+        defaultReviewData.getReviews().forEach(reviewData -> {
+            Optional<User> patient = userRepository.findByEmail(reviewData.getPatientEmail());
+            Optional<User> veterinarian = userRepository.findByEmail(reviewData.getVeterinarianEmail());
+
+            if (veterinarian.isPresent() && patient.isPresent() &&
+                reviewRepository.findByVeterinarianIdAndPatientId(veterinarian.get().getId(), patient.get().getId()).isEmpty()) {
+                Review review = new Review();
+                review.setFeedback(reviewData.getFeedback());
+                review.setStars(reviewData.getStars());
+                review.setPatient(patient.get());
+                review.setVeterinarian(veterinarian.get());
+                reviewRepository.save(review);
+            }
+        });
     }
 }

@@ -74,4 +74,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * @return {@code true} if such an appointment exists, otherwise {@code false}.
      */
     boolean existsByVeterinarianIdAndPatientIdAndStatus(Long veterinarianId, Long reviewerId, AppointmentStatus appointmentStatus);
+
+    boolean existsByAppointmentNo(String appointmentNo);
 }

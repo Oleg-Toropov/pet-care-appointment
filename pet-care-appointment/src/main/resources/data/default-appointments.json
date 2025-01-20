@@ -1,0 +1,2671 @@
+{
+  "appointments": [
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-12-01",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411843",
+      "status": "COMPLETED",
+      "patientEmail": "anastasia.smirnova@gmail.com",
+      "veterinarianEmail": "dmitry.ivanov@gmail.com",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Сибирский",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-12-02",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411844",
+      "status": "COMPLETED",
+      "patientEmail": "kirill.ivanov@yandex.ru",
+      "veterinarianEmail": "alexander.petrov@yandex.ru",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Лабрадор",
+          "age": 5
+        },
+        {
+          "name": "Чижик",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Корелла",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Лечение",
+      "appointmentDate": "2024-12-03",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411845",
+      "status": "COMPLETED",
+      "patientEmail": "elena.kuznetsova@mail.ru",
+      "veterinarianEmail": "ivan.sidorov@mail.ru",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Дворовый",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр после операции",
+      "appointmentDate": "2024-12-04",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411846",
+      "status": "COMPLETED",
+      "patientEmail": "nikita.petrov@outlook.com",
+      "veterinarianEmail": "maxim.smirnov@outlook.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Такса",
+          "age": 6
+        },
+        {
+          "name": "Фея",
+          "type": "Попугай",
+          "color": "Голубой",
+          "breed": "Волнистый",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Гигиеническая стрижка",
+      "appointmentDate": "2024-12-05",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411847",
+      "status": "COMPLETED",
+      "patientEmail": "sofia.sokolova@rambler.ru",
+      "veterinarianEmail": "evgeny.kuznetsov@rambler.ru",
+      "pets": [
+        {
+          "name": "Томас",
+          "type": "Кот",
+          "color": "Бежевый",
+          "breed": "Персидский",
+          "age": 7
+        }
+      ]
+    },
+    {
+      "reason": "Профилактический осмотр",
+      "appointmentDate": "2024-12-06",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411848",
+      "status": "COMPLETED",
+      "patientEmail": "victor.popov@gmail.com",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Лайма",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Бигль",
+          "age": 4
+        },
+        {
+          "name": "Рыжик",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Мейн-кун",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зуба",
+      "appointmentDate": "2024-12-07",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411849",
+      "status": "CANCELLED",
+      "patientEmail": "maria.lebedeva@yandex.ru",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Серебристый",
+          "breed": "Хаски",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Смена повязки",
+      "appointmentDate": "2024-12-08",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411850",
+      "status": "NOT_APPROVED",
+      "patientEmail": "alexey.sidorov@mail.ru",
+      "veterinarianEmail": "ekaterina.popova@mail.ru",
+      "pets": [
+        {
+          "name": "Пушок",
+          "type": "Кролик",
+          "color": "Белый",
+          "breed": "Декоративный",
+          "age": 1
+        },
+        {
+          "name": "Тучка",
+          "type": "Попугай",
+          "color": "Желтый",
+          "breed": "Волнистый",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-12-09",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411851",
+      "status": "COMPLETED",
+      "patientEmail": "olga.novikova@outlook.com",
+      "veterinarianEmail": "maria.novikova@outlook.com",
+      "pets": [
+        {
+          "name": "Флора",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Мопс",
+          "age": 8
+        }
+      ]
+    },
+    {
+      "reason": "Диспансеризация",
+      "appointmentDate": "2024-12-10",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411852",
+      "status": "COMPLETED",
+      "patientEmail": "danil.krylov@rambler.ru",
+      "veterinarianEmail": "victoria.fedorova@rambler.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Вельш-корги",
+          "age": 3
+        },
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Сиамский",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-12-11",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411853",
+      "status": "COMPLETED",
+      "patientEmail": "polina.fedorova@gmail.com",
+      "veterinarianEmail": "nikolay.mikhailov@gmail.com",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Сибирский",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-12-12",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411854",
+      "status": "COMPLETED",
+      "patientEmail": "igor.morozov@yandex.ru",
+      "veterinarianEmail": "sergey.vasiliev@yandex.ru",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Лабрадор",
+          "age": 4
+        },
+        {
+          "name": "Чижик",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Корелла",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Лечение",
+      "appointmentDate": "2024-12-13",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411855",
+      "status": "COMPLETED",
+      "patientEmail": "yulia.vasilyeva@mail.ru",
+      "veterinarianEmail": "andrey.romanov@mail.ru",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Дворовый",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр после лечения",
+      "appointmentDate": "2024-12-14",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411856",
+      "status": "COMPLETED",
+      "patientEmail": "sergey.grigoriev@outlook.com",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Такса",
+          "age": 2
+        },
+        {
+          "name": "Белка",
+          "type": "Попугай",
+          "color": "Голубой",
+          "breed": "Волнистый",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Плановая стерилизация",
+      "appointmentDate": "2024-12-15",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411857",
+      "status": "CANCELLED",
+      "patientEmail": "tatiana.zaharova@rambler.ru",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Бигль",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Консультация",
+      "appointmentDate": "2024-12-16",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411858",
+      "status": "NOT_APPROVED",
+      "patientEmail": "evgeny.semenov@gmail.com",
+      "veterinarianEmail": "vladimir.semenov@gmail.com",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Серебристый",
+          "breed": "Хаски",
+          "age": 4
+        },
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Сиамский",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-12-17",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411859",
+      "status": "COMPLETED",
+      "patientEmail": "darya.volkova@yandex.ru",
+      "veterinarianEmail": "tatiana.kozlova@yandex.ru",
+      "pets": [
+        {
+          "name": "Томас",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Персидский",
+          "age": 7
+        }
+      ]
+    },
+    {
+      "reason": "Лечение инфекций",
+      "appointmentDate": "2024-12-18",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411860",
+      "status": "COMPLETED",
+      "patientEmail": "maxim.ershov@mail.ru",
+      "veterinarianEmail": "natalia.krylova@mail.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Вельш-корги",
+          "age": 3
+        },
+        {
+          "name": "Рыжик",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Мейн-кун",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр после операции",
+      "appointmentDate": "2024-12-19",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411861",
+      "status": "COMPLETED",
+      "patientEmail": "anna.melnikova@outlook.com",
+      "veterinarianEmail": "julia.zaytseva@outlook.com",
+      "pets": [
+        {
+          "name": "Флора",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Мопс",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-12-20",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411862",
+      "status": "COMPLETED",
+      "patientEmail": "georgy.tikhonov@rambler.ru",
+      "veterinarianEmail": "alisa.vorobyeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Барон",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Доберман",
+          "age": 4
+        },
+        {
+          "name": "Бим",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сфинкс",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-12-21",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411863",
+      "status": "COMPLETED",
+      "patientEmail": "veronika.borisova@gmail.com",
+      "veterinarianEmail": "irina.borisova@gmail.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Лечение",
+      "appointmentDate": "2024-12-22",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411864",
+      "status": "COMPLETED",
+      "patientEmail": "roman.belkin@yandex.ru",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Чарли",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Мейн-кун",
+          "age": 5
+        },
+        {
+          "name": "Гарри",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Какаду",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Плановая стерилизация",
+      "appointmentDate": "2024-12-23",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411865",
+      "status": "CANCELLED",
+      "patientEmail": "ekaterina.zhukova@mail.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландский вислоухий",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Консультация",
+      "appointmentDate": "2024-12-24",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411866",
+      "status": "NOT_APPROVED",
+      "patientEmail": "vladislav.matveev@outlook.com",
+      "veterinarianEmail": "ksenia.nikitina@outlook.com",
+      "pets": [
+        {
+          "name": "Тайсон",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Ротвейлер",
+          "age": 4
+        },
+        {
+          "name": "Джерри",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Персидский",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-12-25",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411867",
+      "status": "COMPLETED",
+      "patientEmail": "alisa.saveleva@rambler.ru",
+      "veterinarianEmail": "darya.golubeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Снупи",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Бигль",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Лечение аллергии",
+      "appointmentDate": "2024-12-26",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411868",
+      "status": "COMPLETED",
+      "patientEmail": "alexandra.orlova@gmail.com",
+      "veterinarianEmail": "dmitry.ivanov@gmail.com",
+      "pets": [
+        {
+          "name": "Бакс",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Русская голубая",
+          "age": 4
+        },
+        {
+          "name": "Луна",
+          "type": "Кошка",
+          "color": "Рыжий",
+          "breed": "Дворовая",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Консультация",
+      "appointmentDate": "2024-12-27",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411869",
+      "status": "COMPLETED",
+      "patientEmail": "dmitry.tarasov@yandex.ru",
+      "veterinarianEmail": "alexander.petrov@yandex.ru",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Лабрадор",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр",
+      "appointmentDate": "2024-12-28",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411870",
+      "status": "COMPLETED",
+      "patientEmail": "valentina.zimina@mail.ru",
+      "veterinarianEmail": "ivan.sidorov@mail.ru",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Хаски",
+          "age": 4
+        },
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Сиамский",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-12-29",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411871",
+      "status": "COMPLETED",
+      "patientEmail": "ilya.shapovalov@outlook.com",
+      "veterinarianEmail": "maxim.smirnov@outlook.com",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сфинкс",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-12-30",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411872",
+      "status": "COMPLETED",
+      "patientEmail": "elizar.savin@rambler.ru",
+      "veterinarianEmail": "evgeny.kuznetsov@rambler.ru",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Лабрадор",
+          "age": 4
+        },
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Серая",
+          "breed": "Шотландская вислоухая",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-11-01",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411873",
+      "status": "CANCELLED",
+      "patientEmail": "peter.emelyanov@gmail.com",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Лечение",
+      "appointmentDate": "2024-11-02",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411874",
+      "status": "NOT_APPROVED",
+      "patientEmail": "ksenia.martynova@yandex.ru",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Тузик",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Доберман",
+          "age": 5
+        },
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Персидский",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр",
+      "appointmentDate": "2024-11-03",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411875",
+      "status": "COMPLETED",
+      "patientEmail": "nadezhda.rogova@mail.ru",
+      "veterinarianEmail": "ekaterina.popova@mail.ru",
+      "pets": [
+        {
+          "name": "Снежок",
+          "type": "Кошка",
+          "color": "Белый",
+          "breed": "Сиамская",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-11-04",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411876",
+      "status": "COMPLETED",
+      "patientEmail": "artem.frolov@outlook.com",
+      "veterinarianEmail": "maria.novikova@outlook.com",
+      "pets": [
+        {
+          "name": "Бакс",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Русская голубая",
+          "age": 4
+        },
+        {
+          "name": "Луна",
+          "type": "Кошка",
+          "color": "Серая",
+          "breed": "Британская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Стерилизация",
+      "appointmentDate": "2024-11-05",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411877",
+      "status": "COMPLETED",
+      "patientEmail": "galina.afanasyeva@rambler.ru",
+      "veterinarianEmail": "victoria.fedorova@rambler.ru",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сфинкс",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Диагностика",
+      "appointmentDate": "2024-11-06",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411878",
+      "status": "COMPLETED",
+      "patientEmail": "mikhail.bykov@gmail.com",
+      "veterinarianEmail": "nikolay.mikhailov@gmail.com",
+      "pets": [
+        {
+          "name": "Чарли",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Мейн-кун",
+          "age": 6
+        },
+        {
+          "name": "Гарри",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Персидский",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр",
+      "appointmentDate": "2024-11-07",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411879",
+      "status": "COMPLETED",
+      "patientEmail": "alena.klimova@yandex.ru",
+      "veterinarianEmail": "sergey.vasiliev@yandex.ru",
+      "pets": [
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Черный",
+          "breed": "Персидская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-11-08",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411880",
+      "status": "COMPLETED",
+      "patientEmail": "oksana.soboleva@mail.ru",
+      "veterinarianEmail": "andrey.romanov@mail.ru",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Хаски",
+          "age": 4
+        },
+        {
+          "name": "Снежинка",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Сиамская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр",
+      "appointmentDate": "2024-11-09",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411881",
+      "status": "CANCELLED",
+      "patientEmail": "ivan.konovalov@outlook.com",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-11-20",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411892",
+      "status": "COMPLETED",
+      "patientEmail": "sofia.sokolova@rambler.ru",
+      "veterinarianEmail": "darya.golubeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Бим",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Боксер",
+          "age": 4
+        },
+        {
+          "name": "Тиша",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Британский",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-11-21",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411893",
+      "status": "COMPLETED",
+      "patientEmail": "anastasia.smirnova@gmail.com",
+      "veterinarianEmail": "alexander.petrov@yandex.ru",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Золотистый ретривер",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Травма лапы",
+      "appointmentDate": "2024-11-22",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411894",
+      "status": "COMPLETED",
+      "patientEmail": "kirill.ivanov@yandex.ru",
+      "veterinarianEmail": "ivan.sidorov@mail.ru",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 3
+        },
+        {
+          "name": "Милка",
+          "type": "Кошка",
+          "color": "Белый",
+          "breed": "Сибирская",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр перед операцией",
+      "appointmentDate": "2024-11-23",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411895",
+      "status": "COMPLETED",
+      "patientEmail": "elena.kuznetsova@mail.ru",
+      "veterinarianEmail": "maxim.smirnov@outlook.com",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Такса",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Груминг",
+      "appointmentDate": "2024-11-24",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411896",
+      "status": "COMPLETED",
+      "patientEmail": "nikita.petrov@outlook.com",
+      "veterinarianEmail": "evgeny.kuznetsov@rambler.ru",
+      "pets": [
+        {
+          "name": "Кеша",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Волнистый",
+          "age": 1
+        },
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Лечение аллергии",
+      "appointmentDate": "2024-11-25",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411897",
+      "status": "CANCELLED",
+      "patientEmail": "sofia.sokolova@rambler.ru",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Черный",
+          "breed": "Персидская",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Чек-ап",
+      "appointmentDate": "2024-11-26",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411898",
+      "status": "NOT_APPROVED",
+      "patientEmail": "victor.popov@gmail.com",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Чарли",
+          "type": "Кролик",
+          "color": "Белый",
+          "breed": "Ангорский",
+          "age": 2
+        },
+        {
+          "name": "Граф",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Доберман",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зуба",
+      "appointmentDate": "2024-11-27",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411899",
+      "status": "COMPLETED",
+      "patientEmail": "maria.lebedeva@yandex.ru",
+      "veterinarianEmail": "ekaterina.popova@mail.ru",
+      "pets": [
+        {
+          "name": "Гром",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Ротвейлер",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-11-28",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411900",
+      "status": "COMPLETED",
+      "patientEmail": "alexey.sidorov@mail.ru",
+      "veterinarianEmail": "maria.novikova@outlook.com",
+      "pets": [
+        {
+          "name": "Тузик",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Немецкая овчарка",
+          "age": 6
+        },
+        {
+          "name": "Белка",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Русская голубая",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Диагностика заболевания",
+      "appointmentDate": "2024-11-29",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411901",
+      "status": "COMPLETED",
+      "patientEmail": "olga.novikova@outlook.com",
+      "veterinarianEmail": "victoria.fedorova@rambler.ru",
+      "pets": [
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Турецкий ангорский",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Травма лапы",
+      "appointmentDate": "2024-11-10",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411882",
+      "status": "NOT_APPROVED",
+      "patientEmail": "timofey.eremin@rambler.ru",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Барон",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Ротвейлер",
+          "age": 4
+        },
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Белый",
+          "breed": "Британская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-11-11",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411883",
+      "status": "COMPLETED",
+      "patientEmail": "margarita.maltseva@gmail.com",
+      "veterinarianEmail": "vladimir.semenov@gmail.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Лабрадор",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-11-12",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411884",
+      "status": "COMPLETED",
+      "patientEmail": "vyacheslav.zhukov@yandex.ru",
+      "veterinarianEmail": "tatiana.kozlova@yandex.ru",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Хаски",
+          "age": 3
+        },
+        {
+          "name": "Веня",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Волнистый",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Диагностика заболевания",
+      "appointmentDate": "2024-11-13",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411885",
+      "status": "COMPLETED",
+      "patientEmail": "deniska.kapustin@mail.ru",
+      "veterinarianEmail": "natalia.krylova@mail.ru",
+      "pets": [
+        {
+          "name": "Бакс",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сфинкс",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Груминг",
+      "appointmentDate": "2024-11-14",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411886",
+      "status": "COMPLETED",
+      "patientEmail": "ruslan.shirokov@outlook.com",
+      "veterinarianEmail": "julia.zaytseva@outlook.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 3
+        },
+        {
+          "name": "Гоша",
+          "type": "Попугай",
+          "color": "Синий",
+          "breed": "Волнистый",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Лечение аллергии",
+      "appointmentDate": "2024-11-15",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411887",
+      "status": "COMPLETED",
+      "patientEmail": "vladimir.kudryavtsev@rambler.ru",
+      "veterinarianEmail": "alisa.vorobyeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Боня",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Русская голубая",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Чек-ап после операции",
+      "appointmentDate": "2024-11-16",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411888",
+      "status": "COMPLETED",
+      "patientEmail": "anastasia.smirnova@gmail.com",
+      "veterinarianEmail": "irina.borisova@gmail.com",
+      "pets": [
+        {
+          "name": "Ричи",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Доберман",
+          "age": 6
+        },
+        {
+          "name": "Мила",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Сиамская",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр перед вакцинацией",
+      "appointmentDate": "2024-11-17",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411889",
+      "status": "CANCELLED",
+      "patientEmail": "kirill.ivanov@yandex.ru",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Честер",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Бигль",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зуба",
+      "appointmentDate": "2024-11-18",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411890",
+      "status": "NOT_APPROVED",
+      "patientEmail": "elena.kuznetsova@mail.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 3
+        },
+        {
+          "name": "Майло",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Корги",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-11-19",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411891",
+      "status": "COMPLETED",
+      "patientEmail": "nikita.petrov@outlook.com",
+      "veterinarianEmail": "ksenia.nikitina@outlook.com",
+      "pets": [
+        {
+          "name": "Мурчик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Мейн-кун",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-11-30",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411902",
+      "status": "COMPLETED",
+      "patientEmail": "danil.krylov@rambler.ru",
+      "veterinarianEmail": "nikolay.mikhailov@gmail.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Лабрадор",
+          "age": 4
+        },
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Белый",
+          "breed": "Британская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Вакцинация",
+      "appointmentDate": "2024-10-01",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411903",
+      "status": "COMPLETED",
+      "patientEmail": "polina.fedorova@gmail.com",
+      "veterinarianEmail": "sergey.vasiliev@yandex.ru",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Лечение раны",
+      "appointmentDate": "2024-10-02",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411904",
+      "status": "COMPLETED",
+      "patientEmail": "igor.morozov@yandex.ru",
+      "veterinarianEmail": "andrey.romanov@mail.ru",
+      "pets": [
+        {
+          "name": "Бобик",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Хаски",
+          "age": 3
+        },
+        {
+          "name": "Гоша",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Корелла",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Диагностика аллергии",
+      "appointmentDate": "2024-10-03",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411905",
+      "status": "CANCELLED",
+      "patientEmail": "yulia.vasilyeva@mail.ru",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Тиша",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Мейн-кун",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-10-04",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411906",
+      "status": "NOT_APPROVED",
+      "patientEmail": "sergey.grigoriev@outlook.com",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Ричи",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 2
+        },
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сибирский",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Чек-ап после операции",
+      "appointmentDate": "2024-10-05",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411907",
+      "status": "COMPLETED",
+      "patientEmail": "tatiana.zaharova@rambler.ru",
+      "veterinarianEmail": "vladimir.semenov@gmail.com",
+      "pets": [
+        {
+          "name": "Тузик",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Бигль",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зуба",
+      "appointmentDate": "2024-10-06",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411908",
+      "status": "COMPLETED",
+      "patientEmail": "evgeny.semenov@gmail.com",
+      "veterinarianEmail": "tatiana.kozlova@yandex.ru",
+      "pets": [
+        {
+          "name": "Майло",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Пудель",
+          "age": 4
+        },
+        {
+          "name": "Чара",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Персидский",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-10-07",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411909",
+      "status": "COMPLETED",
+      "patientEmail": "darya.volkova@yandex.ru",
+      "veterinarianEmail": "natalia.krylova@mail.ru",
+      "pets": [
+        {
+          "name": "Зефир",
+          "type": "Попугай",
+          "color": "Желтый",
+          "breed": "Какаду",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Груминг",
+      "appointmentDate": "2024-10-08",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411910",
+      "status": "COMPLETED",
+      "patientEmail": "maxim.ershov@mail.ru",
+      "veterinarianEmail": "julia.zaytseva@outlook.com",
+      "pets": [
+        {
+          "name": "Бакс",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Русская голубая",
+          "age": 3
+        },
+        {
+          "name": "Чара",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Сиамская",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр перед прививкой",
+      "appointmentDate": "2024-10-09",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411911",
+      "status": "COMPLETED",
+      "patientEmail": "anna.melnikova@outlook.com",
+      "veterinarianEmail": "alisa.vorobyeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Лабрадор",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2024-10-10",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411912",
+      "status": "COMPLETED",
+      "patientEmail": "georgy.tikhonov@rambler.ru",
+      "veterinarianEmail": "irina.borisova@gmail.com",
+      "pets": [
+        {
+          "name": "Барон",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Лабрадор",
+          "age": 5
+        },
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Белый",
+          "breed": "Персидская",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Срочный вызов",
+      "appointmentDate": "2024-10-11",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411913",
+      "status": "CANCELLED",
+      "patientEmail": "veronika.borisova@gmail.com",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Дворняга",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Чек-ап после травмы",
+      "appointmentDate": "2024-10-12",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411914",
+      "status": "NOT_APPROVED",
+      "patientEmail": "roman.belkin@yandex.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Хаски",
+          "age": 2
+        },
+        {
+          "name": "Гоша",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Корелла",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2024-10-13",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411915",
+      "status": "COMPLETED",
+      "patientEmail": "ekaterina.zhukova@mail.ru",
+      "veterinarianEmail": "ksenia.nikitina@outlook.com",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Мейн-кун",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Профилактика",
+      "appointmentDate": "2024-10-14",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411916",
+      "status": "COMPLETED",
+      "patientEmail": "vladislav.matveev@outlook.com",
+      "veterinarianEmail": "darya.golubeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Тузик",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Ротвейлер",
+          "age": 6
+        },
+        {
+          "name": "Мила",
+          "type": "Кошка",
+          "color": "Белый",
+          "breed": "Сиамская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Груминг",
+      "appointmentDate": "2024-10-15",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411917",
+      "status": "COMPLETED",
+      "patientEmail": "alisa.saveleva@rambler.ru",
+      "veterinarianEmail": "dmitry.ivanov@gmail.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Русская голубая",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зуба",
+      "appointmentDate": "2024-10-16",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411918",
+      "status": "COMPLETED",
+      "patientEmail": "alexandra.orlova@gmail.com",
+      "veterinarianEmail": "alexander.petrov@yandex.ru",
+      "pets": [
+        {
+          "name": "Ричи",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 2
+        },
+        {
+          "name": "Чара",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сибирский",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Лечение инфекции",
+      "appointmentDate": "2024-10-17",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411919",
+      "status": "COMPLETED",
+      "patientEmail": "dmitry.tarasov@yandex.ru",
+      "veterinarianEmail": "ivan.sidorov@mail.ru",
+      "pets": [
+        {
+          "name": "Зефир",
+          "type": "Попугай",
+          "color": "Желтый",
+          "breed": "Какаду",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Профилактический осмотр",
+      "appointmentDate": "2024-10-18",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411920",
+      "status": "COMPLETED",
+      "patientEmail": "valentina.zimina@mail.ru",
+      "veterinarianEmail": "maxim.smirnov@outlook.com",
+      "pets": [
+        {
+          "name": "Тиша",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Персидский",
+          "age": 3
+        },
+        {
+          "name": "Майло",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Пудель",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Диагностика аллергии",
+      "appointmentDate": "2024-10-19",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411921",
+      "status": "CANCELLED",
+      "patientEmail": "ilya.shapovalov@outlook.com",
+      "veterinarianEmail": "evgeny.kuznetsov@rambler.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Бигль",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Консультация по вакцинации",
+      "appointmentDate": "2024-10-20",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411922",
+      "status": "NOT_APPROVED",
+      "patientEmail": "elizar.savin@rambler.ru",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Ричард",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 4
+        },
+        {
+          "name": "Луна",
+          "type": "Кошка",
+          "color": "Серая",
+          "breed": "Сибирская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр после травмы",
+      "appointmentDate": "2024-10-21",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411923",
+      "status": "COMPLETED",
+      "patientEmail": "peter.emelyanov@gmail.com",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Барс",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Британский короткошерстный",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Профилактический осмотр",
+      "appointmentDate": "2024-10-22",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411924",
+      "status": "COMPLETED",
+      "patientEmail": "ksenia.martynova@yandex.ru",
+      "veterinarianEmail": "ekaterina.popova@mail.ru",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Золотистый ретривер",
+          "age": 2
+        },
+        {
+          "name": "Кеша",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Корелла",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зубного камня",
+      "appointmentDate": "2024-10-23",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411925",
+      "status": "COMPLETED",
+      "patientEmail": "nadezhda.rogova@mail.ru",
+      "veterinarianEmail": "maria.novikova@outlook.com",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Консультация по питанию",
+      "appointmentDate": "2024-10-24",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411926",
+      "status": "COMPLETED",
+      "patientEmail": "artem.frolov@outlook.com",
+      "veterinarianEmail": "victoria.fedorova@rambler.ru",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Лабрадор",
+          "age": 5
+        },
+        {
+          "name": "Белка",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Сиамская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Груминг",
+      "appointmentDate": "2024-10-25",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411927",
+      "status": "COMPLETED",
+      "patientEmail": "galina.afanasyeva@rambler.ru",
+      "veterinarianEmail": "nikolay.mikhailov@gmail.com",
+      "pets": [
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Персидский",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Профилактический осмотр",
+      "appointmentDate": "2024-10-26",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411928",
+      "status": "COMPLETED",
+      "patientEmail": "mikhail.bykov@gmail.com",
+      "veterinarianEmail": "sergey.vasiliev@yandex.ru",
+      "pets": [
+        {
+          "name": "Рокки",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Бигль",
+          "age": 3
+        },
+        {
+          "name": "Гоша",
+          "type": "Попугай",
+          "color": "Синий",
+          "breed": "Ара",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Лечение инфекции",
+      "appointmentDate": "2024-10-27",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411929",
+      "status": "CANCELLED",
+      "patientEmail": "alena.klimova@yandex.ru",
+      "veterinarianEmail": "andrey.romanov@mail.ru",
+      "pets": [
+        {
+          "name": "Саймон",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Мейн-кун",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр перед вакцинацией",
+      "appointmentDate": "2025-01-03",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411930",
+      "status": "NOT_APPROVED",
+      "patientEmail": "oksana.soboleva@mail.ru",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Хаски",
+          "age": 4
+        },
+        {
+          "name": "Белла",
+          "type": "Кошка",
+          "color": "Серая",
+          "breed": "Сибирская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Контрольное обследование",
+      "appointmentDate": "2025-01-04",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411931",
+      "status": "COMPLETED",
+      "patientEmail": "ivan.konovalov@outlook.com",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Барни",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Шарпей",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2025-01-05",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411932",
+      "status": "COMPLETED",
+      "patientEmail": "timofey.eremin@rambler.ru",
+      "veterinarianEmail": "vladimir.semenov@gmail.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Доберман",
+          "age": 4
+        },
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Сиамский",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Прививка",
+      "appointmentDate": "2025-01-06",
+      "appointmentTime": "10:00",
+      "appointmentNo": "6228411933",
+      "status": "COMPLETED",
+      "patientEmail": "margarita.maltseva@gmail.com",
+      "veterinarianEmail": "tatiana.kozlova@yandex.ru",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Русская голубая",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Удаление зубного камня",
+      "appointmentDate": "2025-01-07",
+      "appointmentTime": "11:00",
+      "appointmentNo": "6228411934",
+      "status": "COMPLETED",
+      "patientEmail": "vyacheslav.zhukov@yandex.ru",
+      "veterinarianEmail": "natalia.krylova@mail.ru",
+      "pets": [
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Лабрадор",
+          "age": 5
+        },
+        {
+          "name": "Белка",
+          "type": "Кошка",
+          "color": "Черный",
+          "breed": "Сибирская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Обследование перед операцией",
+      "appointmentDate": "2025-01-08",
+      "appointmentTime": "12:00",
+      "appointmentNo": "6228411935",
+      "status": "COMPLETED",
+      "patientEmail": "deniska.kapustin@mail.ru",
+      "veterinarianEmail": "julia.zaytseva@outlook.com",
+      "pets": [
+        {
+          "name": "Ричи",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Мейн-кун",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Контрольное обследование",
+      "appointmentDate": "2025-01-09",
+      "appointmentTime": "13:00",
+      "appointmentNo": "6228411936",
+      "status": "COMPLETED",
+      "patientEmail": "ruslan.shirokov@outlook.com",
+      "veterinarianEmail": "alisa.vorobyeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 3
+        },
+        {
+          "name": "Гоша",
+          "type": "Попугай",
+          "color": "Зеленый",
+          "breed": "Корелла",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Отмена процедуры",
+      "appointmentDate": "2025-01-10",
+      "appointmentTime": "14:00",
+      "appointmentNo": "6228411937",
+      "status": "CANCELLED",
+      "patientEmail": "vladimir.kudryavtsev@rambler.ru",
+      "veterinarianEmail": "irina.borisova@gmail.com",
+      "pets": [
+        {
+          "name": "Барс",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр",
+      "appointmentDate": "2025-01-11",
+      "appointmentTime": "15:00",
+      "appointmentNo": "6228411938",
+      "status": "NOT_APPROVED",
+      "patientEmail": "anastasia.smirnova@gmail.com",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Бигль",
+          "age": 4
+        },
+        {
+          "name": "Кеша",
+          "type": "Попугай",
+          "color": "Синий",
+          "breed": "Ара",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Чистка зубов",
+      "appointmentDate": "2025-01-12",
+      "appointmentTime": "16:00",
+      "appointmentNo": "6228411939",
+      "status": "COMPLETED",
+      "patientEmail": "kirill.ivanov@yandex.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Черная",
+          "breed": "Сфинкс",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Профилактика",
+      "appointmentDate": "2025-01-13",
+      "appointmentTime": "17:00",
+      "appointmentNo": "6228411940",
+      "status": "COMPLETED",
+      "patientEmail": "elena.kuznetsova@mail.ru",
+      "veterinarianEmail": "ksenia.nikitina@outlook.com",
+      "pets": [
+        {
+          "name": "Том",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Британский короткошерстный",
+          "age": 4
+        },
+        {
+          "name": "Джек",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Ретривер",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр после травмы",
+      "appointmentDate": "2025-01-14",
+      "appointmentTime": "18:00",
+      "appointmentNo": "6228411941",
+      "status": "COMPLETED",
+      "patientEmail": "nikita.petrov@outlook.com",
+      "veterinarianEmail": "darya.golubeva@rambler.ru",
+      "pets": [
+        {
+          "name": "Барон",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Лабрадор",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Плановая проверка",
+      "appointmentDate": "2025-01-15",
+      "appointmentTime": "19:00",
+      "appointmentNo": "6228411942",
+      "status": "COMPLETED",
+      "patientEmail": "sofia.sokolova@rambler.ru",
+      "veterinarianEmail": "dmitry.ivanov@gmail.com",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландский",
+          "age": 5
+        },
+        {
+          "name": "Белка",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Ежегодная вакцинация",
+      "appointmentDate": "2024-09-07",
+      "appointmentTime": "16:00",
+      "appointmentNo": "5228411943",
+      "status": "COMPLETED",
+      "patientEmail": "maria.lebedeva@yandex.ru",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Беня",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сфинкс",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Обследование после операции",
+      "appointmentDate": "2024-09-08",
+      "appointmentTime": "17:00",
+      "appointmentNo": "5228411944",
+      "status": "COMPLETED",
+      "patientEmail": "alexey.sidorov@mail.ru",
+      "veterinarianEmail": "ekaterina.popova@mail.ru",
+      "pets": [
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Британская короткошерстная",
+          "age": 5
+        },
+        {
+          "name": "Барс",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Аляскинский маламут",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Проверка здоровья перед путешествием",
+      "appointmentDate": "2024-09-09",
+      "appointmentTime": "14:00",
+      "appointmentNo": "5228411945",
+      "status": "COMPLETED",
+      "patientEmail": "tatiana.zaharova@rambler.ru",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Рыжик",
+          "type": "Кот",
+          "color": "Рыжий",
+          "breed": "Абиссинская кошка",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Проблемы с аппетитом",
+      "appointmentDate": "2024-09-10",
+      "appointmentTime": "15:00",
+      "appointmentNo": "5228411946",
+      "status": "COMPLETED",
+      "patientEmail": "evgeny.semenov@gmail.com",
+      "veterinarianEmail": "vladimir.semenov@gmail.com",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Доберман",
+          "age": 6
+        },
+        {
+          "name": "Кеша",
+          "type": "Попугай",
+          "color": "Синий",
+          "breed": "Ара",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Частое чихание",
+      "appointmentDate": "2024-09-11",
+      "appointmentTime": "12:00",
+      "appointmentNo": "5228411947",
+      "status": "COMPLETED",
+      "patientEmail": "ekaterina.zhukova@mail.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Смена рациона",
+      "appointmentDate": "2024-09-12",
+      "appointmentTime": "13:00",
+      "appointmentNo": "5228411948",
+      "status": "COMPLETED",
+      "patientEmail": "vladislav.matveev@outlook.com",
+      "veterinarianEmail": "ksenia.nikitina@outlook.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 4
+        },
+        {
+          "name": "Чарли",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Шпиц",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Удаление клеща",
+      "appointmentDate": "2024-09-13",
+      "appointmentTime": "10:00",
+      "appointmentNo": "5228411949",
+      "status": "COMPLETED",
+      "patientEmail": "peter.emelyanov@gmail.com",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Марта",
+          "type": "Кошка",
+          "color": "Черепаховый",
+          "breed": "Мейн-кун",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Сломанный коготь",
+      "appointmentDate": "2024-09-14",
+      "appointmentTime": "11:00",
+      "appointmentNo": "5228411950",
+      "status": "COMPLETED",
+      "patientEmail": "ksenia.martynova@yandex.ru",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Тузик",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Ротвейлер",
+          "age": 5
+        },
+        {
+          "name": "Джина",
+          "type": "Попугай",
+          "color": "Желтый",
+          "breed": "Корелла",
+          "age": 1
+        }
+      ]
+    },
+    {
+      "reason": "Снятие швов после операции",
+      "appointmentDate": "2024-09-15",
+      "appointmentTime": "18:00",
+      "appointmentNo": "5228411951",
+      "status": "COMPLETED",
+      "patientEmail": "ivan.konovalov@outlook.com",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Лабрадор",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Обработка раны на лапе",
+      "appointmentDate": "2024-09-16",
+      "appointmentTime": "19:00",
+      "appointmentNo": "5228411952",
+      "status": "COMPLETED",
+      "patientEmail": "timofey.eremin@rambler.ru",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Барсик",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Сфинкс",
+          "age": 3
+        },
+        {
+          "name": "Белка",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Общий осмотр",
+      "appointmentDate": "2024-09-17",
+      "appointmentTime": "16:00",
+      "appointmentNo": "5228411953",
+      "status": "COMPLETED",
+      "patientEmail": "kirill.ivanov@yandex.ru",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Шарик",
+          "type": "Собака",
+          "color": "Серый",
+          "breed": "Хаски",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Частые расчесы у кошки",
+      "appointmentDate": "2024-09-18",
+      "appointmentTime": "17:00",
+      "appointmentNo": "5228411954",
+      "status": "COMPLETED",
+      "patientEmail": "elena.kuznetsova@mail.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Британская короткошерстная",
+          "age": 4
+        },
+        {
+          "name": "Том",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Мейн-кун",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Плановый осмотр после вакцинации",
+      "appointmentDate": "2024-09-19",
+      "appointmentTime": "14:00",
+      "appointmentNo": "5228411956",
+      "status": "COMPLETED",
+      "patientEmail": "sofia.sokolova@rambler.ru",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Британская короткошерстная",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Удаление клеща и обработка раны",
+      "appointmentDate": "2024-09-20",
+      "appointmentTime": "15:00",
+      "appointmentNo": "5228411957",
+      "status": "COMPLETED",
+      "patientEmail": "victor.popov@gmail.com",
+      "veterinarianEmail": "anna.sokolova@yandex.ru",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Лабрадор",
+          "age": 4
+        },
+        {
+          "name": "Белка",
+          "type": "Кошка",
+          "color": "Белая",
+          "breed": "Сиамская",
+          "age": 2
+        }
+      ]
+    },
+    {
+      "reason": "Осмотр после драки с другим котом",
+      "appointmentDate": "2024-09-21",
+      "appointmentTime": "12:00",
+      "appointmentNo": "5228411958",
+      "status": "COMPLETED",
+      "patientEmail": "yulia.vasilyeva@mail.ru",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Том",
+          "type": "Кот",
+          "color": "Черный",
+          "breed": "Мейн-кун",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Чистка зубов у собаки",
+      "appointmentDate": "2024-09-22",
+      "appointmentTime": "13:00",
+      "appointmentNo": "5228411959",
+      "status": "COMPLETED",
+      "patientEmail": "sergey.grigoriev@outlook.com",
+      "veterinarianEmail": "pavel.lebedev@rambler.ru",
+      "pets": [
+        {
+          "name": "Барс",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Доберман",
+          "age": 4
+        },
+        {
+          "name": "Мурка",
+          "type": "Кошка",
+          "color": "Рыжая",
+          "breed": "Абиссинская",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Срочная помощь при отравлении",
+      "appointmentDate": "2024-09-23",
+      "appointmentTime": "10:00",
+      "appointmentNo": "5228411960",
+      "status": "COMPLETED",
+      "patientEmail": "veronika.borisova@gmail.com",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Снупи",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Пудель",
+          "age": 6
+        }
+      ]
+    },
+    {
+      "reason": "Прививка от бешенства",
+      "appointmentDate": "2024-09-24",
+      "appointmentTime": "11:00",
+      "appointmentNo": "5228411961",
+      "status": "COMPLETED",
+      "patientEmail": "roman.belkin@yandex.ru",
+      "veterinarianEmail": "svetlana.makarova@mail.ru",
+      "pets": [
+        {
+          "name": "Грэй",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Русская голубая",
+          "age": 3
+        },
+        {
+          "name": "Чарли",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Голден ретривер",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Удаление инородного предмета из лапы",
+      "appointmentDate": "2024-09-25",
+      "appointmentTime": "18:00",
+      "appointmentNo": "5228411962",
+      "status": "COMPLETED",
+      "patientEmail": "ilya.shapovalov@outlook.com",
+      "veterinarianEmail": "evgeny.kuznetsov@rambler.ru",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Обследование после операции",
+      "appointmentDate": "2024-09-26",
+      "appointmentTime": "19:00",
+      "appointmentNo": "5228411963",
+      "status": "COMPLETED",
+      "patientEmail": "elizar.savin@rambler.ru",
+      "veterinarianEmail": "olga.morozova@gmail.com",
+      "pets": [
+        {
+          "name": "Рекс",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Лабрадор",
+          "age": 6
+        },
+        {
+          "name": "Снежок",
+          "type": "Кот",
+          "color": "Белый",
+          "breed": "Персидский",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Обработка ушей у кота",
+      "appointmentDate": "2024-09-27",
+      "appointmentTime": "16:00",
+      "appointmentNo": "5228411964",
+      "status": "COMPLETED",
+      "patientEmail": "alena.klimova@yandex.ru",
+      "veterinarianEmail": "andrey.romanov@mail.ru",
+      "pets": [
+        {
+          "name": "Мурзик",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Шотландская вислоухая",
+          "age": 4
+        }
+      ]
+    },
+    {
+      "reason": "Прививка от чумки",
+      "appointmentDate": "2024-09-28",
+      "appointmentTime": "17:00",
+      "appointmentNo": "5228411965",
+      "status": "COMPLETED",
+      "patientEmail": "oksana.soboleva@mail.ru",
+      "veterinarianEmail": "alexey.grigoryev@outlook.com",
+      "pets": [
+        {
+          "name": "Белка",
+          "type": "Собака",
+          "color": "Белый",
+          "breed": "Самоед",
+          "age": 2
+        },
+        {
+          "name": "Барон",
+          "type": "Собака",
+          "color": "Коричневый",
+          "breed": "Ротвейлер",
+          "age": 5
+        }
+      ]
+    },
+    {
+      "reason": "Срочная помощь при отравлении",
+      "appointmentDate": "2024-09-29",
+      "appointmentTime": "14:00",
+      "appointmentNo": "5228411966",
+      "status": "COMPLETED",
+      "patientEmail": "vladimir.kudryavtsev@rambler.ru",
+      "veterinarianEmail": "irina.borisova@gmail.com",
+      "pets": [
+        {
+          "name": "Лаки",
+          "type": "Собака",
+          "color": "Рыжий",
+          "breed": "Шпиц",
+          "age": 3
+        }
+      ]
+    },
+    {
+      "reason": "Обследование после перелома лапы",
+      "appointmentDate": "2025-01-11",
+      "appointmentTime": "15:00",
+      "appointmentNo": "5228411967",
+      "status": "COMPLETED",
+      "patientEmail": "anastasia.smirnova@gmail.com",
+      "veterinarianEmail": "valeria.volkova@yandex.ru",
+      "pets": [
+        {
+          "name": "Грей",
+          "type": "Кот",
+          "color": "Серый",
+          "breed": "Русская голубая",
+          "age": 4
+        },
+        {
+          "name": "Ричи",
+          "type": "Собака",
+          "color": "Черный",
+          "breed": "Доберман",
+          "age": 6
+        }
+      ]
+    }
+  ]
+}
+
