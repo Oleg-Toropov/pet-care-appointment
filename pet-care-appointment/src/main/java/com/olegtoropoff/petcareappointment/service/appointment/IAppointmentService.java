@@ -54,6 +54,16 @@ public interface IAppointmentService {
     Page<AppointmentDto> getAllAppointments(Pageable pageable);
 
     /**
+     * Searches for appointments based on a search term with pagination support.
+     *
+     * @param search   the search term used to filter appointments. It is case-insensitive and may match
+     *                 fields such as patient email, veterinarian email, or appointment number
+     * @param pageable the pagination and sorting information
+     * @return a paginated list of appointments matching the search criteria, mapped to AppointmentDto objects
+     */
+    Page<AppointmentDto> searchAppointments(String search, Pageable pageable);
+
+    /**
      * Retrieves an appointment by its ID.
      *
      * @param id the ID of the appointment.

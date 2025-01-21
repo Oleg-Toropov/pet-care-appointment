@@ -108,21 +108,32 @@ public class AppointmentController {
     }
 
     /**
-     * Retrieves all appointments with pagination.
+     * Retrieves all appointments with pagination and optional search functionality.
      *
-     * @param page the page number (default: 0).
-     * @param size the number of records per page (default: 10).
-     * @return a paginated list of appointments.
+     * @param page   the page number (default: 0)
+     * @param size   the number of records per page (default: 10)
+     * @param search an optional search term to filter appointments by patient email, veterinarian email,
+     *               or appointment number (default: empty string for no filtering)
+     * @return a paginated list of appointments or filtered results based on the search term
      */
     @GetMapping(UrlMapping.ALL_APPOINTMENT)
-    public ResponseEntity<CustomApiResponse> getAllAppointments(@RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<CustomApiResponse> getAllAppointments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String search) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"));
-            Page<AppointmentDto> appointmentPage = appointmentService.getAllAppointments(pageable);
+            Page<AppointmentDto> appointmentPage;
+            if (search.isEmpty()) {
+                appointmentPage = appointmentService.getAllAppointments(pageable);
+            } else {
+                appointmentPage = appointmentService.searchAppointments(search, pageable);
+            }
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENTS_FOUND, appointmentPage));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(
+                    new CustomApiResponse(FeedBackMessage.ERROR, null)
+            );
         }
     }
 

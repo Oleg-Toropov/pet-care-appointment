@@ -56,6 +56,21 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     Page<Appointment> findAll(@NonNull Pageable pageable);
 
     /**
+     * Searches for appointments based on a search term with pagination support.
+     * The search term is matched against the patient email, veterinarian email, and appointment number fields.
+     *
+     * @param search   the search term to filter appointments (case-insensitive).
+     *                 Matches substrings within patient email, veterinarian email, or appointment number.
+     * @param pageable the pagination and sorting information.
+     * @return a paginated list of appointments that match the search criteria.
+     */
+    @Query("SELECT a FROM Appointment a " +
+           "WHERE LOWER(a.patient.email) LIKE %:search% " +
+           "OR LOWER(a.veterinarian.email) LIKE %:search% " +
+           "OR LOWER(a.appointmentNo) LIKE %:search%")
+    Page<Appointment> searchAppointments(@Param("search") String search, Pageable pageable);
+
+    /**
      * Counts the number of active appointments for a specific patient, excluding certain statuses.
      *
      * @param senderId the ID of the patient.
