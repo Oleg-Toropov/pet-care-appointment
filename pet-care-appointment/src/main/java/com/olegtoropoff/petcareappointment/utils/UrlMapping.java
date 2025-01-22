@@ -247,9 +247,14 @@ public class UrlMapping {
     public static final String VETERINARIANS = API + "/veterinarians";
 
     /**
-     * Endpoint for retrieving all veterinarians.
+     * Endpoint for retrieving all veterinarians with details.
      */
     public static final String GET_ALL_VETERINARIANS = "/get-all-veterinarians";
+
+    /**
+     * Endpoint for retrieving all veterinarians.
+     */
+    public static final String GET_VETERINARIANS = "/get-veterinarians";
 
     /**
      * Endpoint for searching a veterinarian for an appointment.

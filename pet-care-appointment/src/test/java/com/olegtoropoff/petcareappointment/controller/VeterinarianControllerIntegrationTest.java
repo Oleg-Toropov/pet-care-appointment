@@ -31,7 +31,7 @@ public class VeterinarianControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void getAllVeterinarians_ReturnsVeterinarians() throws Exception {
+    public void getAllVeterinarians_ReturnsVeterinariansWithDetails() throws Exception {
         mockMvc.perform(get(VETERINARIANS + GET_ALL_VETERINARIANS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))

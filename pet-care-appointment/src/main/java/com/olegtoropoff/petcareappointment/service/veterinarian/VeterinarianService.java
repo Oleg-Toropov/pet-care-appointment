@@ -83,13 +83,15 @@ public class VeterinarianService implements IVeterinarianService {
     private final VeterinarianRepository veterinarianRepository;
 
     /**
-     * Retrieves a list of all veterinarians with detailed information.
+     * Retrieves a list of all enabled veterinarians with detailed information.
+     * This method fetches veterinarians with the user type "VET" and `enabled` status set to true,
+     * then maps them to {@link UserDto} objects.
      *
-     * @return a list of {@link UserDto} representing veterinarians with details.
+     * @return a list of {@link UserDto} representing enabled veterinarians with detailed information.
      */
     @Override
     public List<UserDto> getAllVeterinariansWithDetails() {
-        List<Veterinarian> veterinarians = veterinarianRepository.findAllByUserType("VET");
+        List<Veterinarian> veterinarians = veterinarianRepository.findAllByUserTypeAndIsEnabled("VET", true);
         return veterinarians.stream()
                 .map(this::mapVeterinarianToUserDto)
                 .toList();
@@ -248,5 +250,17 @@ public class VeterinarianService implements IVeterinarianService {
                         doesAppointmentOverLap(appointment, time, time.plusMinutes(APPOINTMENT_DURATION_MINUTES))
                 ))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves all veterinarians and converts them to {@link UserDto}.
+     *
+     * @return a list of {@link UserDto} objects representing all veterinarians.
+     */
+    @Override
+    public List<UserDto> getVeterinarians() {
+        List<Veterinarian> veterinarians = veterinarianRepository.findAll();
+        return veterinarians.stream()
+                .map(v -> entityConverter.mapEntityToDto(v, UserDto.class)).toList();
     }
 }

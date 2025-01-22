@@ -144,13 +144,13 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
             if (!userRepository.existsByEmail(vetData.getEmail())) {
                 Veterinarian vet = populateUserFields(new Veterinarian(), vetData);
                 vet.setSpecialization(vetData.getSpecialization());
+                Veterinarian theVet = veterinarianRepository.save(vet);
+                theVet.setEnabled(true);
 
                 VetBiography vetBiography = new VetBiography();
                 vetBiography.setBiography(vetData.getBiography());
+                vetBiography.setVeterinarian(theVet);
                 vet.setVetBiography(vetBiographyRepository.save(vetBiography));
-
-                Veterinarian theVet = veterinarianRepository.save(vet);
-                theVet.setEnabled(true);
 
                 savePhoto(DEFAULT_VET_PHOTO_PATH + counter.getAndIncrement() + ".jpg", theVet);
             }

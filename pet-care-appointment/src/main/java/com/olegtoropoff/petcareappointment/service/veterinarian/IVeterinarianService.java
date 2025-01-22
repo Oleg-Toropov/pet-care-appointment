@@ -60,4 +60,11 @@ public interface IVeterinarianService {
      * @return a list of {@link LocalTime} objects representing the available time slots for the specified veterinarian.
      */
     List<LocalTime> getAvailableTimeForBookAppointment(Long vetId, LocalDate date);
+
+    /**
+     * Retrieves a list of all veterinarians as {@link UserDto} objects.
+     *
+     * @return a list of {@link UserDto} representing all veterinarians in the system.
+     */
+    List<UserDto> getVeterinarians();
 }

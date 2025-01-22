@@ -28,18 +28,33 @@ public class VeterinarianController {
     private final IVeterinarianService veterinarianService;
 
     /**
-     * Retrieves all veterinarians with their details.
+     * Retrieves all veterinarians with their detailed information.
+     * This endpoint fetches a list of all veterinarians with the user type "VET" who are enabled,
+     * and returns their details wrapped in a {@link CustomApiResponse}.
      *
-     * @return a {@link ResponseEntity} containing a list of all veterinarians or an error message
+     * @return a {@link ResponseEntity} containing:
+     *         - {@link CustomApiResponse} with a list of all veterinarians if the operation is successful.
+     *         - {@link CustomApiResponse} with an error message if an exception occurs.
      */
     @GetMapping(UrlMapping.GET_ALL_VETERINARIANS)
-    public ResponseEntity<CustomApiResponse> getAllVeterinarians() {
+    public ResponseEntity<CustomApiResponse> getAllVeterinariansWithDetails() {
         try {
             List<UserDto> allVeterinariansDtos = veterinarianService.getAllVeterinariansWithDetails();
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, allVeterinariansDtos));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
+    }
+
+    /**
+     * Retrieves all veterinarians.
+     *
+     * @return a {@link ResponseEntity} containing a list of all veterinarians or an error message
+     */
+    @GetMapping(UrlMapping.GET_VETERINARIANS)
+    public ResponseEntity<CustomApiResponse> getAllVeterinarians() {
+        List<UserDto> patients = veterinarianService.getVeterinarians();
+        return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, patients));
     }
 
     /**

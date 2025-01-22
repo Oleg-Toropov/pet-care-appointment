@@ -21,6 +21,17 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long
     List<Veterinarian> findAllByUserType(String vet);
 
     /**
+     * Retrieves a list of veterinarians filtered by user type and enabled status.
+     * This method fetches all records where the user type matches the specified value
+     * and the `enabled` field matches the given status.
+     *
+     * @param userType the type of user to filter by (e.g., "VET").
+     * @param isEnabled the status indicating whether the user is enabled (true for enabled, false for disabled).
+     * @return a list of {@link Veterinarian} objects matching the specified criteria.
+     */
+    List<Veterinarian> findAllByUserTypeAndIsEnabled(String userType, boolean isEnabled);
+
+    /**
      * Finds all veterinarians with a specific specialization.
      *
      * @param specialization the specialization to filter veterinarians by.
