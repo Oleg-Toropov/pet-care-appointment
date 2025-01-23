@@ -46,7 +46,7 @@ public interface IUserService {
      *
      * @param userId the ID of the user to retrieve.
      * @return the {@link User} entity with the specified ID.
-     * @throws com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException
+     * @throws ResourceNotFoundException
      *         if no user is found with the given ID.
      */
     User findById(Long userId);
@@ -55,7 +55,7 @@ public interface IUserService {
      * Deletes a user by their ID.
      *
      * @param userId the ID of the user to delete.
-     * @throws com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException
+     * @throws ResourceNotFoundException
      *         if no user is found with the given ID.
      */
     void deleteById(Long userId);

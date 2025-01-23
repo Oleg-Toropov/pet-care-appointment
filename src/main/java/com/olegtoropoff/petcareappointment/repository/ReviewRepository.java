@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.repository;
 
 import com.olegtoropoff.petcareappointment.model.Review;
+import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

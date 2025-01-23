@@ -250,6 +250,15 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         }
     }
 
+    /**
+     * Initializes appointment data from the provided {@link DefaultAppointmentData}.
+     * <p>
+     * For each appointment in the provided data, checks if the appointment already exists in the repository.
+     * If not, retrieves the corresponding patient and veterinarian from the database by their email addresses,
+     * creates an {@link Appointment}, associates it with any related pets, and saves it to the repository.
+     *
+     * @param defaultAppointmentData the default appointment data to initialize appointments from.
+     */
     private void initializeAppointments(DefaultAppointmentData defaultAppointmentData) {
         defaultAppointmentData.getAppointments().forEach(appointmentData -> {
             if (!appointmentRepository.existsByAppointmentNo(appointmentData.getAppointmentNo())) {
@@ -266,6 +275,14 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         });
     }
 
+    /**
+     * Creates an {@link Appointment} object using the provided data and links it to the specified patient and veterinarian.
+     *
+     * @param appointmentData the data to populate the appointment fields.
+     * @param patient the patient to associate with the appointment.
+     * @param veterinarian the veterinarian to associate with the appointment.
+     * @return the newly created {@link Appointment}.
+     */
     private Appointment createAppointment(DefaultAppointmentData.AppointmentData appointmentData, User patient, User veterinarian) {
         Appointment appointment = new Appointment();
         appointment.setReason(appointmentData.getReason());
@@ -278,6 +295,16 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         return appointment;
     }
 
+    /**
+     * Saves a list of {@link Pet} objects associated with the specified {@link Appointment}.
+     * <p>
+     * Each pet in the provided list is mapped to a {@link Pet} entity, associated with the given appointment,
+     * and then saved to the repository.
+     *
+     * @param petsData the list of pet data to save.
+     * @param appointment the appointment to associate with the pets.
+     * @return the saved list of {@link Pet} objects.
+     */
     private List<Pet> savePets(List<DefaultAppointmentData.PetData> petsData, Appointment appointment) {
         List<Pet> pets = petsData.stream()
                 .map(petData -> {
@@ -294,6 +321,13 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         return petRepository.saveAll(pets);
     }
 
+    /**
+     * Determines the {@link AppointmentStatus} based on the provided status string.
+     *
+     * @param status the string representation of the appointment status.
+     * @return the corresponding {@link AppointmentStatus}.
+     * @throws IllegalArgumentException if the status is not recognized.
+     */
     private AppointmentStatus determineStatus(String status) {
         return switch (status) {
             case "COMPLETED" -> AppointmentStatus.COMPLETED;
@@ -303,6 +337,14 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
         };
     }
 
+    /**
+     * Initializes review data from the provided {@link DefaultReviewData}.
+     * <p>
+     * For each review in the provided data, checks if a review between the specified patient and veterinarian
+     * already exists. If not, creates a new {@link Review} and saves it to the repository.
+     *
+     * @param defaultReviewData the default review data to initialize reviews from.
+     */
     private void initializeReviews(DefaultReviewData defaultReviewData) {
         defaultReviewData.getReviews().forEach(reviewData -> {
             Optional<User> patient = userRepository.findByEmail(reviewData.getPatientEmail());

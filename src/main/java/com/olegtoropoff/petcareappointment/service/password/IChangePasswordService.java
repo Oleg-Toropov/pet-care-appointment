@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.password;
 
 import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
+import com.olegtoropoff.petcareappointment.exception.*;
 
 /**
  * Interface for the service handling user password changes.
@@ -24,7 +25,7 @@ public interface IChangePasswordService {
      *                                      <li>The new password does not meet security requirements</li>
      *                                      <li>The new password and confirmation do not match</li>
      *                                  </ul>
-     * @throws com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException
+     * @throws ResourceNotFoundException
      *         if the user with the specified ID does not exist
      */
     void changePassword(Long userId, ChangePasswordRequest request);

@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.password;
 
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.exception.*;
 
 /**
  * Interface defining the contract for password reset operations.
@@ -24,7 +25,7 @@ public interface IPasswordResetService {
      *
      * @param email the email address of the user requesting the password reset
      * @throws IllegalArgumentException if the email is invalid
-     * @throws com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException
+     * @throws ResourceNotFoundException
      *         if no user is found with the provided email
      */
     void requestPasswordReset(String email);

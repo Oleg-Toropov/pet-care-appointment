@@ -6,7 +6,6 @@ import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.service.role.IRoleService;
 import com.olegtoropoff.petcareappointment.service.user.UserAttributesMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,7 +28,7 @@ public class VeterinarianFactory {
      * @param request the registration request containing details for the veterinarian
      * @return the created {@link Veterinarian} instance, persisted in the database
      */
-//    @CacheEvict(value = {"veterinarians_with_details", "active_veterinarians", "all_veterinarians"}, allEntries = true)
+//   todo  @CacheEvict(value = {"veterinarians_with_details", "active_veterinarians", "all_veterinarians"}, allEntries = true)
     public Veterinarian createVeterinarian(RegistrationRequest request) {
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setRoles(roleService.setUserRole("VET"));

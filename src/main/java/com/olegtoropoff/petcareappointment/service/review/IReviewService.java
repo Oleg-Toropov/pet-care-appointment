@@ -1,7 +1,8 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
 import com.olegtoropoff.petcareappointment.model.Review;
-import com.olegtoropoff.petcareappointment.repository.VeterinarianReviewProjection;
+import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
+import com.olegtoropoff.petcareappointment.exception.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,8 @@ public interface IReviewService {
      * @param veterinarianId the ID of the veterinarian being reviewed.
      * @return the saved review.
      * @throws IllegalArgumentException if the reviewer is the veterinarian.
-     * @throws com.olegtoropoff.petcareappointment.exception.AlreadyExistsException if the patient has already reviewed the veterinarian.
-     * @throws com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException if the veterinarian or patient does not exist.
+     * @throws AlreadyExistsException if the patient has already reviewed the veterinarian.
+     * @throws ResourceNotFoundException if the veterinarian or patient does not exist.
      * @throws IllegalStateException if the patient has no completed appointments with the veterinarian.
      */
     Review saveReview(Review review, Long reviewerId, Long veterinarianId);
@@ -39,11 +40,33 @@ public interface IReviewService {
      * Deletes a review by its ID.
      *
      * @param reviewerId the ID of the review to delete.
-     * @throws com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException if the review does not exist.
+     * @throws ResourceNotFoundException if the review does not exist.
      */
     void deleteReview(Long reviewerId);
 
+    /**
+     * Retrieves a mapping of veterinarian IDs to their aggregated review data.
+     * <p>
+     * The returned map contains information such as average ratings and the total number of reviewers
+     * for each veterinarian.
+     * </p>
+     *
+     * @return a {@link Map} where the keys are veterinarian IDs (as {@link Long}) and the values are
+     *         {@link VeterinarianReviewProjection} objects containing review data.
+     */
     Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviews();
 
+    /**
+     * Retrieves a mapping of veterinarian IDs to their aggregated review data, filtered by specialization.
+     * <p>
+     * The returned map contains information such as average ratings and the total number of reviewers
+     * for each veterinarian who matches the specified specialization.
+     * </p>
+     *
+     * @param specialization the specialization of veterinarians to filter by (e.g., "Surgery", "Dentistry").
+     * @return a {@link Map} where the keys are veterinarian IDs (as {@link Long}) and the values are
+     *         {@link VeterinarianReviewProjection} objects containing review data for veterinarians
+     *         with the specified specialization.
+     */
     Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviewsBySpecialization(String specialization);
 }

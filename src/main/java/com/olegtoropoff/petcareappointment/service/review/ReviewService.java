@@ -8,11 +8,9 @@ import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
-import com.olegtoropoff.petcareappointment.repository.VeterinarianReviewProjection;
+import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

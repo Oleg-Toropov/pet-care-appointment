@@ -1,6 +1,5 @@
 package com.olegtoropoff.petcareappointment.service.photo;
 
-import com.olegtoropoff.petcareappointment.model.Photo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
