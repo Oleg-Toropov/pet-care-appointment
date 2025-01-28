@@ -178,42 +178,4 @@ public class VetBiographyControllerTest {
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
-
-    @Test
-    public void deleteVetBiography_WhenSuccess_ReturnsSuccessMessage() {
-        Long biographyId = 1L;
-        doNothing().when(vetBiographyService).deleteVetBiography(biographyId);
-
-        ResponseEntity<CustomApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(FeedBackMessage.BIOGRAPHY_DELETED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
-
-    @Test
-    public void deleteVetBiography_WhenNotFound_ThrowsResourceNotFoundException() {
-        Long biographyId = 100L;
-        doThrow(new ResourceNotFoundException(FeedBackMessage.BIOGRAPHY_NOT_FOUND)).when(vetBiographyService).deleteVetBiography(biographyId);
-
-        ResponseEntity<CustomApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(FeedBackMessage.BIOGRAPHY_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
-
-    @Test
-    public void deleteVetBiography_InternalErrorOccurs_ReturnsInternalServerError() {
-        Long biographyId = 1L;
-        String errorMessage = FeedBackMessage.ERROR;
-        doThrow(new RuntimeException(errorMessage))
-                .when(vetBiographyService).deleteVetBiography(biographyId);
-
-        ResponseEntity<CustomApiResponse> response = vetBiographyController.deleteVetBiography(biographyId);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
 }

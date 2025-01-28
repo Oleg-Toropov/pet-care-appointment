@@ -78,22 +78,4 @@ public class VetBiographyController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }
     }
-
-    /**
-     * Deletes a biography by its ID.
-     *
-     * @param id the ID of the biography to delete
-     * @return a {@link ResponseEntity} indicating the success of the operation or an error message
-     */
-    @DeleteMapping(UrlMapping.DELETE_BIOGRAPHY)
-    public ResponseEntity<CustomApiResponse>  deleteVetBiography(@PathVariable Long id) {
-        try {
-            vetBiographyService.deleteVetBiography(id);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_DELETED_SUCCESS, null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
-        }
-    }
 }

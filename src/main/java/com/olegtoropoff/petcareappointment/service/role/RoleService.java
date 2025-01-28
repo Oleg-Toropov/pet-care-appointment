@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,27 +18,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RoleService implements IRoleService {
     private final RoleRepository roleRepository;
-
-    /**
-     * Retrieves all roles in the system.
-     *
-     * @return a list of all roles
-     */
-    @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
-    }
-
-    /**
-     * Retrieves a role by its ID.
-     *
-     * @param id the ID of the role
-     * @return the role with the given ID, or {@code null} if not found
-     */
-    @Override
-    public Role getRoleById(Long id) {
-        return roleRepository.findById(id).orElse(null);
-    }
 
     /**
      * Retrieves a role by its name.

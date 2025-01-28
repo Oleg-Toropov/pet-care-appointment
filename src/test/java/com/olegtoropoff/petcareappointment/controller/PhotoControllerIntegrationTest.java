@@ -55,22 +55,6 @@ class PhotoControllerIntegrationTest {
     }
 
     @Test
-    void testGetPhotoById_ValidId_ReturnsPhotoUrlBytes() throws Exception {
-        mockMvc.perform(get(PHOTOS + GET_PHOTO_BY_ID, 2L))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
-                .andExpect(jsonPath("$.data").isNotEmpty());
-    }
-
-    @Test
-    void testGetPhotoUrlById_NotFound() throws Exception {
-        mockMvc.perform(get(PHOTOS + GET_PHOTO_BY_ID, 100L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_NOT_FOUND))
-                .andExpect(jsonPath("$.data").value(nullValue()));
-    }
-
-    @Test
     void testDeletePhoto_ValidRequest_ReturnsSuccess() throws Exception {
         mockMvc.perform(delete(PHOTOS + DELETE_PHOTO, 3L, 3L))
                 .andExpect(status().isOk())

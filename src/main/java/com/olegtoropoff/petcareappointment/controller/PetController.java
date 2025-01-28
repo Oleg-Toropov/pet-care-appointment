@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static org.springframework.http.HttpStatus.*;
 
 /**
@@ -24,40 +22,6 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(UrlMapping.PETS)
 public class PetController {
     private final IPetService petService;
-
-    /**
-     * Saves a list of pets associated with an appointment.
-     *
-     * @param pets the list of pets to save.
-     * @return a response containing the saved pets.
-     */
-    @PostMapping(UrlMapping.SAVE_PETS_FOR_APPOINTMENT)
-    public ResponseEntity<CustomApiResponse> savePets(@RequestBody List<Pet> pets) {
-        try {
-            List<Pet> savedPets = petService.savePetForAppointment(pets);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PET_ADDED_SUCCESS, savedPets));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
-        }
-    }
-
-    /**
-     * Fetches a pet by its ID.
-     *
-     * @param petId the ID of the pet.
-     * @return a response containing the pet details.
-     */
-    @GetMapping(UrlMapping.GET_PET_BY_ID)
-    public ResponseEntity<CustomApiResponse> getPetById(@PathVariable Long petId) {
-        try {
-            Pet pet = petService.getPetById(petId);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PET_FOUND, pet));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
-        }
-    }
 
     /**
      * Deletes a pet by its ID.

@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
@@ -75,21 +74,6 @@ public class UserController {
             return ResponseEntity.status(BAD_REQUEST).body(new CustomApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
-        }
-    }
-
-    /**
-     * Retrieves a list of all users.
-     *
-     * @return a {@link ResponseEntity} containing a list of all users
-     */
-    @GetMapping(UrlMapping.GET_ALL_USERS)
-    public ResponseEntity<CustomApiResponse> getAllUsers() {
-        try {
-            List<UserDto> usersDto = userService.getAllUsers();
-            return ResponseEntity.status(FOUND).body(new CustomApiResponse(FeedBackMessage.USERS_FOUND, usersDto));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }

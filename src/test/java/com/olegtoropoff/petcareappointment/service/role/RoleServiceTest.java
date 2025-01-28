@@ -1,8 +1,5 @@
 package com.olegtoropoff.petcareappointment.service.role;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Role;
 import com.olegtoropoff.petcareappointment.repository.RoleRepository;
@@ -14,10 +11,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @Tag("unit")
 class RoleServiceTest {
@@ -31,58 +30,6 @@ class RoleServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void getAllRoles_Success() {
-        Role role = new Role();
-        when(roleRepository.findAll()).thenReturn(List.of(role));
-
-        List<Role> result = roleService.getAllRoles();
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(role, result.get(0));
-
-        verify(roleRepository).findAll();
-    }
-
-    @Test
-    void getAllRoles_ReturnsEmptyList_WhenNoRolesExist() {
-        when(roleRepository.findAll()).thenReturn(Collections.emptyList());
-
-        List<Role> result = roleService.getAllRoles();
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-
-        verify(roleRepository).findAll();
-    }
-
-    @Test
-    void getRoleById_Success() {
-        Long roleId = 1L;
-        Role role = new Role();
-        when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
-
-        Role result = roleService.getRoleById(roleId);
-
-        assertNotNull(result);
-        assertEquals(role, result);
-
-        verify(roleRepository).findById(roleId);
-    }
-
-    @Test
-    void getRoleById_ReturnsNull_WhenRoleNotFound() {
-        Long roleId = 1L;
-        when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
-
-        Role result = roleService.getRoleById(roleId);
-
-        assertNull(result);
-
-        verify(roleRepository).findById(roleId);
     }
 
     @Test

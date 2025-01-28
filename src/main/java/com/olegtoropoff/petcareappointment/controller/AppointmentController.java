@@ -49,7 +49,7 @@ public class AppointmentController {
             @RequestParam Long senderId,
             @RequestParam Long recipientId) {
         try {
-            Appointment appointment = appointmentService.createAppointment(request, senderId, recipientId);
+            Appointment appointment = appointmentService.createAppointment(request, senderId, recipientId); // todo dto
             rabbitMQProducer.sendMessage("AppointmentBookedEvent:" + appointment.getVeterinarian().getId());
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, appointment));
         } catch (ResourceNotFoundException e) {
@@ -73,7 +73,7 @@ public class AppointmentController {
             @PathVariable Long id,
             @RequestBody AppointmentUpdateRequest request) {
         try {
-            Appointment appointment = appointmentService.updateAppointment(id, request);
+            Appointment appointment = appointmentService.updateAppointment(id, request); // todo dto
             return ResponseEntity.ok((new CustomApiResponse(FeedBackMessage.APPOINTMENT_UPDATE_SUCCESS, appointment)));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
@@ -96,7 +96,7 @@ public class AppointmentController {
             @PathVariable Long id,
             @RequestBody Pet pet) {
         try {
-            Appointment appointment = appointmentService.addPetForAppointment(id, pet);
+            Appointment appointment = appointmentService.addPetForAppointment(id, pet); // todo dto
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PET_ADDED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(NOT_ACCEPTABLE).body(new CustomApiResponse(e.getMessage(), null));
@@ -125,9 +125,9 @@ public class AppointmentController {
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"));
             Page<AppointmentDto> appointmentPage;
             if (search.isEmpty()) {
-                appointmentPage = appointmentService.getAllAppointments(pageable);
+                appointmentPage = appointmentService.getAllAppointments(pageable);  // todo dto??
             } else {
-                appointmentPage = appointmentService.searchAppointments(search, pageable);
+                appointmentPage = appointmentService.searchAppointments(search, pageable); // todo dto ??
             }
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENTS_FOUND, appointmentPage));
         } catch (Exception e) {
@@ -146,7 +146,7 @@ public class AppointmentController {
     @GetMapping(UrlMapping.GET_APPOINTMENT_BY_ID)
     public ResponseEntity<CustomApiResponse> getAppointmentById(@PathVariable Long id) {
         try {
-            Appointment appointment = appointmentService.getAppointmentById(id);
+            Appointment appointment = appointmentService.getAppointmentById(id); // todo dto
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_FOUND, appointment));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
@@ -182,7 +182,7 @@ public class AppointmentController {
     @PutMapping(UrlMapping.CANCEL_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> cancelAppointment(@PathVariable Long id) {
         try {
-            Appointment appointment = appointmentService.cancelAppointment(id);
+            Appointment appointment = appointmentService.cancelAppointment(id); // todo dto
             rabbitMQProducer.sendMessage("AppointmentCanceledEvent:" +  appointment.getVeterinarian().getId() + "#" + appointment.getAppointmentNo());
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_CANCELLED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
@@ -201,7 +201,7 @@ public class AppointmentController {
     @PutMapping(UrlMapping.APPROVE_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> approveAppointment(@PathVariable Long id) {
         try {
-            Appointment appointment = appointmentService.approveAppointment(id);
+            Appointment appointment = appointmentService.approveAppointment(id); // todo dto
             rabbitMQProducer.sendMessage("AppointmentApprovedEvent:" + appointment.getPatient().getId());
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_APPROVED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
@@ -220,7 +220,7 @@ public class AppointmentController {
     @PutMapping(UrlMapping.DECLINE_APPOINTMENT)
     public ResponseEntity<CustomApiResponse> declineAppointment(@PathVariable Long id) {
         try {
-            Appointment appointment = appointmentService.declineAppointment(id);
+            Appointment appointment = appointmentService.declineAppointment(id); // todo dto
             rabbitMQProducer.sendMessage("AppointmentDeclinedEvent:" + appointment.getPatient().getId());
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_DECLINED_SUCCESS, appointment));
         } catch (IllegalStateException e) {
@@ -246,7 +246,7 @@ public class AppointmentController {
      * @return a list of appointment summaries.
      */
     @GetMapping(UrlMapping.APPOINTMENT_SUMMARY)
-    public ResponseEntity<CustomApiResponse> getAppointmentSummary() {
+    public ResponseEntity<CustomApiResponse> getAppointmentSummary() { // todo change
         try {
             List<Map<String, Object>> summary = appointmentService.getAppointmentSummary();
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.SUCCESS, summary));

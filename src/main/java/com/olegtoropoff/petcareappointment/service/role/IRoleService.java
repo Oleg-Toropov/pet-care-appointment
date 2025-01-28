@@ -2,7 +2,6 @@ package com.olegtoropoff.petcareappointment.service.role;
 
 import com.olegtoropoff.petcareappointment.model.Role;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,21 +9,6 @@ import java.util.Set;
  * Provides methods to retrieve roles by ID, name, and assign roles based on user types.
  */
 public interface IRoleService {
-
-    /**
-     * Retrieves all roles in the system.
-     *
-     * @return a list of all roles
-     */
-    List<Role> getAllRoles();
-
-    /**
-     * Retrieves a role by its ID.
-     *
-     * @param id the ID of the role
-     * @return the role with the given ID, or {@code null} if not found
-     */
-    Role getRoleById(Long id);
 
     /**
      * Retrieves a role by its name.

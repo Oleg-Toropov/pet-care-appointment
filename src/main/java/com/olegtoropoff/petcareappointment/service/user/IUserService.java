@@ -1,13 +1,12 @@
 package com.olegtoropoff.petcareappointment.service.user;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
+import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.request.UserUpdateRequest;
-import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,13 +32,6 @@ public interface IUserService {
      * @return the updated {@link User}.
      */
     User update(Long userId, UserUpdateRequest request);
-
-    /**
-     * Retrieves a list of all users in the system.
-     *
-     * @return a list of {@link UserDto} objects representing all users.
-     */
-    List<UserDto> getAllUsers();
 
     /**
      * Retrieves a user by their ID.

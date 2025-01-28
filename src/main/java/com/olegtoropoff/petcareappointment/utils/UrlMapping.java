@@ -32,11 +32,6 @@ public class UrlMapping {
     public static final String UPDATE_USER = "/user/{userId}/update";
 
     /**
-     * Endpoint for retrieving all users.
-     */
-    public static final String GET_ALL_USERS = "/all-users";// TODO
-
-    /**
      * Endpoint for retrieving a user by their ID.
      */
     public static final String GET_USER_BY_ID = "/user/{userId}";
@@ -161,16 +156,6 @@ public class UrlMapping {
     public static final String PETS = API + "/pets/";
 
     /**
-     * Endpoint for saving pets associated with an appointment.
-     */
-    public static final String SAVE_PETS_FOR_APPOINTMENT = "/save-pets/";// TODO
-
-    /**
-     * Endpoint for retrieving a pet by its ID.
-     */
-    public static final String GET_PET_BY_ID = "/pet/{petId}/pet";// TODO
-
-    /**
      * Endpoint for deleting a pet by its ID.
      */
     public static final String DELETE_PET_BY_ID = "/pet/{petId}/delete";
@@ -206,11 +191,6 @@ public class UrlMapping {
      * Endpoint for uploading a photo.
      */
     public static final String UPLOAD_PHOTO = "/photo/upload";
-
-    /**
-     * Endpoint for retrieving a photo by its ID.
-     */
-    public static final String GET_PHOTO_BY_ID = "/photo/{photoId}/photo";// TODO
 
     /**
      * Endpoint for deleting a photo by its ID and associated user ID.
@@ -328,52 +308,10 @@ public class UrlMapping {
     public static final String TOKEN_VERIFICATION = API + "/verification";
 
     /**
-     * Endpoint for validating a token.
-     */
-    public static final String VALIDATE_TOKEN = "/validate-token";// TODO
-
-    /**
      * Endpoint for checking token expiration.
      */
     public static final String CHECK_TOKEN_EXPIRATION = "/check-token-expiration";
-
-    /**
-     * Endpoint for saving a token.
-     */
-    public static final String SAVE_TOKEN = "/user/save-token";// TODO
-
-    /**
-     * Endpoint for generating a new token for a user.
-     */
-    public static final String GENERATE_NEW_TOKEN_FOR_USER = "/generate-new-token";// TODO
-
-    /**
-     * Endpoint for deleting a token.
-     */
-    public static final String DELETE_TOKEN = "/delete-token";// TODO
     /*============================ End Verification token ===================================*/
-
-    /*============================ Start Role ===================================*/
-    /**
-     * Base path for role-related endpoints.
-     */
-    public static final String ROLES = API + "/roles";// TODO
-
-    /**
-     * Endpoint for retrieving all roles.
-     */
-    public static final String GET_ALL_ROLES = "/all-roles";// TODO
-
-    /**
-     * Endpoint for retrieving a role by its ID.
-     */
-    public static final String GET_ROLE_BY_ID = "/role/get-by-id/role";// TODO
-
-    /**
-     * Endpoint for retrieving a role by its name.
-     */
-    public static final String GET_ROLE_BY_NAME = "/role/get-by-name";// TODO
-    /*============================ End Role ===================================*/
 
     /*============================ Start VetBiography ===================================*/
     /**
@@ -395,10 +333,5 @@ public class UrlMapping {
      * Endpoint for updating a biography.
      */
     public static final String UPDATE_BIOGRAPHY = "/biography/{id}/update";
-
-    /**
-     * Endpoint for deleting a biography.
-     */
-    public static final String DELETE_BIOGRAPHY = "/biography/{id}/delete"; // TODO
     /*============================ End VetBiography ===================================*/
 }

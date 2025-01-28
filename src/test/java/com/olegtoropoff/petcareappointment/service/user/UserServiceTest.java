@@ -159,20 +159,6 @@ class UserServiceTest {
     }
 
     @Test
-    void getAllUsers_ReturnsUserDtoList() {
-        User user = new User();
-        UserDto userDto = new UserDto();
-        when(userRepository.findAll()).thenReturn(List.of(user));
-        when(entityConverter.mapEntityToDto(user, UserDto.class)).thenReturn(userDto);
-
-        List<UserDto> result = userService.getAllUsers();
-
-        assertEquals(1, result.size());
-        assertEquals(userDto, result.get(0));
-        verify(userRepository, times(1)).findAll();
-    }
-
-    @Test
     void findById_WhenUserExists_ReturnsUser() {
         Long userId = 1L;
         User user = new User();

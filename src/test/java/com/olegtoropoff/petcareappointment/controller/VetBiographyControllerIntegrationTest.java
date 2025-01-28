@@ -104,20 +104,4 @@ public class VetBiographyControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_NOT_FOUND))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
-
-    @Test
-    public void deleteVetBiography_WhenSuccess_ReturnsSuccessMessage() throws Exception {
-        mockMvc.perform(delete(BIOGRAPHIES + DELETE_BIOGRAPHY, 4L))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_DELETED_SUCCESS))
-                .andExpect(jsonPath("$.data").value(nullValue()));
-    }
-
-    @Test
-    public void deleteVetBiography_WhenNotFound_ReturnsNotFound() throws Exception {
-        mockMvc.perform(delete(BIOGRAPHIES + DELETE_BIOGRAPHY, 100L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value(FeedBackMessage.BIOGRAPHY_NOT_FOUND))
-                .andExpect(jsonPath("$.data").value(nullValue()));
-    }
 }

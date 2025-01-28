@@ -137,15 +137,6 @@ void validateToken_ExpiredToken() {
     }
 
     @Test
-    void deleteVerificationToken_Success() {
-        Long tokenId = 1L;
-
-        verificationTokenService.deleteVerificationToken(tokenId);
-
-        verify(tokenRepository).deleteById(tokenId);
-    }
-
-    @Test
     void isTokenExpired_True() {
         String token = "expiredToken";
         VerificationToken verificationToken = new VerificationToken();

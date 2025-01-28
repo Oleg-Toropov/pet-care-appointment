@@ -82,19 +82,6 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Retrieves a list of all users.
-     *
-     * @return a list of {@link UserDto} objects representing all users.
-     */
-    @Override
-    public List<UserDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(user -> entityConverter.mapEntityToDto(user, UserDto.class))
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Retrieves a user by their ID.
      *
      * @param userId the ID of the user to retrieve.
@@ -141,7 +128,6 @@ public class UserService implements IUserService {
     public UserDto getUserWithDetails(Long userId) {
         User user = findById(userId);
         UserDto userDto = entityConverter.mapEntityToDto(user, UserDto.class);
-        userDto.setPhotoUrl(user.getPhoto().getS3Url());
         setUserAppointments(userDto);
         setUserReviews(userDto, userId);
         return userDto;

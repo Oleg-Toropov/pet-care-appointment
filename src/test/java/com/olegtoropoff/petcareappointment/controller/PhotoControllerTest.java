@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,46 +63,6 @@ public class PhotoControllerTest {
         assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
         verify(photoService, times(1)).savePhoto(fileMock, userId);
-    }
-
-    @Test
-    public void getPhotoUrlById_WhenPhotoUrlExists_ReturnsPhotoUrl() {
-        Long photoId = 2L;
-        String url = "urlTest";
-        when(photoService.getPhotoUrlById(photoId)).thenReturn(url);
-
-        ResponseEntity<CustomApiResponse> response = photoController.getPhotoUrlById(photoId);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(url, response.getBody().getData());
-        verify(photoService, times(1)).getPhotoUrlById(photoId);
-    }
-
-    @Test
-    public void getPhotoUrlById_WhenNotFound_ReturnsNotFound() {
-        Long photoId = 100L;
-        when(photoService.getPhotoUrlById(photoId)).thenThrow(new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
-
-        ResponseEntity<CustomApiResponse> response = photoController.getPhotoUrlById(photoId);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(FeedBackMessage.RESOURCE_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-        verify(photoService, times(1)).getPhotoUrlById(photoId);
-    }
-
-    @Test
-    public void getPhotoUrlById_WhenAnyOtherExceptionOccurs_ReturnsInternalServerError() {
-        Long photoId = 2L;
-        when(photoService.getPhotoUrlById(photoId)).thenThrow(new RuntimeException());
-
-        ResponseEntity<CustomApiResponse> response = photoController.getPhotoUrlById(photoId);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-        verify(photoService, times(1)).getPhotoUrlById(photoId);
     }
 
     @Test

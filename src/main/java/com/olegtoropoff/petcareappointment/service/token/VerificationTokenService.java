@@ -91,16 +91,6 @@ public class VerificationTokenService implements IVerificationTokenService {
     }
 
     /**
-     * Deletes a verification token by its ID.
-     *
-     * @param tokenId the ID of the token to delete.
-     */
-    @Override
-    public void deleteVerificationToken(Long tokenId) {
-        tokenRepository.deleteById(tokenId);
-    }
-
-    /**
      * Checks if a verification token is expired.
      *
      * @param token the token to check.

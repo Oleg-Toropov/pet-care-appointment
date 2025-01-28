@@ -215,40 +215,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getAllUsers_WhenUsersExist_ReturnsFoundStatusAndListOfUsers() {
-        UserDto user1 = new UserDto();
-        user1.setId(1L);
-        user1.setFirstName("Иван");
-        user1.setLastName("Иванов");
-
-        UserDto user2 = new UserDto();
-        user2.setId(2L);
-        user2.setFirstName("Петр");
-        user2.setLastName("Петров");
-
-        List<UserDto> usersDto = Arrays.asList(user1, user2);
-        when(userService.getAllUsers()).thenReturn(usersDto);
-
-        ResponseEntity<CustomApiResponse> response = userController.getAllUsers();
-
-        assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(FeedBackMessage.USERS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(usersDto, response.getBody().getData());
-    }
-
-    @Test
-    public void getAllUsers_WhenExceptionOccurs_ReturnsInternalServerError() {
-        String errorMessage = FeedBackMessage.ERROR;
-        when(userService.getAllUsers()).thenThrow(new RuntimeException(errorMessage));
-
-        ResponseEntity<CustomApiResponse> response = userController.getAllUsers();
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
-
-    @Test
     public void register_WhenValidRequest_ReturnsSuccess() {
         RegistrationRequest request = new RegistrationRequest();
         request.setFirstName("Иван");

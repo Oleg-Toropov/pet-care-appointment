@@ -43,24 +43,6 @@ public class PhotoController {
     }
 
     /**
-     * Retrieves a photo URL by its ID.
-     *
-     * @param photoId the ID of the photo to be retrieved
-     * @return a response containing the photo URL as a string
-     */
-    @GetMapping(value = UrlMapping.GET_PHOTO_BY_ID)
-    public ResponseEntity<CustomApiResponse> getPhotoUrlById(@PathVariable Long photoId) {
-        try {
-            String photoUrl = photoService.getPhotoUrlById(photoId);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, photoUrl));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
-        }
-    }
-
-    /**
      * Deletes a photo by its ID.
      *
      * @param photoId the ID of the photo to be deleted

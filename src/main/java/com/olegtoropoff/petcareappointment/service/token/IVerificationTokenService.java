@@ -45,13 +45,6 @@ public interface IVerificationTokenService {
     Optional<VerificationToken> findByToken(String token);
 
     /**
-     * Deletes a verification token by its ID.
-     *
-     * @param tokenId the ID of the token to delete
-     */
-    void deleteVerificationToken(Long tokenId);
-
-    /**
      * Checks if the given token has expired.
      *
      * @param token the token to check

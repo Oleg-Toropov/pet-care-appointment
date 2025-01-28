@@ -127,30 +127,4 @@ class VetBiographyServiceTest {
         verify(vetBiographyRepository).findById(bioId);
         verifyNoMoreInteractions(vetBiographyRepository);
     }
-
-    @Test
-    void deleteVetBiography_Success() {
-        Long bioId = 1L;
-        VetBiography biography = new VetBiography();
-        when(vetBiographyRepository.findById(bioId)).thenReturn(Optional.of(biography));
-
-        vetBiographyService.deleteVetBiography(bioId);
-
-        verify(vetBiographyRepository).findById(bioId);
-        verify(vetBiographyRepository).delete(biography);
-    }
-
-    @Test
-    void deleteVetBiography_ThrowsException_WhenBiographyNotFound() {
-        Long bioId = 1L;
-        when(vetBiographyRepository.findById(bioId)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                () -> vetBiographyService.deleteVetBiography(bioId));
-
-        assertEquals(FeedBackMessage.BIOGRAPHY_NOT_FOUND, exception.getMessage());
-
-        verify(vetBiographyRepository).findById(bioId);
-        verifyNoMoreInteractions(vetBiographyRepository);
-    }
 }

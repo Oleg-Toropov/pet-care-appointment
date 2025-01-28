@@ -63,17 +63,4 @@ public class VetBiographyService implements IVetBiographyService {
         existingVetBiography.setBiography(vetBiography.getBiography());
         return vetBiographyRepository.save(existingVetBiography);
         }
-
-    /**
-     * Deletes a biography by its ID.
-     *
-     * @param id the ID of the biography to delete.
-     * @throws ResourceNotFoundException if the biography is not found.
-     */
-    @Override
-    public void deleteVetBiography(Long id) {
-        VetBiography biographyToDelete = vetBiographyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.BIOGRAPHY_NOT_FOUND));
-        vetBiographyRepository.delete(biographyToDelete);
-    }
 }

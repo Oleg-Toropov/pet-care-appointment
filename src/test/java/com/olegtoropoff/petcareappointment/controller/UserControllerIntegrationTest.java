@@ -123,15 +123,6 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void testGetAllUsers_ReturnsAllUsers() throws Exception {
-        mockMvc.perform(get(USERS + GET_ALL_USERS))
-                .andExpect(status().isFound())
-                .andExpect(jsonPath("$.message").value(FeedBackMessage.USERS_FOUND))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").value(11));
-    }
-
-    @Test
     public void testRegister_ValidRequest_ReturnsSuccess() throws Exception {
         String registrationRequestJson = """
                 {

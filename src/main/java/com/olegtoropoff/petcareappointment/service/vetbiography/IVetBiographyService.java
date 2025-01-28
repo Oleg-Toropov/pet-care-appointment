@@ -33,11 +33,4 @@ public interface IVetBiographyService {
      * @return the updated {@link VetBiography}.
      */
     VetBiography updateVetBiography(VetBiography vetBiography, Long id);
-
-    /**
-     * Deletes a biography by its ID.
-     *
-     * @param id the ID of the biography to delete.
-     */
-    void deleteVetBiography(Long id);
 }

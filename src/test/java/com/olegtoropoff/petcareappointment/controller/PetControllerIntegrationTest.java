@@ -13,11 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,48 +33,6 @@ class PetControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Test
-    void savePets_ReturnsSuccessResponse() throws Exception {
-        Pet pet1 = new Pet();
-        pet1.setName("Мурка");
-        pet1.setType("Кошка");
-        pet1.setBreed("Сибирская");
-        pet1.setColor("Черный");
-
-        Pet pet2 = new Pet();
-        pet2.setName("Рекс");
-        pet1.setType("Собака");
-        pet1.setBreed("Лабрадор");
-        pet1.setColor("Белый");
-
-        List<Pet> petsToSave = Arrays.asList(pet1, pet2);
-
-        mockMvc.perform(post(PETS + SAVE_PETS_FOR_APPOINTMENT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(petsToSave)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is(FeedBackMessage.PET_ADDED_SUCCESS)))
-                .andExpect(jsonPath("$.data", hasSize(2)))
-                .andExpect(jsonPath("$.data[0].name", is("Мурка")))
-                .andExpect(jsonPath("$.data[1].name", is("Рекс")));
-    }
-
-    @Test
-    void getPetById_ReturnsSuccessResponse() throws Exception {
-        mockMvc.perform(get(PETS + GET_PET_BY_ID, 1L))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is(FeedBackMessage.PET_FOUND)))
-                .andExpect(jsonPath("$.data.id", is(1)))
-                .andExpect(jsonPath("$.data.name", is("Барсик")));
-    }
-
-    @Test
-    void getPetById_ThrowsNotFoundException() throws Exception {
-        mockMvc.perform(get(PETS + GET_PET_BY_ID, 100L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is(FeedBackMessage.PET_NOT_FOUND)));
-    }
 
     @Test
     void deletePetById_ReturnsSuccessResponse() throws Exception {

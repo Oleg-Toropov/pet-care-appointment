@@ -6,11 +6,9 @@ import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Photo;
 import com.olegtoropoff.petcareappointment.model.Veterinarian;
-import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
-import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
-import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
 import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
-import com.olegtoropoff.petcareappointment.service.photo.PhotoService;
+import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
+import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
 import com.olegtoropoff.petcareappointment.service.review.ReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,12 +39,6 @@ class VeterinarianServiceTest {
 
     @Mock
     private ReviewService reviewService;
-
-    @Mock
-    private ReviewRepository reviewRepository;
-
-    @Mock
-    private PhotoService photoService;
 
     @Mock
     private AppointmentRepository appointmentRepository;

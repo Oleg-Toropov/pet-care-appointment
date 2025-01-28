@@ -37,67 +37,6 @@ class PetControllerTest {
     }
 
     @Test
-    void savePets_Success() {
-        List<Pet> petsToSave = Arrays.asList(new Pet(), new Pet());
-        when(petService.savePetForAppointment(petsToSave)).thenReturn(petsToSave);
-
-        ResponseEntity<CustomApiResponse> response = petController.savePets(petsToSave);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(FeedBackMessage.PET_ADDED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(petsToSave, response.getBody().getData());
-        verify(petService, times(1)).savePetForAppointment(petsToSave);
-    }
-
-    @Test
-    public void savePets_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
-        List<Pet> petsToSave = Arrays.asList(new Pet(), new Pet());
-        when(petService.savePetForAppointment(petsToSave)).thenThrow(new RuntimeException());
-
-        ResponseEntity<CustomApiResponse> response = petController.savePets(petsToSave);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
-
-    @Test
-    void getPetById_WhenPetExists_ReturnsPetWithStatusOk() {
-        Pet pet1 = new Pet();
-        pet1.setId(1L);
-        when(petService.getPetById(1L)).thenReturn(pet1);
-
-        ResponseEntity<CustomApiResponse> response = petController.getPetById(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(FeedBackMessage.PET_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(pet1, response.getBody().getData());
-        verify(petService, times(1)).getPetById(1L);
-    }
-
-    @Test
-    void getPetById_WhenPetNotFound_ReturnsStatusNotFound() {
-        when(petService.getPetById(100L)).thenThrow(new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
-
-        ResponseEntity<CustomApiResponse> response = petController.getPetById(100L);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(FeedBackMessage.PET_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
-
-    @Test
-    public void getPetById_WhenInternalErrorOccurs_ReturnsStatusInternalServerError() {
-        when(petService.getPetById(1L)).thenThrow(new RuntimeException());
-
-        ResponseEntity<CustomApiResponse> response = petController.getPetById(1L);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(FeedBackMessage.ERROR, Objects.requireNonNull(response.getBody()).getMessage());
-        assertNull(response.getBody().getData());
-    }
-
-    @Test
     void deletePetById_WhenValidPetId_ReturnsSuccess() {
         doNothing().when(petService).deletePet(1L);
 
