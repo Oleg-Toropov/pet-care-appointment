@@ -1,10 +1,8 @@
 package com.olegtoropoff.petcareappointment.controller;
 
-import com.olegtoropoff.petcareappointment.dto.EntityConverter;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.exception.UserAlreadyExistsException;
-import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
@@ -31,7 +29,6 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(UrlMapping.USERS)
 public class UserController {
     private final IUserService userService;
-    private final EntityConverter<User, UserDto> entityConverter;
     private final IChangePasswordService changePasswordService;
     private final RabbitMQProducer rabbitMQProducer;
 
@@ -44,9 +41,8 @@ public class UserController {
     @PostMapping(UrlMapping.REGISTER_USER)
     public ResponseEntity<CustomApiResponse> register(@RequestBody RegistrationRequest request) {
         try {
-            User user = userService.register(request);
-            rabbitMQProducer.sendMessage("RegistrationCompleteEvent:" + user.getId());
-            UserDto registeredUserDto = entityConverter.mapEntityToDto(user, UserDto.class);
+            UserDto registeredUserDto = userService.register(request);
+            rabbitMQProducer.sendMessage("RegistrationCompleteEvent:" + registeredUserDto.getId());
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.CREATE_USER_SUCCESS, registeredUserDto));
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new CustomApiResponse(e.getMessage(), null));
@@ -67,8 +63,7 @@ public class UserController {
     @PutMapping(UrlMapping.UPDATE_USER)
     public ResponseEntity<CustomApiResponse> update(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
         try {
-            User user = userService.update(userId, request);
-            UserDto updatedUserDto = entityConverter.mapEntityToDto(user, UserDto.class);
+            UserDto updatedUserDto = userService.update(userId, request);
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.USER_UPDATE_SUCCESS, updatedUserDto));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(BAD_REQUEST).body(new CustomApiResponse(e.getMessage(), null));

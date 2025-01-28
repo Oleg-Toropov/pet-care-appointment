@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.service.pet;
 
+import com.olegtoropoff.petcareappointment.dto.PetDto;
 import com.olegtoropoff.petcareappointment.model.Pet;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public interface IPetService {
      * @param petId the ID of the pet to update
      * @return the updated pet
      */
-    Pet updatePet(Pet pet, Long petId);
+    PetDto updatePet(Pet pet, Long petId);
 
     /**
      * Deletes a pet by its ID. Ensures that the last pet of an appointment cannot be deleted.

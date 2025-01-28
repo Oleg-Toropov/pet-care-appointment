@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.service.vetbiography;
 
+import com.olegtoropoff.petcareappointment.dto.VetBiographyDto;
 import com.olegtoropoff.petcareappointment.model.VetBiography;
 
 /**
@@ -14,7 +15,7 @@ public interface IVetBiographyService {
      * @param veterinarianId the ID of the veterinarian.
      * @return the {@link VetBiography} associated with the specified veterinarian.
      */
-    VetBiography getVetBiographyByVetId(Long veterinarianId);
+    VetBiographyDto getVetBiographyByVetId(Long veterinarianId);
 
     /**
      * Saves a new biography for a veterinarian.
@@ -23,7 +24,7 @@ public interface IVetBiographyService {
      * @param vetId           the ID of the veterinarian to associate the biography with.
      * @return the saved {@link VetBiography}.
      */
-    VetBiography saveVetBiography(VetBiography veterinarianBio, Long vetId);
+    VetBiographyDto saveVetBiography(VetBiography veterinarianBio, Long vetId);
 
     /**
      * Updates an existing biography for a veterinarian.
@@ -32,5 +33,5 @@ public interface IVetBiographyService {
      * @param id           the ID of the biography to update.
      * @return the updated {@link VetBiography}.
      */
-    VetBiography updateVetBiography(VetBiography vetBiography, Long id);
+    VetBiographyDto updateVetBiography(VetBiography vetBiography, Long id);
 }

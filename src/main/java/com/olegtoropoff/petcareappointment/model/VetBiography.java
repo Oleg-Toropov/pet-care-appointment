@@ -9,7 +9,6 @@ import lombok.Setter;
 
 /**
  * Represents a biography for a veterinarian.
- * <p>
  * This entity contains information about a veterinarian's professional background,
  * experience, and qualifications. Each veterinarian can have only one associated biography.
  */

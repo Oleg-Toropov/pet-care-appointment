@@ -24,8 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service class for managing appointments.
@@ -54,7 +56,7 @@ public class AppointmentService implements IAppointmentService {
      */
     @Transactional
     @Override
-    public Appointment createAppointment(BookAppointmentRequest request, Long senderId, Long recipientId) {
+    public AppointmentDto createAppointment(BookAppointmentRequest request, Long senderId, Long recipientId) {
         Optional<User> sender = userRepository.findById(senderId);
 
         if (sender.isPresent() && sender.get().getUserType().equals("VET")) {
@@ -79,7 +81,9 @@ public class AppointmentService implements IAppointmentService {
             appointment.addVeterinarian(recipient.get());
             appointment.setAppointmentNo();
             appointment.setStatus(AppointmentStatus.WAITING_FOR_APPROVAL);
-            return appointmentRepository.save(appointment);
+
+            Appointment createdAppointment = appointmentRepository.save(appointment);
+            return entityConverter.mapEntityToDto(createdAppointment, AppointmentDto.class);
         }
         throw new ResourceNotFoundException(FeedBackMessage.SENDER_RECIPIENT_NOT_FOUND);
     }
@@ -106,7 +110,7 @@ public class AppointmentService implements IAppointmentService {
      * @return the updated appointment.
      */
     @Override
-    public Appointment updateAppointment(Long id, AppointmentUpdateRequest request) {
+    public AppointmentDto updateAppointment(Long id, AppointmentUpdateRequest request) {
         Appointment existingAppointment = getAppointmentById(id);
         if (!Objects.equals(existingAppointment.getStatus(), AppointmentStatus.WAITING_FOR_APPROVAL)) {
             throw new IllegalStateException(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED);
@@ -114,7 +118,8 @@ public class AppointmentService implements IAppointmentService {
         existingAppointment.setAppointmentDate(LocalDate.parse(request.getAppointmentDate()));
         existingAppointment.setAppointmentTime(LocalTime.parse(request.getAppointmentTime()));
         existingAppointment.setReason(request.getReason());
-        return appointmentRepository.save(existingAppointment);
+        Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
+        return entityConverter.mapEntityToDto(updatedAppointment, AppointmentDto.class);
     }
 
     /**
@@ -125,7 +130,7 @@ public class AppointmentService implements IAppointmentService {
      * @return the updated appointment.
      */
     @Override
-    public Appointment addPetForAppointment(Long id, Pet pet) {
+    public AppointmentDto addPetForAppointment(Long id, Pet pet) {
         Appointment existingAppointment = getAppointmentById(id);
         if (!Objects.equals(existingAppointment.getStatus(), AppointmentStatus.WAITING_FOR_APPROVAL)) {
             throw new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED);
@@ -134,7 +139,8 @@ public class AppointmentService implements IAppointmentService {
         pet.setAppointment(existingAppointment);
         Pet savedPet = petService.savePetForAppointment(pet);
         existingAppointment.getPets().add(savedPet);
-        return appointmentRepository.save(existingAppointment);
+        Appointment savedAppointment = appointmentRepository.save(existingAppointment);
+        return entityConverter.mapEntityToDto(savedAppointment, AppointmentDto.class);
     }
 
     /**
@@ -176,6 +182,21 @@ public class AppointmentService implements IAppointmentService {
     }
 
     /**
+     * Retrieves an appointment by its ID and maps it to a DTO.
+     * This method fetches an appointment entity from the database using its ID
+     * and converts it to a {@code AppointmentDto} using the {@code entityConverter}.
+     *
+     * @param id the unique identifier of the appointment to retrieve.
+     * @return the {@code AppointmentDto} containing the appointment details.
+     * @throws ResourceNotFoundException if the appointment with the given ID is not found.
+     */
+    @Override
+    public AppointmentDto getAppointmentDtoById(Long id) {
+        Appointment appointment = getAppointmentById(id);
+        return entityConverter.mapEntityToDto(appointment, AppointmentDto.class);
+    }
+
+    /**
      * Deletes an appointment by its ID.
      *
      * @param id the ID of the appointment to delete.
@@ -208,12 +229,13 @@ public class AppointmentService implements IAppointmentService {
      * @return the updated appointment with CANCELLED status.
      */
     @Override
-    public Appointment cancelAppointment(Long appointmentId) {
+    public AppointmentDto cancelAppointment(Long appointmentId) {
         return appointmentRepository.findById(appointmentId)
                 .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.CANCELLED);
-                    return appointmentRepository.saveAndFlush(appointment);
+                    Appointment updatedAppointment =  appointmentRepository.saveAndFlush(appointment);
+                    return entityConverter.mapEntityToDto(updatedAppointment, AppointmentDto.class);
                 }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED));
     }
 
@@ -225,12 +247,13 @@ public class AppointmentService implements IAppointmentService {
      * @throws IllegalStateException if the operation is not allowed due to the current appointment status.
      */
     @Override
-    public Appointment approveAppointment(Long appointmentId) {
+    public AppointmentDto approveAppointment(Long appointmentId) {
         return appointmentRepository.findById(appointmentId)
                 .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.APPROVED);
-                    return appointmentRepository.saveAndFlush(appointment);
+                    Appointment updatedAppointment =  appointmentRepository.saveAndFlush(appointment);
+                    return entityConverter.mapEntityToDto(updatedAppointment, AppointmentDto.class);
                 }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED));
     }
 
@@ -242,12 +265,13 @@ public class AppointmentService implements IAppointmentService {
      * @throws IllegalStateException if the operation is not allowed due to the current appointment status.
      */
     @Override
-    public Appointment declineAppointment(Long appointmentId) {
+    public AppointmentDto declineAppointment(Long appointmentId) {
         return appointmentRepository.findById(appointmentId)
                 .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.NOT_APPROVED);
-                    return appointmentRepository.saveAndFlush(appointment);
+                    Appointment updatedAppointment = appointmentRepository.saveAndFlush(appointment);
+                    return entityConverter.mapEntityToDto(updatedAppointment, AppointmentDto.class);
                 }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED));
     }
 
@@ -269,28 +293,7 @@ public class AppointmentService implements IAppointmentService {
      */
     @Override
     public List<Map<String, Object>> getAppointmentSummary() {
-        return appointmentRepository.findAll()
-                .stream()
-                .collect(Collectors.groupingBy(Appointment::getStatus, Collectors.counting()))
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue() > 0)
-                .map(entry -> createStatusSummaryMap(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Creates a summary map for a specific appointment status and its count.
-     *
-     * @param status the appointment status.
-     * @param value  the count of appointments with the given status.
-     * @return a map containing the status name and the count.
-     */
-    private Map<String, Object> createStatusSummaryMap(AppointmentStatus status, Long value) {
-        Map<String, Object> summaryMap = new HashMap<>();
-        summaryMap.put("name", status);
-        summaryMap.put("value", value);
-        return summaryMap;
+        return appointmentRepository.getAppointmentSummary();
     }
 
     /**
@@ -300,10 +303,7 @@ public class AppointmentService implements IAppointmentService {
      */
     @Override
     public List<Long> getAppointmentIds() {
-        List<Appointment> appointments = appointmentRepository.findAll();
-        return appointments.stream()
-                .map(Appointment::getId)
-                .collect(Collectors.toList());
+        return appointmentRepository.findAllIds();
     }
 
     /**

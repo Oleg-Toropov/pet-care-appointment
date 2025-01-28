@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.dto.PetDto;
 import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Pet;
@@ -53,8 +54,8 @@ public class PetController {
     @PutMapping(UrlMapping.UPDATE_PET)
     public ResponseEntity<CustomApiResponse> updatePetById(@PathVariable Long petId, @RequestBody Pet pet) {
         try {
-            Pet thePet = petService.updatePet(pet, petId);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PET_UPDATE_SUCCESS, thePet));
+            PetDto updatedPetDto = petService.updatePet(pet, petId);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.PET_UPDATE_SUCCESS, updatedPetDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {

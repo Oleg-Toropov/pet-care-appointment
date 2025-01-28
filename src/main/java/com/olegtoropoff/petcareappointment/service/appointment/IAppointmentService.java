@@ -25,7 +25,7 @@ public interface IAppointmentService {
      * @param recipient the ID of the veterinarian receiving the appointment.
      * @return the created Appointment.
      */
-    Appointment createAppointment(BookAppointmentRequest request, Long sender, Long recipient);
+    AppointmentDto createAppointment(BookAppointmentRequest request, Long sender, Long recipient);
 
     /**
      * Updates an existing appointment with new details.
@@ -34,7 +34,7 @@ public interface IAppointmentService {
      * @param request the updated details of the appointment.
      * @return the updated Appointment.
      */
-    Appointment updateAppointment(Long id, AppointmentUpdateRequest request);
+    AppointmentDto updateAppointment(Long id, AppointmentUpdateRequest request);
 
     /**
      * Adds a new pet to an existing appointment.
@@ -43,7 +43,7 @@ public interface IAppointmentService {
      * @param pet the pet to be added to the appointment.
      * @return the updated Appointment.
      */
-    Appointment addPetForAppointment(Long id, Pet pet);
+    AppointmentDto addPetForAppointment(Long id, Pet pet);
 
     /**
      * Retrieves a paginated list of all appointments.
@@ -72,6 +72,14 @@ public interface IAppointmentService {
     Appointment getAppointmentById(Long id);
 
     /**
+     * Retrieves an appointment by its ID and maps it to a DTO.
+     *
+     * @param id the ID of the appointment.
+     * @return the {@code AppointmentDto} containing the appointment details.
+     */
+    AppointmentDto getAppointmentDtoById(Long id);
+
+    /**
      * Deletes an appointment by its ID.
      *
      * @param id the ID of the appointment to delete.
@@ -93,7 +101,7 @@ public interface IAppointmentService {
      * @param appointmentId the ID of the appointment to cancel.
      * @return the updated Appointment with a "CANCELLED" status.
      */
-    Appointment cancelAppointment(Long appointmentId);
+    AppointmentDto cancelAppointment(Long appointmentId);
 
     /**
      * Approves an appointment with the specified ID.
@@ -102,7 +110,7 @@ public interface IAppointmentService {
      * @param appointmentId the ID of the appointment to approve.
      * @return the updated Appointment with an "APPROVED" status.
      */
-    Appointment approveAppointment(Long appointmentId);
+    AppointmentDto approveAppointment(Long appointmentId);
 
     /**
      * Declines an appointment with the specified ID.
@@ -111,7 +119,7 @@ public interface IAppointmentService {
      * @param appointmentId the ID of the appointment to decline.
      * @return the updated Appointment with a "NOT_APPROVED" status.
      */
-    Appointment declineAppointment(Long appointmentId);
+    AppointmentDto declineAppointment(Long appointmentId);
 
     /**
      * Counts the total number of appointments in the system.

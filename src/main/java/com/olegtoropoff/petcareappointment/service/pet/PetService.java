@@ -1,5 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.pet;
 
+import com.olegtoropoff.petcareappointment.dto.EntityConverter;
+import com.olegtoropoff.petcareappointment.dto.PetDto;
 import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetService implements IPetService {
     private final PetRepository petRepository;
+    private final EntityConverter<Pet, PetDto> entityConverter;
 
     /**
      * Saves a list of pets for an appointment.
@@ -51,7 +54,7 @@ public class PetService implements IPetService {
      * @return the updated pet
      */
     @Override
-    public Pet updatePet(Pet pet, Long petId) {
+    public PetDto updatePet(Pet pet, Long petId) {
         Pet existingPet = getPetById(petId);
         existingPet.setName(pet.getName());
         existingPet.setAge(pet.getAge());
@@ -59,7 +62,8 @@ public class PetService implements IPetService {
         existingPet.setColor(pet.getColor());
         existingPet.setBreed(pet.getBreed());
         existingPet.setAge(pet.getAge());
-        return petRepository.save(existingPet);
+        Pet savedPet = petRepository.save(existingPet);
+        return entityConverter.mapEntityToDto(savedPet, PetDto.class);
     }
 
     /**

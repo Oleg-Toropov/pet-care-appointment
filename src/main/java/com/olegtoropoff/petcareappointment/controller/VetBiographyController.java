@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.dto.VetBiographyDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.VetBiography;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
@@ -32,8 +33,8 @@ public class VetBiographyController {
     @GetMapping(UrlMapping.GET_BIOGRAPHY_BY_VET_ID)
     public ResponseEntity<CustomApiResponse> getVetBiographyByVetId(@PathVariable Long vetId) {
         try {
-            VetBiography vetBiography = vetBiographyService.getVetBiographyByVetId(vetId);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_FOUND, vetBiography));
+            VetBiographyDto vetBiographyDto = vetBiographyService.getVetBiographyByVetId(vetId);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_FOUND, vetBiographyDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
@@ -51,8 +52,8 @@ public class VetBiographyController {
     @PostMapping(UrlMapping.SAVE_BIOGRAPHY)
     public ResponseEntity<CustomApiResponse> saveVetBiography(@PathVariable Long vetId, @RequestBody VetBiography request) {
         try {
-            VetBiography vetBiography = vetBiographyService.saveVetBiography(request, vetId);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_SAVED_SUCCESS, vetBiography));
+            VetBiographyDto savedVetBiographyDto = vetBiographyService.saveVetBiography(request, vetId);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_SAVED_SUCCESS, savedVetBiographyDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
@@ -70,8 +71,8 @@ public class VetBiographyController {
     @PutMapping(UrlMapping.UPDATE_BIOGRAPHY)
     public ResponseEntity<CustomApiResponse> updateVetBiography(@PathVariable Long id, @RequestBody VetBiography request) {
         try {
-            VetBiography vetBiography = vetBiographyService.updateVetBiography(request, id);
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_UPDATED_SUCCESS, vetBiography));
+            VetBiographyDto updatedVetBiography = vetBiographyService.updateVetBiography(request, id);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.BIOGRAPHY_UPDATED_SUCCESS, updatedVetBiography));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {

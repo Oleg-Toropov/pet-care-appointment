@@ -1,10 +1,8 @@
 package com.olegtoropoff.petcareappointment.controller;
 
-import com.olegtoropoff.petcareappointment.dto.EntityConverter;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.exception.UserAlreadyExistsException;
-import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.ChangePasswordRequest;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
@@ -22,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -37,9 +37,6 @@ public class UserControllerTest {
 
     @Mock
     private IUserService userService;
-
-    @Mock
-    private EntityConverter<User, UserDto> entityConverter;
 
     @Mock
     private RabbitMQProducer rabbitMQProducer;
@@ -142,20 +139,13 @@ public class UserControllerTest {
         updateRequest.setLastName(lastName);
         updateRequest.setPhoneNumber(phoneNumber);
 
-        User updatedUser = new User();
-        updatedUser.setId(userId);
-        updatedUser.setFirstName(firstName);
-        updatedUser.setLastName(lastName);
-        updatedUser.setPhoneNumber(phoneNumber);
-
         UserDto updatedUserDto = new UserDto();
         updatedUserDto.setId(userId);
         updatedUserDto.setFirstName(firstName);
         updatedUserDto.setLastName(lastName);
         updatedUserDto.setPhoneNumber(phoneNumber);
 
-        when(userService.update(userId, updateRequest)).thenReturn(updatedUser);
-        when(entityConverter.mapEntityToDto(updatedUser, UserDto.class)).thenReturn(updatedUserDto);
+        when(userService.update(userId, updateRequest)).thenReturn(updatedUserDto);
 
         ResponseEntity<CustomApiResponse> response = userController.update(userId, updateRequest);
 
@@ -226,20 +216,14 @@ public class UserControllerTest {
         request.setUserType("VET");
         request.setSpecialization("Хирург");
 
-        User savedUser = new User();
-        savedUser.setId(1L);
-        savedUser.setFirstName(request.getFirstName());
-        savedUser.setLastName(request.getLastName());
-
         UserDto registeredUserDto = new UserDto();
-        registeredUserDto.setId(savedUser.getId());
-        registeredUserDto.setFirstName(savedUser.getFirstName());
-        registeredUserDto.setLastName(savedUser.getLastName());
+        registeredUserDto.setId(1L);
+        registeredUserDto.setFirstName(request.getFirstName());
+        registeredUserDto.setLastName(request.getLastName());
 
         String successMassage = FeedBackMessage.CREATE_USER_SUCCESS;
 
-        when(userService.register(request)).thenReturn(savedUser);
-        when(entityConverter.mapEntityToDto(savedUser, UserDto.class)).thenReturn(registeredUserDto);
+        when(userService.register(request)).thenReturn(registeredUserDto);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
         ResponseEntity<CustomApiResponse> response = userController.register(request);

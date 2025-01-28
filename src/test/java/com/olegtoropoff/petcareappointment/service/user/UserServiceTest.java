@@ -75,7 +75,7 @@ class UserServiceTest {
         User user = new User();
         when(userFactory.createUser(request)).thenReturn(user);
 
-        User result = userService.register(request);
+        UserDto result = userService.register(request);
 
         assertNotNull(result);
         verify(tokenService, times(1)).saveVerificationTokenForUser(anyString(), eq(user));
@@ -148,7 +148,7 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(existingUser));
         when(userRepository.save(existingUser)).thenReturn(existingUser);
 
-        User result = userService.update(userId, request);
+        UserDto result = userService.update(userId, request);
 
         assertNotNull(result);
         assertEquals("John", result.getFirstName());

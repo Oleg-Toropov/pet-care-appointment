@@ -53,8 +53,8 @@ public class VeterinarianController {
      */
     @GetMapping(UrlMapping.GET_VETERINARIANS)
     public ResponseEntity<CustomApiResponse> getAllVeterinarians() {
-        List<UserDto> patients = veterinarianService.getVeterinarians();
-        return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, patients));
+        List<UserDto> veterinarians = veterinarianService.getVeterinarians();
+        return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, veterinarians));
     }
 
     /**

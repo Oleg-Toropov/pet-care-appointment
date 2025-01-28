@@ -12,6 +12,7 @@ import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Repository interface for managing {@link Appointment} entities.
@@ -91,4 +92,22 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     boolean existsByVeterinarianIdAndPatientIdAndStatus(Long veterinarianId, Long reviewerId, AppointmentStatus appointmentStatus);
 
     boolean existsByAppointmentNo(String appointmentNo);
+
+    /**
+     * Retrieves the IDs of all appointments from the database.
+     *
+     * @return a list of appointment IDs.
+     */
+    @Query("SELECT a.id FROM Appointment a")
+    List<Long> findAllIds();
+
+
+    /**
+     * Retrieves a summary of appointments grouped by their status.
+     * The summary includes the count of appointments for each status.
+     *
+     * @return a list of maps, where each map contains the status and the count.
+     */
+    @Query("SELECT a.status AS name, COUNT(a) AS value FROM Appointment a GROUP BY a.status")
+    List<Map<String, Object>> getAppointmentSummary();
 }

@@ -54,15 +54,15 @@ public class UserService implements IUserService {
      * Validates the request and generates a verification token for the user.
      *
      * @param request the registration request containing user details.
-     * @return the registered {@link User}.
+     * @return the registered {@link UserDto}.
      */
     @Override
-    public User register(RegistrationRequest request) {
+    public UserDto register(RegistrationRequest request) {
         validateRegistrationRequest(request);
         User user = userFactory.createUser(request);
         String vToken = UUID.randomUUID().toString();
         tokenService.saveVerificationTokenForUser(vToken, user);
-        return user;
+        return entityConverter.mapEntityToDto(user, UserDto.class);
     }
 
     /**
@@ -71,14 +71,15 @@ public class UserService implements IUserService {
      *
      * @param userId  the ID of the user to update.
      * @param request the update request containing new user details.
-     * @return the updated {@link User}.
+     * @return the updated {@link UserDto}.
      */
     @Override
-    public User update(Long userId, UserUpdateRequest request) {
+    public UserDto update(Long userId, UserUpdateRequest request) {
         validateUserUpdateRequest(request);
         User user = findById(userId);
         mapUserUpdateRequestToUser(request, user);
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+        return entityConverter.mapEntityToDto(updatedUser, UserDto.class);
     }
 
     /**

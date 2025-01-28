@@ -22,7 +22,7 @@ public interface IUserService {
      * @param request the registration details of the user.
      * @return the newly registered {@link User}.
      */
-    User register(RegistrationRequest request);
+    UserDto register(RegistrationRequest request);
 
     /**
      * Updates an existing user's information.
@@ -31,7 +31,7 @@ public interface IUserService {
      * @param request the updated user details.
      * @return the updated {@link User}.
      */
-    User update(Long userId, UserUpdateRequest request);
+    UserDto update(Long userId, UserUpdateRequest request);
 
     /**
      * Retrieves a user by their ID.
