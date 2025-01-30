@@ -1,15 +1,16 @@
 package com.olegtoropoff.petcareappointment.rabbitmq;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class RabbitMQProducerTest {
 
@@ -18,11 +19,6 @@ class RabbitMQProducerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void sendMessage_WhenCalled_SendsMessageWithCorrectParameters() {

@@ -1,16 +1,18 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.dto.PetDto;
 import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Pet;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.pet.IPetService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -20,9 +22,9 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class PetControllerTest {
     @InjectMocks
@@ -30,11 +32,6 @@ class PetControllerTest {
 
     @Mock
     private IPetService petService;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void deletePetById_WhenValidPetId_ReturnsSuccess() {
@@ -85,16 +82,23 @@ class PetControllerTest {
 
     @Test
     void updatePetById_WhenValidPetId_ReturnsSuccess() {
-        Pet updatePet = new Pet();
-        updatePet.setName("Мурка");
-        when(petService.updatePet(updatePet, 1L)).thenReturn(updatePet);
+        Long id = 1L;
+        String name = "Мурка";
 
-        ResponseEntity<CustomApiResponse> response = petController.updatePetById(1L, updatePet);
+        Pet updatePet = new Pet();
+        updatePet.setName(name);
+
+        PetDto updatedPetDto = new PetDto();
+        updatedPetDto.setName(name);
+
+        when(petService.updatePet(updatePet, id)).thenReturn(updatedPetDto);
+
+        ResponseEntity<CustomApiResponse> response = petController.updatePetById(id, updatePet);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_UPDATE_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(updatePet, response.getBody().getData());
-        verify(petService, times(1)).updatePet(updatePet, 1L);
+        assertEquals(updatedPetDto, response.getBody().getData());
+        verify(petService, times(1)).updatePet(updatePet, id);
     }
 
     @Test

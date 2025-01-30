@@ -1,16 +1,17 @@
 package com.olegtoropoff.petcareappointment.controller;
 
+import com.olegtoropoff.petcareappointment.dto.VetBiographyDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.VetBiography;
-import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.vetbiography.IVetBiographyService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -18,9 +19,10 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 public class VetBiographyControllerTest {
 
@@ -30,25 +32,19 @@ public class VetBiographyControllerTest {
     @Mock
     private IVetBiographyService vetBiographyService;
 
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
-
     @Test
     public void getVetBiographyByVetId_WhenBiographyExists_ReturnsBiography() {
         Long vetId = 1L;
-        VetBiography biography = new VetBiography();
-        biography.setId(1L);
-        biography.setVeterinarian(new Veterinarian());
-        biography.setBiography("Experienced veterinarian");
-        when(vetBiographyService.getVetBiographyByVetId(vetId)).thenReturn(biography);
+        VetBiographyDto biographyDto = new VetBiographyDto();
+        biographyDto.setId(1L);
+        biographyDto.setBiography("Experienced veterinarian");
+        when(vetBiographyService.getVetBiographyByVetId(vetId)).thenReturn(biographyDto);
 
         ResponseEntity<CustomApiResponse> response = vetBiographyController.getVetBiographyByVetId(vetId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.BIOGRAPHY_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(biography, response.getBody().getData());
+        assertEquals(biographyDto, response.getBody().getData());
     }
 
     @Test
@@ -84,18 +80,17 @@ public class VetBiographyControllerTest {
         VetBiography request = new VetBiography();
         request.setBiography("New biography");
 
-        VetBiography savedBiography = new VetBiography();
-        savedBiography.setId(1L);
-        savedBiography.setVeterinarian(new Veterinarian());
-        savedBiography.setBiography("New biography");
+        VetBiographyDto savedBiographyDto = new VetBiographyDto();
+        savedBiographyDto.setId(1L);
+        savedBiographyDto.setBiography("New biography");
 
-        when(vetBiographyService.saveVetBiography(request, vetId)).thenReturn(savedBiography);
+        when(vetBiographyService.saveVetBiography(request, vetId)).thenReturn(savedBiographyDto);
 
         ResponseEntity<CustomApiResponse> response = vetBiographyController.saveVetBiography(vetId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.BIOGRAPHY_SAVED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(savedBiography, response.getBody().getData());
+        assertEquals(savedBiographyDto, response.getBody().getData());
     }
 
     @Test
@@ -135,17 +130,17 @@ public class VetBiographyControllerTest {
         VetBiography request = new VetBiography();
         request.setBiography("Updated biography");
 
-        VetBiography updatedBiography = new VetBiography();
-        updatedBiography.setId(biographyId);
-        updatedBiography.setBiography("Updated biography");
+        VetBiographyDto updatedBiographyDto = new VetBiographyDto();
+        updatedBiographyDto.setId(biographyId);
+        updatedBiographyDto.setBiography("Updated biography");
 
-        when(vetBiographyService.updateVetBiography(request, biographyId)).thenReturn(updatedBiography);
+        when(vetBiographyService.updateVetBiography(request, biographyId)).thenReturn(updatedBiographyDto);
 
         ResponseEntity<CustomApiResponse> response = vetBiographyController.updateVetBiography(biographyId, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals( FeedBackMessage.BIOGRAPHY_UPDATED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(updatedBiography, response.getBody().getData());
+        assertEquals(updatedBiographyDto, response.getBody().getData());
     }
 
     @Test

@@ -6,12 +6,12 @@ import com.olegtoropoff.petcareappointment.model.VerificationToken;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.repository.VerificationTokenRepository;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class VerificationTokenServiceTest {
 
@@ -32,11 +33,6 @@ class VerificationTokenServiceTest {
 
     @Mock
     private VerificationTokenRepository tokenRepository;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void validateToken_ValidToken() {
@@ -58,25 +54,25 @@ class VerificationTokenServiceTest {
         verify(userRepository).save(user);
     }
 
-@Test
-void validateToken_ExpiredToken() {
-    String expiredToken = "expiredToken";
-    User mockUser = new User();
-    mockUser.setEnabled(false);
-    VerificationToken mockToken = new VerificationToken();
-    mockToken.setUser(mockUser);
-    mockToken.setExpirationDate(new Date(System.currentTimeMillis() - 60000));
+    @Test
+    void validateToken_ExpiredToken() {
+        String expiredToken = "expiredToken";
+        User mockUser = new User();
+        mockUser.setEnabled(false);
+        VerificationToken mockToken = new VerificationToken();
+        mockToken.setUser(mockUser);
+        mockToken.setExpirationDate(new Date(System.currentTimeMillis() - 60000));
 
-    when(tokenRepository.findByToken(expiredToken))
-            .thenReturn(Optional.of(mockToken))
-            .thenReturn(Optional.of(mockToken));
+        when(tokenRepository.findByToken(expiredToken))
+                .thenReturn(Optional.of(mockToken))
+                .thenReturn(Optional.of(mockToken));
 
-    String result = verificationTokenService.validateToken(expiredToken);
+        String result = verificationTokenService.validateToken(expiredToken);
 
-    assertEquals(FeedBackMessage.EXPIRED_TOKEN, result);
+        assertEquals(FeedBackMessage.EXPIRED_TOKEN, result);
 
-    verify(tokenRepository, times(2)).findByToken(expiredToken);
-}
+        verify(tokenRepository, times(2)).findByToken(expiredToken);
+    }
 
 
 
@@ -99,7 +95,7 @@ void validateToken_ExpiredToken() {
         User user = new User();
         VerificationToken verificationToken = new VerificationToken(token, user);
 
-        when(tokenRepository.save(verificationToken)).thenReturn(verificationToken);
+        when(tokenRepository.save(any(VerificationToken.class))).thenReturn(verificationToken);
 
         verificationTokenService.saveVerificationTokenForUser(token, user);
 

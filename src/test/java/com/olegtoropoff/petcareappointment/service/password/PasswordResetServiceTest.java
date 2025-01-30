@@ -8,12 +8,12 @@ import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.repository.VerificationTokenRepository;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class PasswordResetServiceTest {
 
@@ -41,11 +42,6 @@ class PasswordResetServiceTest {
 
     @Mock
     private RabbitMQProducer rabbitMQProducer;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void findUserByPasswordResetToken_Success() {

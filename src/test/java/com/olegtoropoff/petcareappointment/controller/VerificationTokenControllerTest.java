@@ -3,11 +3,12 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,8 +17,8 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 public class VerificationTokenControllerTest {
 
@@ -26,11 +27,6 @@ public class VerificationTokenControllerTest {
 
     @Mock
     private IVerificationTokenService verificationTokenService;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     public void checkTokenExpiration_WhenTokenNotExpired_ReturnsValid() {

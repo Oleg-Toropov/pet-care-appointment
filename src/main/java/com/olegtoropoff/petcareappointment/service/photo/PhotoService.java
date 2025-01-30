@@ -107,17 +107,14 @@ public class PhotoService implements IPhotoService {
     public Long deletePhoto(Long id, Long userId) {
         Photo photo = photoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
 
         String s3Key = photo.getS3Url().substring(photo.getS3Url().lastIndexOf("/") + 1);
         yandexS3Service.deleteFile(BUCKET_NAME, s3Key);
-
         photoRepository.delete(photo);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
         user.setPhoto(null);
         userRepository.save(user);
-
         return id;
     }
 

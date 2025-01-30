@@ -8,17 +8,18 @@ import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentServi
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import jakarta.mail.MessagingException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.UnsupportedEncodingException;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class NotificationTaskConsumerTest {
 
@@ -36,11 +37,6 @@ class NotificationTaskConsumerTest {
 
     @Mock
     private IAppointmentService appointmentService;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void receiveMessage_WhenRegistrationCompleteEvent_SendsVerificationEmail() throws MessagingException, UnsupportedEncodingException {

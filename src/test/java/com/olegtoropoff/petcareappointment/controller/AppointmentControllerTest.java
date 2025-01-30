@@ -1,26 +1,22 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
+import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
-import com.olegtoropoff.petcareappointment.model.Appointment;
-import com.olegtoropoff.petcareappointment.model.Patient;
 import com.olegtoropoff.petcareappointment.model.Pet;
-import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -32,8 +28,8 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class AppointmentControllerTest {
 
@@ -46,23 +42,18 @@ class AppointmentControllerTest {
     @Mock
     private RabbitMQProducer rabbitMQProducer;
 
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
-
     @Test
     void bookAppointment_ReturnsSuccessResponse() {
         BookAppointmentRequest request = new BookAppointmentRequest();
-        Appointment appointment = new Appointment();
-        Veterinarian vet = new Veterinarian();
+        AppointmentDto appointmentDto = new AppointmentDto();
+        UserDto vet = new UserDto();
         vet.setId(1L);
-        appointment.setId(1L);
-        appointment.setVeterinarian(vet);
+        appointmentDto.setId(1L);
+        appointmentDto.setVeterinarian(vet);
         Long senderId = 1L;
         Long recipientId = 2L;
 
-        when(appointmentService.createAppointment(request, senderId, recipientId)).thenReturn(appointment);
+        when(appointmentService.createAppointment(request, senderId, recipientId)).thenReturn(appointmentDto);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
         ResponseEntity<CustomApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
@@ -129,10 +120,10 @@ class AppointmentControllerTest {
     @Test
     void updateAppointment_ReturnsSuccessResponse() {
         AppointmentUpdateRequest request = new AppointmentUpdateRequest();
-        Appointment appointment = new Appointment();
-        appointment.setId(1L);
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setId(1L);
 
-        when(appointmentService.updateAppointment(1L, request)).thenReturn(appointment);
+        when(appointmentService.updateAppointment(1L, request)).thenReturn(appointmentDto);
 
         ResponseEntity<CustomApiResponse> response = appointmentController.updateAppointment(1L, request);
 
@@ -183,7 +174,7 @@ class AppointmentControllerTest {
 
     @Test
     void getAllAppointments_ReturnsPagedResponse() {
-        PageRequest pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"));
         Page<AppointmentDto> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
         when(appointmentService.getAllAppointments(pageable)).thenReturn(page);
@@ -208,10 +199,10 @@ class AppointmentControllerTest {
 
     @Test
     void getAppointmentById_ReturnsSuccessResponse() {
-        Appointment appointment = new Appointment();
-        appointment.setId(1L);
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setId(1L);
 
-        when(appointmentService.getAppointmentById(1L)).thenReturn(appointment);
+        when(appointmentService.getAppointmentDtoById(1L)).thenReturn(appointmentDto);
 
         ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentById(1L);
 
@@ -224,7 +215,7 @@ class AppointmentControllerTest {
         Long appointmentId = 1L;
         String errorMessage = FeedBackMessage.APPOINTMENT_NOT_FOUND;
 
-        when(appointmentService.getAppointmentById(appointmentId))
+        when(appointmentService.getAppointmentDtoById(appointmentId))
                 .thenThrow(new ResourceNotFoundException(errorMessage));
 
         ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentById(appointmentId);
@@ -239,8 +230,7 @@ class AppointmentControllerTest {
         Long appointmentId = 1L;
         String errorMessage = FeedBackMessage.ERROR;
 
-        when(appointmentService.getAppointmentById(appointmentId))
-                .thenThrow(new RuntimeException(errorMessage));
+        when(appointmentService.getAppointmentDtoById(appointmentId)).thenThrow(new RuntimeException(errorMessage));
 
         ResponseEntity<CustomApiResponse> response = appointmentController.getAppointmentById(appointmentId);
 
@@ -289,13 +279,13 @@ class AppointmentControllerTest {
 
     @Test
     void approveAppointment_ReturnsSuccessResponse() {
-        Appointment appointment = new Appointment();
-        appointment.setId(1L);
-        Patient patient = new Patient();
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setId(1L);
+        UserDto patient = new UserDto();
         patient.setId(1L);
-        appointment.setPatient(patient);
+        appointmentDto.setPatient(patient);
 
-        when(appointmentService.approveAppointment(1L)).thenReturn(appointment);
+        when(appointmentService.approveAppointment(1L)).thenReturn(appointmentDto);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
         ResponseEntity<CustomApiResponse> response = appointmentController.approveAppointment(1L);
@@ -370,13 +360,13 @@ class AppointmentControllerTest {
     @Test
     void declineAppointment_ReturnsSuccessResponse() {
         Long appointmentId = 1L;
-        Appointment appointment = new Appointment();
-        appointment.setId(appointmentId);
-        Patient patient = new Patient();
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setId(appointmentId);
+        UserDto patient = new UserDto();
         patient.setId(2L);
-        appointment.setPatient(patient);
+        appointmentDto.setPatient(patient);
 
-        when(appointmentService.declineAppointment(appointmentId)).thenReturn(appointment);
+        when(appointmentService.declineAppointment(appointmentId)).thenReturn(appointmentDto);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
         ResponseEntity<CustomApiResponse> response = appointmentController.declineAppointment(appointmentId);
@@ -417,14 +407,14 @@ class AppointmentControllerTest {
     @Test
     void cancelAppointment_ReturnsSuccessResponse() {
         Long appointmentId = 1L;
-        Appointment appointment = new Appointment();
-        Veterinarian vet = new Veterinarian();
+        AppointmentDto appointmentDto = new AppointmentDto();
+        UserDto vet = new UserDto();
         vet.setId(2L);
-        appointment.setId(appointmentId);
-        appointment.setVeterinarian(vet);
-        appointment.setAppointmentNo("12345");
+        appointmentDto.setId(appointmentId);
+        appointmentDto.setVeterinarian(vet);
+        appointmentDto.setAppointmentNo("12345");
 
-        when(appointmentService.cancelAppointment(appointmentId)).thenReturn(appointment);
+        when(appointmentService.cancelAppointment(appointmentId)).thenReturn(appointmentDto);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
         ResponseEntity<CustomApiResponse> response = appointmentController.cancelAppointment(appointmentId);
@@ -467,16 +457,16 @@ class AppointmentControllerTest {
         Long appointmentId = 1L;
         Pet pet = new Pet();
         pet.setId(10L);
-        Appointment appointment = new Appointment();
-        appointment.setId(appointmentId);
+        AppointmentDto appointmentDto = new AppointmentDto();
+        appointmentDto.setId(appointmentId);
 
-        when(appointmentService.addPetForAppointment(appointmentId, pet)).thenReturn(appointment);
+        when(appointmentService.addPetForAppointment(appointmentId, pet)).thenReturn(appointmentDto);
 
         ResponseEntity<CustomApiResponse> response = appointmentController.addPetForAppointment(appointmentId, pet);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.PET_ADDED_SUCCESS, Objects.requireNonNull(response.getBody()).getMessage());
-        assertEquals(appointment, response.getBody().getData());
+        assertEquals(appointmentDto, response.getBody().getData());
     }
 
     @Test
@@ -508,6 +498,7 @@ class AppointmentControllerTest {
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
         assertNull(response.getBody().getData());
     }
+
     @Test
     void addPetForAppointment_ThrowsGenericException() {
         Long appointmentId = 1L;

@@ -6,11 +6,12 @@ import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.response.CustomApiResponse;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -19,8 +20,8 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class ReviewControllerTest {
 
@@ -29,11 +30,6 @@ class ReviewControllerTest {
 
     @Mock
     private IReviewService reviewService;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void saveReview_ReturnsSuccessResponse() {

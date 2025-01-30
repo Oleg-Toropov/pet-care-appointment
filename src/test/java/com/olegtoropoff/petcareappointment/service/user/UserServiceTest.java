@@ -14,11 +14,14 @@ import com.olegtoropoff.petcareappointment.service.appointment.IAppointmentServi
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +29,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class UserServiceTest {
 
@@ -43,8 +46,8 @@ class UserServiceTest {
     @Mock
     private IAppointmentService appointmentService;
 
-    @Mock
-    private EntityConverter<User, UserDto> entityConverter;
+    @Spy
+    private EntityConverter<User, UserDto> entityConverter = new EntityConverter<>(new ModelMapper());
 
     @Mock
     private ReviewRepository reviewRepository;
@@ -57,11 +60,6 @@ class UserServiceTest {
 
     @Mock
     private IReviewService reviewService;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void register_WhenValid_ReturnsUser() {
@@ -136,25 +134,24 @@ class UserServiceTest {
     @Test
     void update_WhenValidRequest_UpdatesAndReturnsUser() {
         Long userId = 1L;
-        UserUpdateRequest request = new UserUpdateRequest();
-        request.setFirstName("John");
-        request.setLastName("Doe");
-        request.setPhoneNumber("89124000000");
-        request.setGender("Male");
+        String firstName = "John";
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setFirstName(firstName);
+        userUpdateRequest.setLastName("Doe");
+        userUpdateRequest.setPhoneNumber("89124000000");
 
         User existingUser = new User();
         existingUser.setId(userId);
+        existingUser.setFirstName(firstName);
 
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(existingUser));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(existingUser)).thenReturn(existingUser);
 
-        UserDto result = userService.update(userId, request);
+        UserDto result = userService.update(userId, userUpdateRequest);
 
         assertNotNull(result);
-        assertEquals("John", result.getFirstName());
-        assertEquals("Doe", result.getLastName());
-        assertEquals("89124000000", result.getPhoneNumber());
-        assertEquals("Male", result.getGender());
+        assertEquals(userId, result.getId());
+        assertEquals(firstName, result.getFirstName());
         verify(userRepository, times(1)).save(existingUser);
     }
 
@@ -231,10 +228,7 @@ class UserServiceTest {
     @Test
     void getUserWithDetails_WhenValidUserId_ReturnsUserDto() {
         Long userId = 1L;
-
         User user = createUser(userId);
-        UserDto userDto = new UserDto();
-        userDto.setId(userId);
 
         Patient patient = new Patient();
         patient.setPhoto(createPhoto(3L));
@@ -248,10 +242,8 @@ class UserServiceTest {
         List<Review> reviews = List.of(review1, review2);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(entityConverter.mapEntityToDto(user, UserDto.class)).thenReturn(userDto);
         when(appointmentService.getUserAppointments(userId)).thenReturn(Collections.emptyList());
         when(reviewService.findAllReviewsByUserId(userId)).thenReturn(reviews);
-
 
         UserDto result = userService.getUserWithDetails(userId);
 

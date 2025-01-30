@@ -1,5 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.pet;
 
+import com.olegtoropoff.petcareappointment.dto.EntityConverter;
+import com.olegtoropoff.petcareappointment.dto.PetDto;
 import com.olegtoropoff.petcareappointment.exception.PetDeletionNotAllowedException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
@@ -9,8 +11,12 @@ import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +25,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("unit")
 class PetServiceTest {
 
@@ -29,6 +35,9 @@ class PetServiceTest {
 
     @Mock
     private PetRepository petRepository;
+
+    @Spy
+    private EntityConverter<Pet, PetDto> entityConverter = new EntityConverter<>(new ModelMapper());
 
     private Pet pet;
 
@@ -41,7 +50,6 @@ class PetServiceTest {
         pet.setColor("Brown");
         pet.setBreed("Labrador");
         pet.setAge(2);
-        openMocks(this);
     }
 
     @Test
@@ -69,16 +77,18 @@ class PetServiceTest {
 
     @Test
     void updatePet_Success() {
+        String name = "Max";
         Pet updatedPet = new Pet();
-        updatedPet.setName("Max");
+        updatedPet.setName(name);
+
         when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
         when(petRepository.save(any(Pet.class))).thenReturn(updatedPet);
 
-        Pet result = petService.updatePet(updatedPet, 1L);
+        PetDto result = petService.updatePet(updatedPet, 1L);
 
         assertNotNull(result);
-        assertEquals("Max", result.getName());
-        verify(petRepository, times(1)).save(pet);
+        assertEquals(name, result.getName());
+        verify(entityConverter, times(1)).mapEntityToDto(any(Pet.class), eq(PetDto.class));
     }
 
     @Test
