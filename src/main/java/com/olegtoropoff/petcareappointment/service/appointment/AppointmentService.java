@@ -56,7 +56,7 @@ public class AppointmentService implements IAppointmentService {
      */
     @Transactional
     @Override
-    public AppointmentDto createAppointment(BookAppointmentRequest request, Long senderId, Long recipientId) {
+    public Appointment createAppointment(BookAppointmentRequest request, Long senderId, Long recipientId) {
         Optional<User> sender = userRepository.findById(senderId);
 
         if (sender.isPresent() && sender.get().getUserType().equals("VET")) {
@@ -82,9 +82,9 @@ public class AppointmentService implements IAppointmentService {
             appointment.setAppointmentNo();
             appointment.setStatus(AppointmentStatus.WAITING_FOR_APPROVAL);
 
-            Appointment createdAppointment = appointmentRepository.save(appointment);
-            return entityConverter.mapEntityToDto(createdAppointment, AppointmentDto.class);
+            return appointmentRepository.save(appointment);
         }
+
         throw new ResourceNotFoundException(FeedBackMessage.SENDER_RECIPIENT_NOT_FOUND);
     }
 

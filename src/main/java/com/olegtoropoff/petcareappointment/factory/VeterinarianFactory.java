@@ -28,7 +28,6 @@ public class VeterinarianFactory {
      * @param request the registration request containing details for the veterinarian
      * @return the created {@link Veterinarian} instance, persisted in the database
      */
-//   todo  @CacheEvict(value = {"veterinarians_with_details", "active_veterinarians", "all_veterinarians"}, allEntries = true)
     public Veterinarian createVeterinarian(RegistrationRequest request) {
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setRoles(roleService.setUserRole("VET"));

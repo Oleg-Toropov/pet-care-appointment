@@ -19,7 +19,7 @@ VALUES (1),
        (5);
 
 -- Photo
-INSERT INTO photo (id, file_type, file_name, urlPhoto)
+INSERT INTO photo (id, file_type, file_name, s3Url)
 VALUES
     (2, 'image/jpeg', 'fake1.jpg', 'urlTest_1'),
     (3, 'image/png', 'fake2.png', 'urlTest_2');

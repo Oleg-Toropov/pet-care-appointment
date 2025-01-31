@@ -270,7 +270,9 @@ public class UserService implements IUserService {
         if (review.getVeterinarian() != null) {
             reviewDto.setVeterinarianId(review.getVeterinarian().getId());
             reviewDto.setVeterinarianName(review.getVeterinarian().getFirstName() + " " + review.getVeterinarian().getLastName());
-            reviewDto.setVeterinarianImageUrl(review.getVeterinarian().getPhoto().getS3Url());
+            if (review.getVeterinarian().getPhoto() != null) {
+                reviewDto.setVeterinarianImageUrl(review.getVeterinarian().getPhoto().getS3Url());
+            }
         }
     }
 
@@ -285,7 +287,9 @@ public class UserService implements IUserService {
         if (review.getPatient() != null) {
             reviewDto.setPatientId(review.getPatient().getId());
             reviewDto.setPatientName(review.getPatient().getFirstName() + " " + review.getPatient().getLastName());
-            reviewDto.setPatientImageUrl(review.getPatient().getPhoto().getS3Url());
+            if (review.getPatient().getPhoto() != null) {
+                reviewDto.setPatientImageUrl(review.getPatient().getPhoto().getS3Url());
+            }
         }
     }
 

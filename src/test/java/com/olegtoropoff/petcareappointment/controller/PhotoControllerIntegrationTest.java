@@ -1,10 +1,13 @@
 package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.yandexs3.YandexS3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,10 +19,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.olegtoropoff.petcareappointment.utils.UrlMapping.*;
 import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 @Tag("integration")
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,9 +36,18 @@ class PhotoControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private YandexS3Service yandexS3Service;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        Mockito.when(yandexS3Service.uploadFile(
+                Mockito.anyString(),
+                Mockito.anyString(),
+                Mockito.any(),
+                Mockito.anyLong(),
+                Mockito.anyString()
+        )).thenReturn("https://fake-s3-url.com/test.jpg");
     }
 
     @Test
@@ -56,6 +70,8 @@ class PhotoControllerIntegrationTest {
 
     @Test
     void testDeletePhoto_ValidRequest_ReturnsSuccess() throws Exception {
+        Mockito.doNothing().when(yandexS3Service).deleteFile(Mockito.anyString(), Mockito.anyString());
+
         mockMvc.perform(delete(PHOTOS + DELETE_PHOTO, 3L, 3L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.PHOTO_REMOVE_SUCCESS))
@@ -63,10 +79,29 @@ class PhotoControllerIntegrationTest {
     }
 
     @Test
-    void testDeletePhoto_NotFound() throws Exception {
+    void testDeletePhoto_PhotoNotFound_ReturnsNotFound() throws Exception {
         mockMvc.perform(delete(PHOTOS + DELETE_PHOTO, 100L, 5L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_NOT_FOUND))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    void testDeletePhoto_UserNotFound_ReturnsNotFound() throws Exception {
+        mockMvc.perform(delete(PHOTOS + DELETE_PHOTO, 3L, 100L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.USER_NOT_FOUND))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    void testDeletePhoto_S3DeletionFails_ReturnsServerError() throws Exception {
+        Mockito.doThrow(new RuntimeException("S3 Deletion Failed")).when(yandexS3Service)
+                .deleteFile(Mockito.anyString(), Mockito.anyString());
+
+        mockMvc.perform(delete(PHOTOS + DELETE_PHOTO, 3L, 3L))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.ERROR))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 
@@ -78,6 +113,8 @@ class PhotoControllerIntegrationTest {
                 MediaType.IMAGE_JPEG_VALUE,
                 "some updated image data".getBytes()
         );
+
+        Mockito.doNothing().when(yandexS3Service).deleteFile(Mockito.anyString(), Mockito.anyString());
 
         mockMvc.perform(
                         multipart(PHOTOS + UPDATE_PHOTO, 2L)
@@ -111,6 +148,31 @@ class PhotoControllerIntegrationTest {
                 )
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_NOT_FOUND))
+                .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    void testUpdatePhoto_S3DeletionFails_ReturnsServerError() throws Exception {
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "file",
+                "updated.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "some updated image data".getBytes()
+        );
+
+        Mockito.doThrow(new RuntimeException("S3 Deletion Failed")).when(yandexS3Service)
+                .deleteFile(Mockito.anyString(), Mockito.anyString());
+
+        mockMvc.perform(
+                        multipart(PHOTOS + UPDATE_PHOTO, 2L)
+                                .file(mockFile)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                )
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value(FeedBackMessage.ERROR))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
 }

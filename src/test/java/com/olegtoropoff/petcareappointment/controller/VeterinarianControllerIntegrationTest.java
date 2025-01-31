@@ -36,7 +36,7 @@ public class VeterinarianControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(FeedBackMessage.RESOURCE_FOUND))
                 .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").value(5));
+                .andExpect(jsonPath("$.data.length()").value(4));
     }
 
     @Test

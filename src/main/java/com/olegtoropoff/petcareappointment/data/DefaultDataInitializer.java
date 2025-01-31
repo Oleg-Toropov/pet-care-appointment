@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * This component is executed when the application is ready and handles the initialization
  * of roles, admins, veterinarians, and patients. It also ensures default photos are uploaded to S3 storage.
  */
+@Profile("!test")
 @Component
 @Transactional
 @RequiredArgsConstructor

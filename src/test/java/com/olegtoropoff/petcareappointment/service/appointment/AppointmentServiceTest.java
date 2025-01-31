@@ -102,7 +102,7 @@ class AppointmentServiceTest {
         when(petService.savePetForAppointment(pets)).thenReturn(pets);
         when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
 
-        AppointmentDto result = appointmentService.createAppointment(request, senderId, recipientId);
+        Appointment result = appointmentService.createAppointment(request, senderId, recipientId);
 
         assertNotNull(result);
         assertEquals(appointment.getAppointmentDate(), result.getAppointmentDate());

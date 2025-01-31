@@ -33,8 +33,8 @@ public class VeterinarianController {
      * and returns their details wrapped in a {@link CustomApiResponse}.
      *
      * @return a {@link ResponseEntity} containing:
-     *         - {@link CustomApiResponse} with a list of all veterinarians if the operation is successful.
-     *         - {@link CustomApiResponse} with an error message if an exception occurs.
+     * - {@link CustomApiResponse} with a list of all veterinarians if the operation is successful.
+     * - {@link CustomApiResponse} with an error message if an exception occurs.
      */
     @GetMapping(UrlMapping.GET_ALL_VETERINARIANS)
     public ResponseEntity<CustomApiResponse> getAllVeterinariansWithDetails() {
@@ -53,15 +53,19 @@ public class VeterinarianController {
      */
     @GetMapping(UrlMapping.GET_VETERINARIANS)
     public ResponseEntity<CustomApiResponse> getAllVeterinarians() {
-        List<UserDto> veterinarians = veterinarianService.getVeterinarians();
-        return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, veterinarians));
+        try {
+            List<UserDto> veterinarians = veterinarianService.getVeterinarians();
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, veterinarians));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
+        }
     }
 
     /**
      * Searches for veterinarians available for an appointment based on specialization, date, and time.
      *
-     * @param date the desired date of the appointment (optional)
-     * @param time the desired time of the appointment (optional)
+     * @param date           the desired date of the appointment (optional)
+     * @param time           the desired time of the appointment (optional)
      * @param specialization the specialization of the veterinarian
      * @return a {@link ResponseEntity} containing a list of available veterinarians or an error message
      */

@@ -64,5 +64,5 @@ public class AppointmentDto {
     /**
      * List of pets associated with the appointment.
      */
-    List<PetDto> pets = new ArrayList<>();
+    private List<PetDto> pets = new ArrayList<>();
 }

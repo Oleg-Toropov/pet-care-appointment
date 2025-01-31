@@ -75,7 +75,7 @@ class AppointmentControllerIntegrationTest {
                         .header("Authorization", jwtTestUtils.generateDefaultToken("maria@gmail.com", 3L, "ROLE_PATIENT")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS)))
-                .andExpect(jsonPath("$.data").isNotEmpty());
+                .andExpect(jsonPath("$.data").isEmpty());
     }
 
     @Test
@@ -216,6 +216,17 @@ class AppointmentControllerIntegrationTest {
         mockMvc.perform(get(APPOINTMENTS + ALL_APPOINTMENT)
                         .param("page", "0")
                         .param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENTS_FOUND)))
+                .andExpect(jsonPath("$.data").isNotEmpty());
+    }
+
+    @Test
+    void getAllAppointments_WithSearch_ReturnsFilteredResults() throws Exception {
+        mockMvc.perform(get(APPOINTMENTS + ALL_APPOINTMENT)
+                        .param("page", "0")
+                        .param("size", "5")
+                        .param("search", "alexey@gmail.com"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is(FeedBackMessage.APPOINTMENTS_FOUND)))
                 .andExpect(jsonPath("$.data").isNotEmpty());

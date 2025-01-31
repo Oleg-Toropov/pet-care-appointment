@@ -3,7 +3,9 @@ package com.olegtoropoff.petcareappointment.controller;
 import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
+import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Pet;
+import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
 import com.olegtoropoff.petcareappointment.request.BookAppointmentRequest;
@@ -45,15 +47,15 @@ class AppointmentControllerTest {
     @Test
     void bookAppointment_ReturnsSuccessResponse() {
         BookAppointmentRequest request = new BookAppointmentRequest();
-        AppointmentDto appointmentDto = new AppointmentDto();
-        UserDto vet = new UserDto();
+        Appointment appointment = new Appointment();
+        User vet = new User();
         vet.setId(1L);
-        appointmentDto.setId(1L);
-        appointmentDto.setVeterinarian(vet);
+        appointment.setId(1L);
+        appointment.setVeterinarian(vet);
         Long senderId = 1L;
         Long recipientId = 2L;
 
-        when(appointmentService.createAppointment(request, senderId, recipientId)).thenReturn(appointmentDto);
+        when(appointmentService.createAppointment(request, senderId, recipientId)).thenReturn(appointment);
         doNothing().when(rabbitMQProducer).sendMessage(anyString());
 
         ResponseEntity<CustomApiResponse> response = appointmentController.bookAppointment(request, senderId, recipientId);
@@ -180,6 +182,20 @@ class AppointmentControllerTest {
         when(appointmentService.getAllAppointments(pageable)).thenReturn(page);
 
         ResponseEntity<CustomApiResponse> response = appointmentController.getAllAppointments(0, 10, "");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(FeedBackMessage.APPOINTMENTS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
+    }
+
+    @Test
+    void getAllAppointments_WithSearch_ReturnsPagedResponse() {
+        String search = "test@mail.ru";
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"));
+        Page<AppointmentDto> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
+
+        when(appointmentService.searchAppointments(search, pageable)).thenReturn(page);
+
+        ResponseEntity<CustomApiResponse> response = appointmentController.getAllAppointments(0, 10, search);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(FeedBackMessage.APPOINTMENTS_FOUND, Objects.requireNonNull(response.getBody()).getMessage());

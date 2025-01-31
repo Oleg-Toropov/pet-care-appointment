@@ -49,6 +49,19 @@ public class PhotoControllerTest {
     }
 
     @Test
+    public void savePhoto_WhenNotFound_ReturnsNotFound() throws IOException {
+        Long userId = 2L;
+        when(photoService.savePhoto(fileMock, userId)).thenThrow(new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
+
+        ResponseEntity<CustomApiResponse> response = photoController.savePhoto(fileMock, userId);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(FeedBackMessage.USER_NOT_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
+        assertNull(response.getBody().getData());
+        verify(photoService, times(1)).savePhoto(fileMock, userId);
+    }
+
+    @Test
     public void savePhoto_WhenIOExceptionOccurs_ReturnsInternalServerError() throws IOException {
         Long userId = 2L;
         when(photoService.savePhoto(fileMock, userId)).thenThrow(new IOException());

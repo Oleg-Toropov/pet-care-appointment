@@ -25,7 +25,7 @@ public interface IAppointmentService {
      * @param recipient the ID of the veterinarian receiving the appointment.
      * @return the created Appointment.
      */
-    AppointmentDto createAppointment(BookAppointmentRequest request, Long sender, Long recipient);
+    Appointment createAppointment(BookAppointmentRequest request, Long sender, Long recipient);
 
     /**
      * Updates an existing appointment with new details.

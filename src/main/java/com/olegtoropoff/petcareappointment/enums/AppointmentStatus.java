@@ -39,11 +39,6 @@ public enum AppointmentStatus {
     WAITING_FOR_APPROVAL,
 
     /**
-     * Indicates that the appointment request is pending further action.
-     */
-    PENDING,
-
-    /**
      * Indicates that the appointment has been completed.
      */
     COMPLETED

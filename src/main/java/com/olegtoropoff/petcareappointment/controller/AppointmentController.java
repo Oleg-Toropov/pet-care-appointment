@@ -2,6 +2,7 @@ package com.olegtoropoff.petcareappointment.controller;
 
 import com.olegtoropoff.petcareappointment.dto.AppointmentDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
+import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Pet;
 import com.olegtoropoff.petcareappointment.rabbitmq.RabbitMQProducer;
 import com.olegtoropoff.petcareappointment.request.AppointmentUpdateRequest;
@@ -48,9 +49,9 @@ public class AppointmentController {
             @RequestParam Long senderId,
             @RequestParam Long recipientId) {
         try {
-            AppointmentDto appointmentDto = appointmentService.createAppointment(request, senderId, recipientId);
-            rabbitMQProducer.sendMessage("AppointmentBookedEvent:" + appointmentDto.getVeterinarian().getId());
-            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, appointmentDto));
+            Appointment appointment = appointmentService.createAppointment(request, senderId, recipientId);
+            rabbitMQProducer.sendMessage("AppointmentBookedEvent:" + appointment.getVeterinarian().getId());
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.APPOINTMENT_BOOKED_SUCCESS, null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (IllegalStateException e) {

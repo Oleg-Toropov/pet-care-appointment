@@ -37,7 +37,7 @@ public class VeterinarianControllerTest {
     private IVeterinarianService veterinarianService;
 
     @Test
-    public void getAllVeterinarians_WhenSuccess_ReturnsVeterinariansWithDetails() {
+    public void getAllVeterinarians_WithDetails_WhenSuccess_ReturnsVeterinariansWithDetails() {
         UserDto vet1 = new UserDto();
         vet1.setId(1L);
         vet1.setFirstName("Иван");
@@ -67,6 +67,38 @@ public class VeterinarianControllerTest {
                 .when(veterinarianService).getAllVeterinariansWithDetails();
 
         ResponseEntity<CustomApiResponse> response = veterinarianController.getAllVeterinariansWithDetails();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
+        assertNull(response.getBody().getData());
+    }
+
+    @Test
+    public void getAllVeterinarians_WhenSuccess_ReturnsVeterinariansWithDetails() {
+        UserDto vet1 = new UserDto();
+        vet1.setId(1L);
+        vet1.setFirstName("Иван");
+        vet1.setLastName("Иванов");
+        vet1.setSpecialization("VET");
+
+        List<UserDto> veterinarians = List.of(vet1);
+
+        when(veterinarianService.getVeterinarians()).thenReturn(veterinarians);
+
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAllVeterinarians();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(FeedBackMessage.RESOURCE_FOUND, Objects.requireNonNull(response.getBody()).getMessage());
+        assertEquals(veterinarians, response.getBody().getData());
+    }
+
+    @Test
+    public void getAllVeterinarians_InternalErrorOccurs_ReturnsInternalServerError() {
+        String errorMessage = FeedBackMessage.ERROR;
+        doThrow(new RuntimeException(errorMessage))
+                .when(veterinarianService).getVeterinarians();
+
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getAllVeterinarians();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
