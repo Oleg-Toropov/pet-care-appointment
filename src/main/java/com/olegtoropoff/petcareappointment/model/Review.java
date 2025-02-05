@@ -1,5 +1,6 @@
 package com.olegtoropoff.petcareappointment.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"veterinarian", "patient"})
 public class Review {
 
     /**

@@ -5,55 +5,55 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
 
 /**
- * Configuration class for Redis caching.
- * <p>
- * This class configures the Redis connection, cache management, and serialization for keys and values.
- * It is annotated with {@code @Configuration} to indicate that it is a Spring configuration class
- * and {@code @EnableCaching} to enable Spring's annotation-driven caching mechanism.
+ * Configuration class for setting up Redis caching and serialization in the application.
+ * This configuration is only active when the application is not running in the "test" profile.
+ * It enables caching, configures Redis connection, and defines serialization settings.
  */
+@Profile("!test")
 @Configuration
 @EnableCaching
 public class RedisConfig {
 
+    /** Default Time-To-Live (TTL) duration for cache entries. */
+    private static final Duration CACHE_TTL = Duration.ofMinutes(60);
+
     /**
-     * Creates and configures a {@link RedisConnectionFactory} for establishing connections to the Redis server.
+     * Creates a {@link RedisConnectionFactory} using Lettuce.
      *
-     * @return a new instance of {@link LettuceConnectionFactory} for Redis connections.
+     * @return a {@link LettuceConnectionFactory} instance that manages Redis connections.
      */
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
     }
 
-
     /**
-     * Configures and returns a {@link RedisCacheManager} for managing Redis caches.
-     * <p>
-     * The cache configuration specifies key and value serializers for Redis and sets a time-to-live (TTL)
-     * of 10 minutes for cache entries.
-     * </p>
+     * Configures a {@link RedisCacheManager} with JSON serialization and a default TTL.
      *
-     * @param connectionFactory the {@link RedisConnectionFactory} used to create Redis connections.
+     * @param connectionFactory the Redis connection factory.
      * @return a configured {@link RedisCacheManager} instance.
      */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        ObjectMapper objectMapper = createObjectMapper();
+
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(new ObjectMapper().registerModule(new JavaTimeModule()))))
-                .entryTtl(Duration.ofMinutes(10));  // time to live (TTL)
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
+                .entryTtl(CACHE_TTL);
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config)
@@ -61,21 +61,36 @@ public class RedisConfig {
     }
 
     /**
-     * Configures and returns a {@link RedisTemplate} for interacting with Redis.
-     * <p>
-     * This template is configured with serializers for keys and values, where keys are serialized as strings
-     * and values are serialized using Jackson with JSON format.
-     * </p>
+     * Configures a {@link RedisTemplate} for interacting with Redis storage.
+     * This template enables efficient serialization and deserialization of objects using JSON.
      *
-     * @param connectionFactory the {@link RedisConnectionFactory} used to create Redis connections.
-     * @return a configured {@link RedisTemplate} instance for Redis operations.
+     * @param connectionFactory the Redis connection factory.
+     * @return a fully configured {@link RedisTemplate} instance.
      */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        ObjectMapper objectMapper = createObjectMapper();
+
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
         return template;
+    }
+
+    /**
+     * Creates and configures an {@link ObjectMapper} for JSON serialization,
+     * including support for Java 8 date and time API.
+     *
+     * @return a configured {@link ObjectMapper} instance.
+     */
+    private ObjectMapper createObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 }

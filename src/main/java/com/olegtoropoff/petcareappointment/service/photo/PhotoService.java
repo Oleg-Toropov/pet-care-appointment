@@ -167,7 +167,7 @@ public class PhotoService implements IPhotoService {
      * @return the converted {@link File}
      * @throws IOException if an error occurs during the conversion
      */
-    public File convertMultipartFileToFile(MultipartFile file) throws IOException {
+    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
         File convFile = File.createTempFile("temp", null);
         try (FileOutputStream fos = new FileOutputStream(convFile)) {
             fos.write(file.getBytes());

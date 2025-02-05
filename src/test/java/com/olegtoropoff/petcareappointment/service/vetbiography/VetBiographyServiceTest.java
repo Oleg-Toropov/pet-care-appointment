@@ -8,14 +8,18 @@ import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.repository.VetBiographyRepository;
 import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.util.Optional;
 
@@ -34,6 +38,12 @@ class VetBiographyServiceTest {
 
     @Mock
     private VeterinarianRepository veterinarianRepository;
+
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Cache cache;
 
     @Spy
     private EntityConverter<VetBiography, VetBiographyDto> entityConverter = new EntityConverter<>(new ModelMapper());
@@ -107,22 +117,34 @@ class VetBiographyServiceTest {
     void updateVetBiography_Success() {
         Long bioId = 1L;
         String biography = "Updated biography";
-        VetBiography existingBiography = new VetBiography();
-        existingBiography.setBiography(biography);
-        VetBiographyDto biographyDto = new VetBiographyDto();
-        biographyDto.setBiography(biography);
-        when(vetBiographyRepository.findById(bioId)).thenReturn(Optional.of(existingBiography));
-        when(vetBiographyRepository.save(existingBiography)).thenReturn(existingBiography);
-        when(entityConverter.mapEntityToDto(existingBiography, VetBiographyDto.class)).thenReturn(biographyDto);
 
-        VetBiographyDto result = vetBiographyService.updateVetBiography(existingBiography, bioId);
+        VetBiography existingBiography = new VetBiography();
+        existingBiography.setBiography("Old biography");
+
+        VetBiography updatedBiography = new VetBiography();
+        updatedBiography.setBiography(biography);
+
+        VetBiographyDto expectedDto = new VetBiographyDto();
+        expectedDto.setBiography(biography);
+
+        Veterinarian vet = new Veterinarian();
+        vet.setId(42L);
+        existingBiography.setVeterinarian(vet);
+
+        when(vetBiographyRepository.findById(bioId)).thenReturn(Optional.of(existingBiography));
+        when(vetBiographyRepository.save(any(VetBiography.class))).thenReturn(updatedBiography);
+        when(cacheManager.getCache("veterinarian_biography")).thenReturn(cache);
+        doNothing().when(cache).evict(42L);
+
+        VetBiographyDto result = vetBiographyService.updateVetBiography(updatedBiography, bioId);
 
         assertNotNull(result);
-        assertEquals(biography, existingBiography.getBiography());
+        assertEquals(biography, result.getBiography());
 
         verify(vetBiographyRepository).findById(bioId);
-        verify(vetBiographyRepository).save(existingBiography);
-        verify(entityConverter).mapEntityToDto(existingBiography, VetBiographyDto.class);
+        verify(vetBiographyRepository).save(any(VetBiography.class));
+        verify(entityConverter).mapEntityToDto(updatedBiography, VetBiographyDto.class);
+        verify(cache).evict(42L);
     }
 
     @Test

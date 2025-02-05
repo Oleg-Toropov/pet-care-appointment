@@ -89,20 +89,6 @@ public class AppointmentService implements IAppointmentService {
     }
 
     /**
-     * Counts the number of active appointments for a specific patient.
-     * An active appointment is defined as one whose status is neither COMPLETED, CANCELLED, nor NOT_APPROVED.
-     *
-     * @param senderId the ID of the patient whose active appointments are being counted.
-     * @return the count of active appointments for the given patient.
-     */
-    private int countActiveAppointments(Long senderId) {
-        return appointmentRepository.countByPatientIdAndStatusNotIn(
-                senderId,
-                List.of(AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NOT_APPROVED)
-        );
-    }
-
-    /**
      * Updates an existing appointment's date, time, and reason.
      *
      * @param id      the ID of the appointment to update.
@@ -170,18 +156,6 @@ public class AppointmentService implements IAppointmentService {
     }
 
     /**
-     * Retrieves an appointment by its ID.
-     *
-     * @param id the ID of the appointment.
-     * @return the appointment.
-     */
-    @Override
-    public Appointment getAppointmentById(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.APPOINTMENT_NOT_FOUND));
-    }
-
-    /**
      * Retrieves an appointment by its ID and maps it to a DTO.
      * This method fetches an appointment entity from the database using its ID
      * and converts it to a {@code AppointmentDto} using the {@code entityConverter}.
@@ -234,7 +208,7 @@ public class AppointmentService implements IAppointmentService {
                 .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.CANCELLED);
-                    Appointment updatedAppointment =  appointmentRepository.saveAndFlush(appointment);
+                    Appointment updatedAppointment = appointmentRepository.saveAndFlush(appointment);
                     return entityConverter.mapEntityToDto(updatedAppointment, AppointmentDto.class);
                 }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.APPOINTMENT_UPDATE_NOT_ALLOWED));
     }
@@ -252,7 +226,7 @@ public class AppointmentService implements IAppointmentService {
                 .filter(appointment -> appointment.getStatus().equals(AppointmentStatus.WAITING_FOR_APPROVAL))
                 .map(appointment -> {
                     appointment.setStatus(AppointmentStatus.APPROVED);
-                    Appointment updatedAppointment =  appointmentRepository.saveAndFlush(appointment);
+                    Appointment updatedAppointment = appointmentRepository.saveAndFlush(appointment);
                     return entityConverter.mapEntityToDto(updatedAppointment, AppointmentDto.class);
                 }).orElseThrow(() -> new IllegalStateException(FeedBackMessage.OPERATION_NOT_ALLOWED));
     }
@@ -352,5 +326,30 @@ public class AppointmentService implements IAppointmentService {
                 break;
         }
         appointmentRepository.save(appointment);
+    }
+
+    /**
+     * Retrieves an appointment by its ID.
+     *
+     * @param id the ID of the appointment.
+     * @return the appointment.
+     */
+    private Appointment getAppointmentById(Long id) {
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.APPOINTMENT_NOT_FOUND));
+    }
+
+    /**
+     * Counts the number of active appointments for a specific patient.
+     * An active appointment is defined as one whose status is neither COMPLETED, CANCELLED, nor NOT_APPROVED.
+     *
+     * @param senderId the ID of the patient whose active appointments are being counted.
+     * @return the count of active appointments for the given patient.
+     */
+    private int countActiveAppointments(Long senderId) {
+        return appointmentRepository.countByPatientIdAndStatusNotIn(
+                senderId,
+                List.of(AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NOT_APPROVED)
+        );
     }
 }

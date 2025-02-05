@@ -5,10 +5,11 @@ import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Veterinarian;
+import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
-import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
+import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -79,16 +80,17 @@ public class VeterinarianService implements IVeterinarianService {
     private final IReviewService reviewService;
     private final AppointmentRepository appointmentRepository;
     private final VeterinarianRepository veterinarianRepository;
+    private final IUserService userService;
 
     /**
      * Retrieves a list of all enabled veterinarians with detailed information.
      * This method fetches veterinarians with the user type "VET" and {@code isEnabled} status set to {@code true},
      * then maps them to {@link UserDto} objects. During the mapping process, additional details such as
      * average rating and total number of reviews for each veterinarian are included.
-
+     * <p>
      * The method leverages caching to store the resulting list of enabled veterinarians for faster subsequent access.
      * Caching is controlled by the {@link Cacheable} annotation, where the cache key is "veterinarians_with_details".
-
+     * <p>
      * Cache details:
      * <ul>
      *   <li>Cache name: "veterinarians_with_details"</li>
@@ -96,9 +98,9 @@ public class VeterinarianService implements IVeterinarianService {
      * </ul>
      *
      * @return a list of {@link UserDto} representing enabled veterinarians with detailed information,
-     *         including their average ratings and total review counts.
+     * including their average ratings and total review counts.
      */
-    @Cacheable(value = "veterinarians_with_details", unless = "#result == null || #result.isEmpty()")
+    @Cacheable(value = "veterinarians_with_details")
     @Override
     public List<UserDto> getAllVeterinariansWithDetails() {
         List<Veterinarian> veterinarians = veterinarianRepository.findAllByUserTypeAndIsEnabled("VET", true);
@@ -109,13 +111,37 @@ public class VeterinarianService implements IVeterinarianService {
     }
 
     /**
+     * Retrieves a veterinarian's details along with their photo and reviews.
+     * <p>
+     * This method:
+     * <ul>
+     *     <li>Fetches a veterinarian by their ID, including their photo.</li>
+     *     <li>Throws an exception if the veterinarian is not found.</li>
+     *     <li>Converts the veterinarian entity into a {@link UserDto}.</li>
+     *     <li>Populates the DTO with review details, including average rating and total reviews.</li>
+     * </ul>
+     *
+     * @param vetId the ID of the veterinarian.
+     * @return the {@link UserDto} containing veterinarian details, photo, and reviews.
+     * @throws ResourceNotFoundException if the veterinarian is not found.
+     */
+    @Override
+    public UserDto getVeterinarianWithDetailsAndReview(Long vetId) {
+        Veterinarian veterinarian = veterinarianRepository.findVeterinarianWithPhotoById(vetId)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.VETERINARIAN_NOT_FOUND));
+        UserDto userDto = entityConverter.mapEntityToDto(veterinarian, UserDto.class);
+        userService.populateUserReviewDetails(userDto, vetId);
+        return userDto;
+    }
+
+    /**
      * Retrieves all available specializations for veterinarians.
      * This method fetches a list of unique specialization names from the database
      * by querying the {@link VeterinarianRepository}.
-
+     * <p>
      * The method leverages caching to improve performance by storing the result under the cache name "specializations".
      * This reduces database queries for subsequent calls.
-
+     * <p>
      * Cache details:
      * <ul>
      *   <li>Cache name: "specializations"</li>
@@ -123,9 +149,9 @@ public class VeterinarianService implements IVeterinarianService {
      * </ul>
      *
      * @return a {@link List} of {@link String} representing all unique specializations available for veterinarians.
-     *         The list is empty if no specializations are found.
+     * The list is empty if no specializations are found.
      */
-    @Cacheable(value = "specializations", unless = "#result == null || #result.isEmpty()")
+    @Cacheable(value = "specializations")
     @Override
     public List<String> getSpecializations() {
         return veterinarianRepository.getSpecializations();
@@ -142,10 +168,64 @@ public class VeterinarianService implements IVeterinarianService {
     @Override
     public List<UserDto> findAvailableVeterinariansForAppointments(String specialization, LocalDate date, LocalTime time) {
         List<Veterinarian> filteredVets = getAvailableVeterinarians(specialization, date, time);
-        Map<Long, VeterinarianReviewProjection> statsMap = reviewService.getAverageRatingsAndTotalReviewsBySpecialization(specialization);
+        Map<Long, VeterinarianReviewProjection> statsMap = reviewService.getAverageRatingsAndTotalReviews();
         return filteredVets.stream()
                 .map(vet -> mapVeterinarianToUserDto(vet, statsMap))
                 .toList();
+    }
+
+    /**
+     * Aggregates veterinarians by their specialization.
+     *
+     * @return a list of maps containing specialization and veterinarian count.
+     */
+    @Override
+    public List<Map<String, Object>> aggregateVetsBySpecialization() {
+        List<Object[]> results = veterinarianRepository.countVetsBySpecialization();
+        return results.stream()
+                .map(result -> Map.of("specialization", result[0], "count", result[1]))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves available times for booking an appointment with a veterinarian on a specific date.
+     *
+     * @param vetId the veterinarian's ID.
+     * @param date  the date to check availability.
+     * @return a list of {@link LocalTime} representing available time slots.
+     */
+    @Override
+    public List<LocalTime> getAvailableTimeForBookAppointment(Long vetId, LocalDate date) {
+        List<Appointment> appointments = appointmentRepository.findByVeterinarianIdAndAppointmentDate(vetId, date);
+
+        LocalTime currentTime = LocalTime.now();
+        LocalDate currentDate = LocalDate.now();
+
+        return Stream.iterate(BEGINNING_OF_WORKING_DAY,
+                        time -> time.isBefore(END_OF_WORKING_DAY.minusMinutes(UNAVAILABLE_BEFORE_END_OF_WORKING_DAY)),
+                        time -> time.plusMinutes(AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT))
+                .filter(time -> {
+                    if (date.equals(currentDate)) {
+                        return time.isAfter(currentTime.plusHours(MINIMUM_HOURS_FROM_NOW_FOR_APPOINTMENT));
+                    }
+                    return true;
+                })
+                .filter(time -> appointments.stream().noneMatch(appointment ->
+                        doesAppointmentOverLap(appointment, time, time.plusMinutes(APPOINTMENT_DURATION_MINUTES))
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves all veterinarians and converts them to {@link UserDto}.
+     *
+     * @return a list of {@link UserDto} objects representing all veterinarians.
+     */
+    @Override
+    public List<UserDto> getVeterinarians() {
+        List<Veterinarian> veterinarians = veterinarianRepository.findAll();
+        return veterinarians.stream()
+                .map(v -> entityConverter.mapEntityToDto(v, UserDto.class)).toList();
     }
 
     /**
@@ -155,12 +235,11 @@ public class VeterinarianService implements IVeterinarianService {
      * @return a list of veterinarians with the specified specialization.
      * @throws ResourceNotFoundException if no veterinarians with the given specialization are found.
      */
-    @Override
-    public List<Veterinarian> getVeterinariansBySpecialization(String specialization) {
+    private List<Veterinarian> getVeterinariansBySpecialization(String specialization) {
         if (!veterinarianRepository.existsBySpecialization(specialization)) {
             throw new ResourceNotFoundException(String.format(FeedBackMessage.SPECIALIZATION_NOT_FOUND, specialization));
         }
-        return veterinarianRepository.findBySpecialization(specialization);
+        return veterinarianRepository.findBySpecializationAndIsEnabled(specialization, true);
     }
 
     /**
@@ -233,59 +312,5 @@ public class VeterinarianService implements IVeterinarianService {
         LocalTime unavailableStartTime = existingStartTime.minusMinutes(UNAVAILABLE_BEFORE_START_MINUTES);
         LocalTime unavailableEndTime = existingEndTime.plusMinutes(UNAVAILABLE_AFTER_END_MINUTES);
         return !(requestedEndTime.isBefore(unavailableStartTime) || requestedStartTime.isAfter(unavailableEndTime));
-    }
-
-    /**
-     * Aggregates veterinarians by their specialization.
-     *
-     * @return a list of maps containing specialization and veterinarian count.
-     */
-    @Override
-    public List<Map<String, Object>> aggregateVetsBySpecialization() {
-        List<Object[]> results = veterinarianRepository.countVetsBySpecialization();
-        return results.stream()
-                .map(result -> Map.of("specialization", result[0], "count", result[1]))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieves available times for booking an appointment with a veterinarian on a specific date.
-     *
-     * @param vetId the veterinarian's ID.
-     * @param date  the date to check availability.
-     * @return a list of {@link LocalTime} representing available time slots.
-     */
-    @Override
-    public List<LocalTime> getAvailableTimeForBookAppointment(Long vetId, LocalDate date) {
-        List<Appointment> appointments = appointmentRepository.findByVeterinarianIdAndAppointmentDate(vetId, date);
-
-        LocalTime currentTime = LocalTime.now();
-        LocalDate currentDate = LocalDate.now();
-
-        return Stream.iterate(BEGINNING_OF_WORKING_DAY,
-                        time -> time.isBefore(END_OF_WORKING_DAY.minusMinutes(UNAVAILABLE_BEFORE_END_OF_WORKING_DAY)),
-                        time -> time.plusMinutes(AVAILABLE_PERIOD_FOR_BOOK_APPOINTMENT))
-                .filter(time -> {
-                    if (date.equals(currentDate)) {
-                        return time.isAfter(currentTime.plusHours(MINIMUM_HOURS_FROM_NOW_FOR_APPOINTMENT));
-                    }
-                    return true;
-                })
-                .filter(time -> appointments.stream().noneMatch(appointment ->
-                        doesAppointmentOverLap(appointment, time, time.plusMinutes(APPOINTMENT_DURATION_MINUTES))
-                ))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieves all veterinarians and converts them to {@link UserDto}.
-     *
-     * @return a list of {@link UserDto} objects representing all veterinarians.
-     */
-    @Override
-    public List<UserDto> getVeterinarians() {
-        List<Veterinarian> veterinarians = veterinarianRepository.findAll();
-        return veterinarians.stream()
-                .map(v -> entityConverter.mapEntityToDto(v, UserDto.class)).toList();
     }
 }

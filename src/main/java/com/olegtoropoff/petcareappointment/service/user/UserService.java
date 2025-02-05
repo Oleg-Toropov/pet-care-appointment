@@ -24,6 +24,8 @@ import com.olegtoropoff.petcareappointment.validation.NameValidator;
 import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import com.olegtoropoff.petcareappointment.validation.PhoneValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.time.Month;
@@ -67,12 +69,28 @@ public class UserService implements IUserService {
 
     /**
      * Updates an existing user's details.
-     * Validates the update request and updates the user in the database.
+     * <p>
+     * This method performs the following steps:
+     * <ul>
+     *     <li>Validates the update request.</li>
+     *     <li>Finds the user by their ID.</li>
+     *     <li>Maps the update request to the existing user entity.</li>
+     *     <li>Saves the updated user to the database.</li>
+     *     <li>Converts the updated entity to a {@link UserDto} and returns it.</li>
+     * </ul>
+     * <p>
+     * <b>Cache Eviction:</b>
+     * <ul>
+     *     <li>Clears `veterinarians_with_details` and `specializations` caches to ensure the updated user data is reflected.</li>
+     * </ul>
      *
      * @param userId  the ID of the user to update.
      * @param request the update request containing new user details.
-     * @return the updated {@link UserDto}.
+     * @return the updated {@link UserDto} with the modified user details.
+     * @throws ResourceNotFoundException if the user does not exist.
+     * @throws IllegalArgumentException if the update request is invalid.
      */
+    @CacheEvict(value = {"veterinarians_with_details", "specializations"}, allEntries = true)
     @Override
     public UserDto update(Long userId, UserUpdateRequest request) {
         validateUserUpdateRequest(request);
@@ -96,12 +114,33 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Deletes a user by their ID.
-     * Also deletes all related reviews and appointments.
+     * Deletes a user by their ID along with all related data.
+     * <p>
+     * This method performs the following operations:
+     * <ul>
+     *     <li>Finds the user by their ID.</li>
+     *     <li>Deletes all reviews associated with the user.</li>
+     *     <li>Deletes all appointments linked to the user.</li>
+     *     <li>If the user has an associated photo, deletes the photo.</li>
+     *     <li>Removes the user from the database.</li>
+     * </ul>
+     * <p>
+     * <b>Cache Eviction:</b>
+     * <ul>
+     *     <li>Clears `veterinarians_with_details`, `specializations`, `veterinarian_ratings`, and `user_reviews` caches.</li>
+     *     <li>Removes the `veterinarian_biography` entry for the deleted user.</li>
+     * </ul>
      *
      * @param userId the ID of the user to delete.
      * @throws ResourceNotFoundException if the user is not found.
      */
+    @Caching(evict = {
+            @CacheEvict(value = "veterinarians_with_details", allEntries = true),
+            @CacheEvict(value = "specializations", allEntries = true),
+            @CacheEvict(value = "veterinarian_ratings", allEntries = true),
+            @CacheEvict(value = "user_reviews", allEntries = true),
+            @CacheEvict(value = "veterinarian_biography", key = "#userId")
+    })
     @Override
     public void deleteById(Long userId) {
         userRepository.findById(userId)
@@ -130,8 +169,149 @@ public class UserService implements IUserService {
         User user = findById(userId);
         UserDto userDto = entityConverter.mapEntityToDto(user, UserDto.class);
         setUserAppointments(userDto);
-        setUserReviews(userDto, userId);
+        populateUserReviewDetails(userDto, userId);
         return userDto;
+    }
+
+    /**
+     * Populates a {@link UserDto} with review details for the given user.
+     * <p>
+     * This method:
+     * <ul>
+     *     <li>Retrieves all reviews associated with the user.</li>
+     *     <li>Maps the reviews to {@link ReviewDto} objects.</li>
+     *     <li>Calculates and sets the average rating for the user (if they have reviews).</li>
+     *     <li>Sets the total number of reviewers.</li>
+     *     <li>Attaches the mapped reviews to the {@link UserDto}.</li>
+     * </ul>
+     *
+     * @param userDto the {@link UserDto} to populate with review details.
+     * @param userId the ID of the user whose review details should be populated.
+     */
+    @Override
+    public void populateUserReviewDetails(UserDto userDto, Long userId) {
+        List<Review> review = reviewService.findAllReviewsByUserId(userId);
+        List<ReviewDto> reviewDto = review.stream()
+                .map(this::mapReviewToDto).toList();
+        if (!reviewDto.isEmpty()) {
+            double averageRating = getAverageRatingForVet(reviewDto);
+            userDto.setAverageRating(averageRating);
+            userDto.setTotalReviewers((long) reviewDto.size());
+        }
+        userDto.setReviews(reviewDto);
+    }
+
+    /**
+     * Counts the total number of users with the role of "VET".
+     *
+     * @return the total count of veterinarians in the system.
+     */
+    @Override
+    public long countVeterinarians() {
+        return userRepository.countByUserType("VET");
+    }
+
+    /**
+     * Counts the total number of users with the role of "PATIENT".
+     *
+     * @return the total count of patients in the system.
+     */
+    @Override
+    public long countPatients() {
+        return userRepository.countByUserType("PATIENT");
+    }
+
+    /**
+     * Counts the total number of users in the system.
+     *
+     * @return the total count of all users.
+     */
+    @Override
+    public long countAllUsers() {
+        return userRepository.count();
+    }
+
+    /**
+     * Aggregates the count of users by their creation month and user type.
+     *
+     * @return a nested map where the key is the month, the value is another map
+     * where the key is the user type and the value is the count of users.
+     */
+    @Override
+    public Map<String, Map<String, Long>> aggregateUsersByMonthAndType() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .collect(Collectors.groupingBy(user -> Month.of(user.getCreatedAt().getMonthValue())
+                                .getDisplayName(TextStyle.FULL, Locale.ENGLISH),
+                        Collectors.groupingBy(User::getUserType, Collectors.counting())
+                ));
+    }
+
+    /**
+     * Aggregates the count of users by their enabled status and user type.
+     *
+     * @return a nested map where the key is the enabled status ("Enabled" or "Non-Enabled"),
+     * and the value is another map where the key is the user type and the value
+     * is the count of users.
+     */
+    @Override
+    public Map<String, Map<String, Long>> aggregateUsersByEnabledStatusAndType() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .collect(Collectors.groupingBy(user -> user.isEnabled() ? "Enabled" : "Non-Enabled",
+                        Collectors.groupingBy(User::getUserType, Collectors.counting())));
+    }
+
+    /**
+     * Locks the user's account by disabling their access.
+     * <p>
+     * This method updates the user's `enabled` status to `false` in the database, effectively locking the account.
+     * The operation is typically used for administrative actions such as suspending a veterinarian.
+     * <p>
+     * <b>Cache Eviction:</b>
+     * - Clears `veterinarians_with_details` cache to ensure that locked users do not appear in cached lists.
+     *
+     * @param userId the ID of the user whose account will be locked.
+     */
+    @CacheEvict(value = {"veterinarians_with_details"}, allEntries = true)
+    @Override
+    public void lockUserAccount(Long userId) {
+        userRepository.updateUserEnabledStatus(userId, false);
+    }
+
+    /**
+     * Unlocks the user's account by enabling their access.
+     * <p>
+     * This method updates the user's `enabled` status to `true` in the database, allowing them to regain access.
+     * This operation is typically used for reactivating suspended accounts.
+     * <p>
+     * <b>Cache Eviction:</b>
+     * - Clears `veterinarians_with_details` cache to ensure that unlocked users are visible in cached lists.
+     *
+     * @param userId the ID of the user whose account will be unlocked.
+     */
+    @CacheEvict(value = {"veterinarians_with_details"}, allEntries = true)
+    @Override
+    public void unLockUserAccount(Long userId) {
+        userRepository.updateUserEnabledStatus(userId, true);
+    }
+
+    /**
+     * Retrieves the URL of the photo associated with a specific user.
+     * If the user has an associated photo, this method returns the URL of the photo stored in the S3 bucket.
+     * If the user does not have a photo, it returns {@code null}.
+     *
+     * @param userId the ID of the user whose photo URL is to be retrieved.
+     * @return the URL of the user's photo, or {@code null} if the user has no associated photo.
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist.
+     */
+    @Override
+    public String getPhotoUrlByUserId(Long userId) {
+        User user = findById(userId);
+        if (user.getPhoto() != null) {
+            return photoService.getPhotoUrlById(user.getPhoto().getId());
+        }
+        return null;
     }
 
     /**
@@ -203,47 +383,6 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Sets the reviews and calculates review-related statistics for the given user DTO.
-     * <p>
-     * This method fetches all reviews for the specified user by their ID, maps them to {@link ReviewDto},
-     * and calculates the average rating and total number of reviewers. The resulting reviews and statistics
-     * are then set in the provided {@link UserDto}.
-     * </p>
-     *
-     * @param userDto the {@link UserDto} object where reviews and statistics will be set.
-     * @param userId  the ID of the user whose reviews will be fetched and mapped.
-     */
-    private void setUserReviews(UserDto userDto, Long userId) {
-        List<Review> review = reviewService.findAllReviewsByUserId(userId);
-        List<ReviewDto> reviewDto = review.stream()
-                .map(this::mapReviewToDto).toList();
-
-        if (!reviewDto.isEmpty()) {
-            double averageRating = getAverageRatingForVet(reviewDto);
-            userDto.setAverageRating(averageRating);
-            userDto.setTotalReviewers((long) reviewDto.size());
-        }
-        userDto.setReviews(reviewDto);
-    }
-
-    /**
-     * Calculates the average rating from a list of {@link ReviewDto}.
-     * <p>
-     * This method processes a list of {@link ReviewDto} objects, extracts the {@code stars} field,
-     * and computes the average value. If the list is empty, it returns {@code 0.0}.
-     * </p>
-     *
-     * @param reviewDto the list of {@link ReviewDto} objects containing review details.
-     * @return the average rating as a {@code double}, or {@code 0.0} if the list is empty.
-     */
-    private double getAverageRatingForVet(List<ReviewDto> reviewDto) {
-       return reviewDto.stream()
-                .mapToInt(ReviewDto::getStars)
-                .average()
-                .orElse(0.0);
-    }
-
-    /**
      * Maps a {@link Review} entity to a {@link ReviewDto}.
      *
      * @param review the {@link Review} entity to be mapped.
@@ -294,101 +433,18 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Counts the total number of users with the role of "VET".
+     * Calculates the average rating from a list of {@link ReviewDto}.
+     * <p>
+     * This method processes a list of {@link ReviewDto} objects, extracts the {@code stars} field,
+     * and computes the average value. If the list is empty, it returns {@code 0.0}.
      *
-     * @return the total count of veterinarians in the system.
+     * @param reviewDto the list of {@link ReviewDto} objects containing review details.
+     * @return the average rating as a {@code double}, or {@code 0.0} if the list is empty.
      */
-    @Override
-    public long countVeterinarians() {
-        return userRepository.countByUserType("VET");
-    }
-
-    /**
-     * Counts the total number of users with the role of "PATIENT".
-     *
-     * @return the total count of patients in the system.
-     */
-    @Override
-    public long countPatients() {
-        return userRepository.countByUserType("PATIENT");
-    }
-
-    /**
-     * Counts the total number of users in the system.
-     *
-     * @return the total count of all users.
-     */
-    @Override
-    public long countAllUsers() {
-        return userRepository.count();
-    }
-
-    /**
-     * Aggregates the count of users by their creation month and user type.
-     *
-     * @return a nested map where the key is the month, the value is another map
-     * where the key is the user type and the value is the count of users.
-     */
-    @Override
-    public Map<String, Map<String, Long>> aggregateUsersByMonthAndType() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .collect(Collectors.groupingBy(user -> Month.of(user.getCreatedAt().getMonthValue())
-                                .getDisplayName(TextStyle.FULL, Locale.ENGLISH),
-                        Collectors.groupingBy(User::getUserType, Collectors.counting())
-                ));
-    }
-
-    /**
-     * Aggregates the count of users by their enabled status and user type.
-     *
-     * @return a nested map where the key is the enabled status ("Enabled" or "Non-Enabled"),
-     * and the value is another map where the key is the user type and the value
-     * is the count of users.
-     */
-    @Override
-    public Map<String, Map<String, Long>> aggregateUsersByEnabledStatusAndType() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .collect(Collectors.groupingBy(user -> user.isEnabled() ? "Enabled" : "Non-Enabled",
-                        Collectors.groupingBy(User::getUserType, Collectors.counting())));
-    }
-
-    /**
-     * Locks the user's account by disabling their access.
-     *
-     * @param userId the ID of the user whose account will be locked.
-     */
-    @Override
-    public void lockUserAccount(Long userId) {
-        userRepository.updateUserEnabledStatus(userId, false);
-    }
-
-    /**
-     * Unlocks the user's account by enabling their access.
-     *
-     * @param userId the ID of the user whose account will be unlocked.
-     */
-    @Override
-    public void unLockUserAccount(Long userId) {
-        userRepository.updateUserEnabledStatus(userId, true);
-    }
-
-    /**
-     * Retrieves the URL of the photo associated with a specific user.
-     * If the user has an associated photo, this method returns the URL of the photo stored in the S3 bucket.
-     * If the user does not have a photo, it returns {@code null}.
-     *
-     * @param userId the ID of the user whose photo URL is to be retrieved.
-     * @return the URL of the user's photo, or {@code null} if the user has no associated photo.
-     * @throws ResourceNotFoundException if the user with the specified ID does not exist.
-     */
-    @Override
-    public String getPhotoUrlByUserId(Long userId) {
-        User user = findById(userId);
-        if (user.getPhoto() != null) {
-            return photoService.getPhotoUrlById(user.getPhoto().getId());
-        }
-        return null;
+    private double getAverageRatingForVet(List<ReviewDto> reviewDto) {
+        return reviewDto.stream()
+                .mapToInt(ReviewDto::getStars)
+                .average()
+                .orElse(0.0);
     }
 }

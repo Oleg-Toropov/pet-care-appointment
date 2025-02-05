@@ -91,19 +91,6 @@ public class PetService implements IPetService {
     }
 
     /**
-     * Retrieves a pet by its ID.
-     *
-     * @param petId the ID of the pet to retrieve
-     * @return the pet with the given ID
-     * @throws ResourceNotFoundException if the pet with the given ID is not found
-     */
-    @Override
-    public Pet getPetById(Long petId) {
-        return petRepository.findById(petId)
-                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
-    }
-
-    /**
      * Retrieves a list of distinct pet types.
      *
      * @return a list of distinct pet types
@@ -132,5 +119,17 @@ public class PetService implements IPetService {
     @Override
     public List<String> getPetBreeds(String petType) {
         return petRepository.getDistinctPetBreedsByPetType(petType);
+    }
+
+    /**
+     * Retrieves a pet by its ID.
+     *
+     * @param petId the ID of the pet to retrieve
+     * @return the pet with the given ID
+     * @throws ResourceNotFoundException if the pet with the given ID is not found
+     */
+    private Pet getPetById(Long petId) {
+        return petRepository.findById(petId)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.PET_NOT_FOUND));
     }
 }

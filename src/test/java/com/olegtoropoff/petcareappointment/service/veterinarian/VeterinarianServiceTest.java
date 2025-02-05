@@ -2,14 +2,13 @@ package com.olegtoropoff.petcareappointment.service.veterinarian;
 
 import com.olegtoropoff.petcareappointment.dto.EntityConverter;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
-import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Appointment;
 import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
 import com.olegtoropoff.petcareappointment.service.review.ReviewService;
-import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
+import com.olegtoropoff.petcareappointment.service.user.IUserService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,10 +24,10 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @Tag("unit")
@@ -45,6 +44,9 @@ class VeterinarianServiceTest {
 
     @Mock
     private VeterinarianRepository veterinarianRepository;
+
+    @Mock
+    private IUserService userService;
 
     @Spy
     private EntityConverter<Veterinarian, UserDto> entityConverter = new EntityConverter<>(new ModelMapper());
@@ -100,7 +102,7 @@ class VeterinarianServiceTest {
         List<Veterinarian> veterinarians = List.of(vet);
 
         when(veterinarianRepository.existsBySpecialization(specialization)).thenReturn(true);
-        when(veterinarianRepository.findBySpecialization(specialization)).thenReturn(veterinarians);
+        when(veterinarianRepository.findBySpecializationAndIsEnabled(specialization, true)).thenReturn(veterinarians);
         when(appointmentRepository.findByVeterinarianAndAppointmentDate(vet, date)).thenReturn(Collections.emptyList());
 
         List<UserDto> result = veterinarianService.findAvailableVeterinariansForAppointments(specialization, date, time);
@@ -109,34 +111,6 @@ class VeterinarianServiceTest {
         assertEquals(result.get(0).getId(), veterinarians.get(0).getId());
         assertEquals(1, result.size());
         verify(entityConverter).mapEntityToDto(vet, UserDto.class);
-    }
-
-    @Test
-    void getVeterinariansBySpecialization_Success() {
-        String specialization = "Surgery";
-        Veterinarian vet = new Veterinarian();
-        List<Veterinarian> veterinarians = List.of(vet);
-
-        when(veterinarianRepository.existsBySpecialization(specialization)).thenReturn(true);
-        when(veterinarianRepository.findBySpecialization(specialization)).thenReturn(veterinarians);
-
-        List<Veterinarian> result = veterinarianService.getVeterinariansBySpecialization(specialization);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(veterinarianRepository).findBySpecialization(specialization);
-    }
-
-    @Test
-    void getVeterinariansBySpecialization_ThrowsResourceNotFoundException_WhenSpecializationNotFound() {
-        String specialization = "Unknown";
-
-        when(veterinarianRepository.existsBySpecialization(specialization)).thenReturn(false);
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                () -> veterinarianService.getVeterinariansBySpecialization(specialization));
-
-        assertEquals(String.format(FeedBackMessage.SPECIALIZATION_NOT_FOUND, specialization), exception.getMessage());
     }
 
     @Test
@@ -167,5 +141,51 @@ class VeterinarianServiceTest {
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void getVeterinarians_ReturnsMappedDtos() {
+        Veterinarian vet1 = new Veterinarian();
+        vet1.setId(1L);
+        vet1.setFirstName("John");
+        Veterinarian vet2 = new Veterinarian();
+        vet2.setId(2L);
+        vet2.setFirstName("Jane");
+
+        List<Veterinarian> veterinarians = List.of(vet1, vet2);
+
+        when(veterinarianRepository.findAll()).thenReturn(veterinarians);
+
+        List<UserDto> result = veterinarianService.getVeterinarians();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("John", result.get(0).getFirstName());
+        assertEquals("Jane", result.get(1).getFirstName());
+
+        verify(veterinarianRepository).findAll();
+    }
+
+    @Test
+    void getVeterinarianWithDetailsAndReview_Success() {
+        Long vetId = 1L;
+        String firstName = "John";
+        Veterinarian veterinarian = new Veterinarian();
+        veterinarian.setId(vetId);
+        veterinarian.setFirstName(firstName);
+
+        UserDto userDto = new UserDto();
+        userDto.setId(vetId);
+        userDto.setFirstName(firstName);
+
+        when(veterinarianRepository.findVeterinarianWithPhotoById(vetId)).thenReturn(Optional.of(veterinarian));
+        doNothing().when(userService).populateUserReviewDetails(any(UserDto.class), eq(vetId));
+
+        UserDto result = veterinarianService.getVeterinarianWithDetailsAndReview(vetId);
+
+        assertNotNull(result);
+        assertEquals(vetId, result.getId());
+        assertEquals(firstName, result.getFirstName());
+        verify(veterinarianRepository).findVeterinarianWithPhotoById(vetId);
     }
 }

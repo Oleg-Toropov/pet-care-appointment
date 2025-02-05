@@ -1,6 +1,7 @@
 package com.olegtoropoff.petcareappointment.service.user;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
+import com.olegtoropoff.petcareappointment.dto.ReviewDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
@@ -121,4 +122,23 @@ public interface IUserService {
      * @throws ResourceNotFoundException if the user with the specified ID is not found.
      */
     String getPhotoUrlByUserId(Long userId);
+
+    /**
+     * Populates a {@link UserDto} with review details for the given user.
+     * <p>
+     * This method:
+     * <ul>
+     *     <li>Retrieves all reviews associated with the user.</li>
+     *     <li>Maps the retrieved reviews to {@link ReviewDto} objects.</li>
+     *     <li>Calculates and sets the user's average rating based on their reviews.</li>
+     *     <li>Updates the total number of reviewers.</li>
+     *     <li>Attaches the mapped reviews to the {@link UserDto}.</li>
+     * </ul>
+     * <p>
+     * This is typically used for displaying a veterinarian's or user's reviews along with their profile information.
+     *
+     * @param userDto the {@link UserDto} to populate with review details.
+     * @param userId the ID of the user whose review details should be retrieved and added.
+     */
+    void populateUserReviewDetails(UserDto userDto, Long userId);
 }

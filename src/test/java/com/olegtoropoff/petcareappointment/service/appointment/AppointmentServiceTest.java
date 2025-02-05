@@ -131,32 +131,6 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void getAppointmentById_WhenAppointmentExists_ReturnsAppointment() {
-        Long appointmentId = 1L;
-        Appointment appointment = new Appointment();
-        appointment.setId(appointmentId);
-        when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
-
-        Appointment result = appointmentService.getAppointmentById(appointmentId);
-
-        assertNotNull(result);
-        assertEquals(appointment, result);
-        verify(appointmentRepository, times(1)).findById(appointmentId);
-    }
-
-    @Test
-    void getAppointmentById_WhenAppointmentDoesNotExist_ThrowsException() {
-        Long appointmentId = 1L;
-        when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(ResourceNotFoundException.class, () ->
-                appointmentService.getAppointmentById(appointmentId));
-
-        assertEquals(FeedBackMessage.APPOINTMENT_NOT_FOUND, exception.getMessage());
-        verify(appointmentRepository, times(1)).findById(appointmentId);
-    }
-
-    @Test
     void getAllAppointments_WhenCalled_ReturnsPageOfAppointments() {
         Pageable pageable = mock(Pageable.class);
         Appointment appointment = new Appointment();

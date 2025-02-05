@@ -3,8 +3,6 @@ package com.olegtoropoff.petcareappointment.service.token;
 import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.model.VerificationToken;
 
-import java.util.Optional;
-
 /**
  * Interface for managing operations related to verification tokens.
  * Provides methods to validate, create, update, and delete tokens.
@@ -35,14 +33,6 @@ public interface IVerificationTokenService {
      * @throws IllegalArgumentException if the old token is invalid
      */
     VerificationToken generateNewVerificationToken(String oldToken);
-
-    /**
-     * Finds a verification token by its value.
-     *
-     * @param token the token to find
-     * @return an {@link Optional} containing the token if found, or empty if not found
-     */
-    Optional<VerificationToken> findByToken(String token);
 
     /**
      * Checks if the given token has expired.

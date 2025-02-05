@@ -5,12 +5,17 @@ import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
-import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +35,23 @@ public class ReviewService implements IReviewService {
     private final ReviewRepository reviewRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
+    private final CacheManager cacheManager;
 
     /**
      * Saves a new review for a veterinarian.
+     * <p>
+     * This method ensures that:
+     * <ul>
+     *     <li>The reviewer is not the veterinarian.</li>
+     *     <li>The reviewer has not already reviewed the veterinarian.</li>
+     *     <li>Both the veterinarian and the patient exist in the database.</li>
+     *     <li>The patient has at least one completed appointment with the veterinarian.</li>
+     * </ul>
+     * If all conditions are met, the review is saved and associated with both the veterinarian and the patient.
+     * <p>
+     * <b>Cache Eviction:</b>
+     * - Clears `veterinarians_with_details` and `veterinarian_ratings` caches to ensure fresh data.
+     * - Removes `user_reviews` cache entries for both the reviewer and the veterinarian.
      *
      * @param review the review to save.
      * @param reviewerId the ID of the patient submitting the review.
@@ -43,6 +62,12 @@ public class ReviewService implements IReviewService {
      * @throws ResourceNotFoundException if the veterinarian or patient does not exist.
      * @throws IllegalStateException if the patient has no completed appointments with the veterinarian.
      */
+    @Caching(evict = {
+            @CacheEvict(value = "veterinarians_with_details", allEntries = true),
+            @CacheEvict(value = "veterinarian_ratings", allEntries = true),
+            @CacheEvict(value = "user_reviews", key = "#reviewerId"),
+            @CacheEvict(value = "user_reviews", key = "#veterinarianId")
+    })
     @Transactional
     @Override
     public Review saveReview(Review review, Long reviewerId, Long veterinarianId) {
@@ -75,48 +100,56 @@ public class ReviewService implements IReviewService {
 
     /**
      * Deletes a review by its ID.
+     * <p>
+     * <b>Cache Eviction:</b>
+     * - Clears `veterinarians_with_details` and `veterinarian_ratings` caches.
+     * - Explicitly removes `user_reviews` cache entries for both the reviewer and the veterinarian.
      *
      * @param reviewId the ID of the review to delete.
      * @throws ResourceNotFoundException if the review does not exist.
      */
+    @Caching(evict = {
+            @CacheEvict(value = "veterinarians_with_details", allEntries = true),
+            @CacheEvict(value = "veterinarian_ratings", allEntries = true)
+    })
     @Override
     public void deleteReview(Long reviewId) {
-        reviewRepository.findById(reviewId).ifPresentOrElse(Review::removeRelationShip, () -> {
-            throw new ResourceNotFoundException(FeedBackMessage.REVIEW_NOT_FOUND);
-        });
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.REVIEW_NOT_FOUND));
+
+        Cache cache = cacheManager.getCache("user_reviews");
+        if (cache != null) {
+            cache.evict(review.getPatient().getId());
+            cache.evict(review.getVeterinarian().getId());
+        }
+
+        review.removeRelationShip();
         reviewRepository.deleteById(reviewId);
     }
 
     /**
-     * Retrieves all reviews associated with a specific user.
-     *
-     * @param userId the ID of the user whose reviews are to be retrieved.
-     * @return a {@link List} of {@link Review} containing all reviews for the specified user.
-     */
-    @Override
-    public List<Review> findAllReviewsByUserId(Long userId) {
-        return reviewRepository.findAllByUserId(userId);
-    }
-
-
-    /**
      * Retrieves a map containing the average ratings and total review counts for all veterinarians
-     * who are enabled (i.e., {@code isEnabled = true}). The data is fetched from the database
-     * using a repository query and returned as a map, where the key is the veterinarian's ID,
-     * and the value is a projection containing the average rating and the total number of reviews.
+     * who are enabled (i.e., {@code isEnabled = true}).
      * <p>
-     * This method is now part of the {@code ReviewService}, focusing on aggregated statistics
-     * for veterinarians based on their reviews. It filters veterinarians whose {@code isEnabled}
-     * field is set to {@code true}.
-     *
-     * @return a {@link Map} where the key is the veterinarian ID ({@link Long}) and the value is
-     *         a {@link VeterinarianReviewProjection}, which contains:
+     * This data is fetched from the database using a repository query and returned as a map,
+     * where:
+     * <ul>
+     *     <li>The key is the veterinarian's ID ({@link Long}).</li>
+     *     <li>The value is a {@link VeterinarianReviewProjection} containing:
      *         <ul>
      *             <li>Average rating of the veterinarian</li>
      *             <li>Total number of reviews for the veterinarian</li>
      *         </ul>
-     *         Only veterinarians with {@code isEnabled = true} are included in the map.
+     *     </li>
+     * </ul>
+     * <p>
+     * <b>Cache Usage:</b>
+     * - Cached under `veterinarian_ratings` to avoid unnecessary queries.
+     * - Used in scenarios where displaying aggregated review data for veterinarians is needed.
+     *
+     * @return a {@link Map} containing the average rating and review count for each veterinarian.
      */
+    @Cacheable(value = "veterinarian_ratings")
     @Override
     public Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviews() {
         List<VeterinarianReviewProjection> averageRatingsAndTotalReviews = reviewRepository.findAllAverageRatingsAndTotalReviews();
@@ -125,30 +158,20 @@ public class ReviewService implements IReviewService {
     }
 
     /**
-     * Retrieves a map containing the average ratings and total review counts for all veterinarians
-     * who are enabled (i.e., {@code isEnabled = true}) and have the specified specialization.
-     * The data is fetched from the database using a repository query and returned as a map,
-     * where the key is the veterinarian's ID, and the value is a projection containing the average rating
-     * and the total number of reviews.
+     * Retrieves all reviews associated with a specific user.
      * <p>
-     * This method is part of the {@code ReviewService} and provides aggregated review statistics for veterinarians
-     * filtered by both their {@code isEnabled} status and the specified {@code specialization}.
+     * This method queries all reviews where the given user is either the reviewer or the veterinarian.
+     * <p>
+     * <b>Cache Usage:</b>
+     * - Cached under `user_reviews` with the user ID as the key.
+     * - Useful for quickly fetching a user's reviews without hitting the database frequently.
      *
-     * @param specialization the specialization of the veterinarians to filter by (e.g., "Surgery", "Dentistry").
-     *                       Only veterinarians with this specialization will be included.
-     *
-     * @return a {@link Map} where the key is the veterinarian ID ({@link Long}) and the value is
-     *         a {@link VeterinarianReviewProjection}, which contains:
-     *         <ul>
-     *             <li>Average rating of the veterinarian</li>
-     *             <li>Total number of reviews for the veterinarian</li>
-     *         </ul>
-     *         Only veterinarians with {@code isEnabled = true} and the specified {@code specialization} are included in the map.
+     * @param userId the ID of the user whose reviews are to be retrieved.
+     * @return a {@link List} of {@link Review} containing all reviews for the specified user.
      */
+    @Cacheable(value = "user_reviews", key = "#userId")
     @Override
-    public Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviewsBySpecialization(String specialization) {
-        List<VeterinarianReviewProjection> averageRatingsAndTotalReviews = reviewRepository.findAllAverageRatingsAndTotalReviewsBySpecialization(specialization);
-        return averageRatingsAndTotalReviews.stream()
-                .collect(Collectors.toMap(VeterinarianReviewProjection::getVeterinarianId, stats -> stats));
+    public List<Review> findAllReviewsByUserId(Long userId) {
+        return reviewRepository.findAllByUserId(userId);
     }
 }

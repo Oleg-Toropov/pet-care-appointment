@@ -123,26 +123,6 @@ class PetServiceTest {
     }
 
     @Test
-    void getPetById_Success() {
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
-
-        Pet result = petService.getPetById(1L);
-
-        assertNotNull(result);
-        assertEquals("Buddy", result.getName());
-        verify(petRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    void getPetById_NotFound_ThrowsException() {
-        when(petRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> petService.getPetById(1L));
-
-        assertEquals(FeedBackMessage.PET_NOT_FOUND, exception.getMessage());
-    }
-
-    @Test
     void getPetTypes_Success() {
         List<String> petTypes = List.of("Dog", "Cat");
         when(petRepository.getDistinctPetTypes()).thenReturn(petTypes);

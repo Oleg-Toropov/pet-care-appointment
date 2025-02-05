@@ -4,7 +4,8 @@ import com.olegtoropoff.petcareappointment.dto.EntityConverter;
 import com.olegtoropoff.petcareappointment.dto.UserDto;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.factory.UserFactory;
-import com.olegtoropoff.petcareappointment.model.*;
+import com.olegtoropoff.petcareappointment.model.Photo;
+import com.olegtoropoff.petcareappointment.model.User;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
@@ -24,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -210,15 +210,6 @@ class UserServiceTest {
         return user;
     }
 
-    private Review createReview(Long reviewId, User patient, User veterinarian, int stars) {
-        Review review = new Review();
-        review.setId(reviewId);
-        review.setPatient(patient instanceof Patient ? patient : null);
-        review.setVeterinarian(veterinarian instanceof Veterinarian ? veterinarian : null);
-        review.setStars(stars);
-        return review;
-    }
-
     private Photo createPhoto(Long photoId) {
         Photo photo = new Photo();
         photo.setId(photoId);
@@ -230,27 +221,14 @@ class UserServiceTest {
         Long userId = 1L;
         User user = createUser(userId);
 
-        Patient patient = new Patient();
-        patient.setPhoto(createPhoto(3L));
-
-        Veterinarian veterinarian = new Veterinarian();
-        veterinarian.setPhoto(createPhoto(4L));
-
-        Review review1 = createReview(1L, patient, null, 4);
-        Review review2 = createReview(2L, null, veterinarian, 2);
-
-        List<Review> reviews = List.of(review1, review2);
-
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(appointmentService.getUserAppointments(userId)).thenReturn(Collections.emptyList());
-        when(reviewService.findAllReviewsByUserId(userId)).thenReturn(reviews);
+        when(reviewService.findAllReviewsByUserId(userId)).thenReturn(Collections.emptyList());
 
         UserDto result = userService.getUserWithDetails(userId);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        assertEquals(2L, result.getTotalReviewers());
-        assertEquals(3, result.getAverageRating());
         verify(userRepository, times(1)).findById(userId);
         verify(entityConverter, times(1)).mapEntityToDto(user, UserDto.class);
         verify(appointmentService, times(1)).getUserAppointments(userId);

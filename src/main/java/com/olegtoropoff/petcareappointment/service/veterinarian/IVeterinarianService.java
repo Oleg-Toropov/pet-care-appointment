@@ -1,7 +1,6 @@
 package com.olegtoropoff.petcareappointment.service.veterinarian;
 
 import com.olegtoropoff.petcareappointment.dto.UserDto;
-import com.olegtoropoff.petcareappointment.model.Veterinarian;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,6 +20,22 @@ public interface IVeterinarianService {
     List<UserDto> getAllVeterinariansWithDetails();
 
     /**
+     * Retrieves detailed information about a veterinarian, including their photo and reviews.
+     * <p>
+     * This method:
+     * <ul>
+     *     <li>Fetches a veterinarian by their ID, ensuring their photo is loaded.</li>
+     *     <li>Throws an exception if the veterinarian is not found.</li>
+     *     <li>Converts the veterinarian entity into a {@link UserDto}.</li>
+     *     <li>Enriches the {@link UserDto} with review details, including average rating and total number of reviews.</li>
+     * </ul>
+     *
+     * @param vetId the ID of the veterinarian.
+     * @return a {@link UserDto} containing veterinarian details, photo, and reviews.
+     */
+    UserDto getVeterinarianWithDetailsAndReview(Long vetId);
+
+    /**
      * Retrieves a list of all available specializations for veterinarians.
      *
      * @return a list of strings representing the available specializations.
@@ -36,14 +51,6 @@ public interface IVeterinarianService {
      * @return a list of {@link UserDto} for veterinarians available at the specified date and time.
      */
     List<UserDto> findAvailableVeterinariansForAppointments(String specialization, LocalDate date, LocalTime time);
-
-    /**
-     * Retrieves a list of veterinarians based on a specific specialization.
-     *
-     * @param specialization the specialization to filter veterinarians by.
-     * @return a list of {@link Veterinarian} entities matching the specialization.
-     */
-    List<Veterinarian> getVeterinariansBySpecialization(String specialization);
 
     /**
      * Aggregates the number of veterinarians by their specializations.

@@ -80,17 +80,6 @@ public class VerificationTokenService implements IVerificationTokenService {
     }
 
     /**
-     * Retrieves a verification token by its token value.
-     *
-     * @param token the token value.
-     * @return an Optional containing the verification token if found, or empty otherwise.
-     */
-    @Override
-    public Optional<VerificationToken> findByToken(String token) {
-        return tokenRepository.findByToken(token);
-    }
-
-    /**
      * Checks if a verification token is expired.
      *
      * @param token the token to check.
@@ -118,5 +107,15 @@ public class VerificationTokenService implements IVerificationTokenService {
         return tokenRepository.findAllByUserId(userId).stream()
                 .max(Comparator.comparingLong(VerificationToken::getId))
                 .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
+    }
+
+    /**
+     * Retrieves a verification token by its token value.
+     *
+     * @param token the token value.
+     * @return an Optional containing the verification token if found, or empty otherwise.
+     */
+    private Optional<VerificationToken> findByToken(String token) {
+        return tokenRepository.findByToken(token);
     }
 }

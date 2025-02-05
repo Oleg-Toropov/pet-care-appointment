@@ -5,6 +5,7 @@ import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
 import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.model.User;
+import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
 import com.olegtoropoff.petcareappointment.repository.AppointmentRepository;
 import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
@@ -14,9 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,6 +43,12 @@ class ReviewServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Cache cache;
 
     @Test
     void saveReview_Success() {
@@ -107,11 +118,22 @@ class ReviewServiceTest {
         Long reviewId = 1L;
         Review review = new Review();
 
+        User patient = new User();
+        patient.setId(10L);
+        review.setPatient(patient);
+
+        User veterinarian = new User();
+        veterinarian.setId(20L);
+        review.setVeterinarian(veterinarian);
+
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(cacheManager.getCache("user_reviews")).thenReturn(cache);
 
         reviewService.deleteReview(reviewId);
 
         verify(reviewRepository).deleteById(reviewId);
+        verify(cache).evict(10L);
+        verify(cache).evict(20L);
     }
 
     @Test
@@ -127,15 +149,29 @@ class ReviewServiceTest {
     }
 
     @Test
-    void findAllReviewsByUserId_Success() {
-        Long userId = 1L;
+    void testGetAverageRatingsAndTotalReviews() {
+        List<VeterinarianReviewProjection> projections = List.of(
+                createMockProjection(1L, 4.5, 10L),
+                createMockProjection(2L, 4.0, 5L));
+        when(reviewRepository.findAllAverageRatingsAndTotalReviews()).thenReturn(projections);
 
-        List<Review> reviews = List.of(new Review());
-        when(reviewRepository.findAllByUserId(userId)).thenReturn(reviews);
-
-        List<Review> result = reviewService.findAllReviewsByUserId(userId);
+        Map<Long, VeterinarianReviewProjection> result = reviewService.getAverageRatingsAndTotalReviews();
 
         assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(2, result.size());
+        assertTrue(result.containsKey(1L));
+        assertTrue(result.containsKey(2L));
+        assertEquals(4.5, result.get(1L).getAverageRating());
+        assertEquals(10L, result.get(1L).getTotalReviewers());
+        assertEquals(4.0, result.get(2L).getAverageRating());
+        assertEquals(5L, result.get(2L).getTotalReviewers());
+    }
+
+    private VeterinarianReviewProjection createMockProjection(Long veterinarianId, Double averageRating, Long totalReviews) {
+        VeterinarianReviewProjection projection = Mockito.mock(VeterinarianReviewProjection.class);
+        Mockito.when(projection.getVeterinarianId()).thenReturn(veterinarianId);
+        Mockito.when(projection.getAverageRating()).thenReturn(averageRating);
+        Mockito.when(projection.getTotalReviewers()).thenReturn(totalReviews);
+        return projection;
     }
 }

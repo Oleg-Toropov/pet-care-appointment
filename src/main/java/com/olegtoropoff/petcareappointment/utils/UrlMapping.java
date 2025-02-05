@@ -237,6 +237,11 @@ public class UrlMapping {
     public static final String GET_VETERINARIANS = "/get-veterinarians";
 
     /**
+     * Endpoint for retrieving a veterinarian by their ID.
+     */
+    public static final String GET_VETERINARIAN_BY_ID = "/veterinarian/{vetId}";
+
+    /**
      * Endpoint for searching a veterinarian for an appointment.
      */
     public static final String SEARCH_VETERINARIAN_FOR_APPOINTMENT = "/search-veterinarian";

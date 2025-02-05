@@ -47,15 +47,43 @@ public class VeterinarianController {
     }
 
     /**
-     * Retrieves all veterinarians.
+     * Retrieves a list of all veterinarians.
      *
-     * @return a {@link ResponseEntity} containing a list of all veterinarians or an error message
+     * @return a {@link ResponseEntity} containing a {@link CustomApiResponse} with:
+     * <ul>
+     *     <li>{@code 200 OK} - If the list of veterinarians is successfully retrieved.</li>
+     *     <li>{@code 500 INTERNAL_SERVER_ERROR} - If an unexpected error occurs.</li>
+     * </ul>
      */
     @GetMapping(UrlMapping.GET_VETERINARIANS)
     public ResponseEntity<CustomApiResponse> getAllVeterinarians() {
         try {
             List<UserDto> veterinarians = veterinarianService.getVeterinarians();
             return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.RESOURCE_FOUND, veterinarians));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
+        }
+    }
+
+    /**
+     * Retrieves a veterinarian by their ID, including their details and reviews.
+     *
+     * @param vetId the ID of the veterinarian to retrieve.
+     * @return a {@link ResponseEntity} containing a {@link CustomApiResponse} with:
+     * <ul>
+     *     <li>{@code 200 OK} - If the veterinarian is found.</li>
+     *     <li>{@code 404 NOT FOUND} - If no veterinarian with the given ID exists.</li>
+     *     <li>{@code 500 INTERNAL_SERVER_ERROR} - If an unexpected error occurs.</li>
+     * </ul>
+     * @throws ResourceNotFoundException if the veterinarian is not found.
+     */
+    @GetMapping(UrlMapping.GET_VETERINARIAN_BY_ID)
+    public ResponseEntity<CustomApiResponse> getById(@PathVariable Long vetId) {
+        try {
+            UserDto veterinarian = veterinarianService.getVeterinarianWithDetailsAndReview(vetId);
+            return ResponseEntity.ok(new CustomApiResponse(FeedBackMessage.USER_FOUND, veterinarian));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new CustomApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new CustomApiResponse(FeedBackMessage.ERROR, null));
         }

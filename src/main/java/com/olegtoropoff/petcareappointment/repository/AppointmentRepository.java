@@ -91,6 +91,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      */
     boolean existsByVeterinarianIdAndPatientIdAndStatus(Long veterinarianId, Long reviewerId, AppointmentStatus appointmentStatus);
 
+    /**
+     * Checks whether an appointment exists by its unique appointment number.
+     *
+     * @param appointmentNo the unique identifier of the appointment.
+     * @return {@code true} if an appointment with the given number exists, otherwise {@code false}.
+     */
     boolean existsByAppointmentNo(String appointmentNo);
 
     /**

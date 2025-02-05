@@ -6,6 +6,7 @@ import com.olegtoropoff.petcareappointment.request.RegistrationRequest;
 import com.olegtoropoff.petcareappointment.service.role.IRoleService;
 import com.olegtoropoff.petcareappointment.service.user.UserAttributesMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,11 +24,18 @@ public class VeterinarianFactory {
     private final IRoleService roleService;
 
     /**
-     * Creates a new {@link Veterinarian} instance based on the given registration request.
+     * Creates and persists a new {@link Veterinarian} instance based on the provided registration request.
+     * This method sets the user's role to "VET", maps common attributes from the request to the veterinarian,
+     * and assigns the specialization. The newly created veterinarian is then saved in the database.
      *
-     * @param request the registration request containing details for the veterinarian
-     * @return the created {@link Veterinarian} instance, persisted in the database
+     * <p>Additionally, this method clears the caches associated with veterinarians and specializations,
+     * to ensure that any newly added veterinarian is properly reflected in future cache-dependent queries.
+     *
+     * @param request the {@link RegistrationRequest} containing the details needed to create a new veterinarian,
+     *                including common user attributes and specialization
+     * @return the newly created and persisted {@link Veterinarian} instance
      */
+    @CacheEvict(value = {"veterinarians_with_details", "specializations"}, allEntries = true)
     public Veterinarian createVeterinarian(RegistrationRequest request) {
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setRoles(roleService.setUserRole("VET"));

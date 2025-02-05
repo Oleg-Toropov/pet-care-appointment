@@ -64,14 +64,6 @@ public interface IAppointmentService {
     Page<AppointmentDto> searchAppointments(String search, Pageable pageable);
 
     /**
-     * Retrieves an appointment by its ID.
-     *
-     * @param id the ID of the appointment.
-     * @return the Appointment with the specified ID.
-     */
-    Appointment getAppointmentById(Long id);
-
-    /**
      * Retrieves an appointment by its ID and maps it to a DTO.
      *
      * @param id the ID of the appointment.

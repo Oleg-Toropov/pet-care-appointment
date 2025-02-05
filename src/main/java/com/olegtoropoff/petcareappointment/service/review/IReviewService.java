@@ -1,8 +1,9 @@
 package com.olegtoropoff.petcareappointment.service.review;
 
+import com.olegtoropoff.petcareappointment.exception.AlreadyExistsException;
+import com.olegtoropoff.petcareappointment.exception.ResourceNotFoundException;
 import com.olegtoropoff.petcareappointment.model.Review;
 import com.olegtoropoff.petcareappointment.projection.VeterinarianReviewProjection;
-import com.olegtoropoff.petcareappointment.exception.*;
 
 import java.util.List;
 import java.util.Map;
@@ -29,14 +30,6 @@ public interface IReviewService {
     Review saveReview(Review review, Long reviewerId, Long veterinarianId);
 
     /**
-     * Retrieves all reviews associated with a specific user.
-     *
-     * @param userId the ID of the user whose reviews are to be retrieved.
-     * @return a {@link List} of {@link Review} containing all reviews for the specified user.
-     */
-    List<Review> findAllReviewsByUserId(Long userId);
-
-    /**
      * Deletes a review by its ID.
      *
      * @param reviewerId the ID of the review to delete.
@@ -49,7 +42,6 @@ public interface IReviewService {
      * <p>
      * The returned map contains information such as average ratings and the total number of reviewers
      * for each veterinarian.
-     * </p>
      *
      * @return a {@link Map} where the keys are veterinarian IDs (as {@link Long}) and the values are
      *         {@link VeterinarianReviewProjection} objects containing review data.
@@ -57,16 +49,19 @@ public interface IReviewService {
     Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviews();
 
     /**
-     * Retrieves a mapping of veterinarian IDs to their aggregated review data, filtered by specialization.
+     * Retrieves all reviews associated with a specific user.
      * <p>
-     * The returned map contains information such as average ratings and the total number of reviewers
-     * for each veterinarian who matches the specified specialization.
-     * </p>
+     * This method fetches all reviews where the given user is either:
+     * <ul>
+     *     <li>The reviewer (patient who left the review).</li>
+     *     <li>The veterinarian who received the review.</li>
+     * </ul>
+     * <p>
+     * This can be useful for displaying a user's review history or showing all reviews received by a veterinarian.
      *
-     * @param specialization the specialization of veterinarians to filter by (e.g., "Surgery", "Dentistry").
-     * @return a {@link Map} where the keys are veterinarian IDs (as {@link Long}) and the values are
-     *         {@link VeterinarianReviewProjection} objects containing review data for veterinarians
-     *         with the specified specialization.
+     * @param userId the ID of the user whose reviews are to be retrieved.
+     * @return a {@link List} of {@link Review} objects associated with the specified user.
+     *         If the user has no reviews, returns an empty list.
      */
-    Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviewsBySpecialization(String specialization);
+    List<Review> findAllReviewsByUserId(Long userId);
 }

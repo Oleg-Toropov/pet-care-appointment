@@ -44,14 +44,6 @@ public interface IPetService {
     void deletePet(Long petId);
 
     /**
-     * Retrieves a pet by its ID.
-     *
-     * @param petId the ID of the pet to retrieve
-     * @return the pet with the specified ID
-     */
-    Pet getPetById(Long petId);
-
-    /**
      * Retrieves a list of distinct pet types.
      *
      * @return a list of distinct pet types

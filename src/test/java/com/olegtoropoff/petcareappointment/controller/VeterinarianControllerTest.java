@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -222,6 +221,53 @@ public class VeterinarianControllerTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(errorMessage, Objects.requireNonNull(response.getBody()).getMessage());
+        assertNull(response.getBody().getData());
+    }
+
+    @Test
+    void getById_ReturnsVeterinarian_WhenFound() {
+        Long vetId = 1L;
+        UserDto veterinarianDto = new UserDto();
+        veterinarianDto.setId(vetId);
+        veterinarianDto.setFirstName("John");
+
+        when(veterinarianService.getVeterinarianWithDetailsAndReview(vetId)).thenReturn(veterinarianDto);
+
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getById(vetId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(FeedBackMessage.USER_FOUND, response.getBody().getMessage());
+        assertEquals(vetId, ((UserDto) response.getBody().getData()).getId());
+    }
+
+    @Test
+    void getById_ReturnsNotFound_WhenVeterinarianNotFound() {
+        Long vetId = 1L;
+        when(veterinarianService.getVeterinarianWithDetailsAndReview(vetId))
+                .thenThrow(new ResourceNotFoundException(FeedBackMessage.VETERINARIAN_NOT_FOUND));
+
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getById(vetId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(FeedBackMessage.VETERINARIAN_NOT_FOUND, response.getBody().getMessage());
+        assertNull(response.getBody().getData());
+    }
+
+    @Test
+    void getById_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs() {
+        Long vetId = 1L;
+        when(veterinarianService.getVeterinarianWithDetailsAndReview(vetId)).thenThrow(new RuntimeException(FeedBackMessage.ERROR));
+
+        ResponseEntity<CustomApiResponse> response = veterinarianController.getById(vetId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(FeedBackMessage.ERROR, response.getBody().getMessage());
         assertNull(response.getBody().getData());
     }
 }
