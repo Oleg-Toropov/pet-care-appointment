@@ -8,18 +8,14 @@ import com.olegtoropoff.petcareappointment.model.Veterinarian;
 import com.olegtoropoff.petcareappointment.repository.VetBiographyRepository;
 import com.olegtoropoff.petcareappointment.repository.VeterinarianRepository;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 
 import java.util.Optional;
 
@@ -38,12 +34,6 @@ class VetBiographyServiceTest {
 
     @Mock
     private VeterinarianRepository veterinarianRepository;
-
-    @Mock
-    private CacheManager cacheManager;
-
-    @Mock
-    private Cache cache;
 
     @Spy
     private EntityConverter<VetBiography, VetBiographyDto> entityConverter = new EntityConverter<>(new ModelMapper());
@@ -133,8 +123,6 @@ class VetBiographyServiceTest {
 
         when(vetBiographyRepository.findById(bioId)).thenReturn(Optional.of(existingBiography));
         when(vetBiographyRepository.save(any(VetBiography.class))).thenReturn(updatedBiography);
-        when(cacheManager.getCache("veterinarian_biography")).thenReturn(cache);
-        doNothing().when(cache).evict(42L);
 
         VetBiographyDto result = vetBiographyService.updateVetBiography(updatedBiography, bioId);
 
@@ -144,7 +132,6 @@ class VetBiographyServiceTest {
         verify(vetBiographyRepository).findById(bioId);
         verify(vetBiographyRepository).save(any(VetBiography.class));
         verify(entityConverter).mapEntityToDto(updatedBiography, VetBiographyDto.class);
-        verify(cache).evict(42L);
     }
 
     @Test

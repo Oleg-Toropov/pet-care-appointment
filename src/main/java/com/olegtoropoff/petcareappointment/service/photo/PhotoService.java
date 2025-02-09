@@ -110,7 +110,7 @@ public class PhotoService implements IPhotoService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
 
-        String s3Key = photo.getS3Url().substring(photo.getS3Url().lastIndexOf("/") + 1);
+        String s3Key = photo.getS3Url().substring(photo.getS3Url().indexOf(BUCKET_NAME) + BUCKET_NAME.length() + 1);
         yandexS3Service.deleteFile(BUCKET_NAME, s3Key);
         photoRepository.delete(photo);
         user.setPhoto(null);
@@ -133,7 +133,7 @@ public class PhotoService implements IPhotoService {
         Photo photo = photoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.RESOURCE_NOT_FOUND));
 
-        String oldS3Key = photo.getS3Url().substring(photo.getS3Url().lastIndexOf("/") + 1);
+        String oldS3Key = photo.getS3Url().substring(photo.getS3Url().indexOf(BUCKET_NAME) + BUCKET_NAME.length() + 1);
         yandexS3Service.deleteFile(BUCKET_NAME, oldS3Key);
 
         File tempFile = convertMultipartFileToFile(file);

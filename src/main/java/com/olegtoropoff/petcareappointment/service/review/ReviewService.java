@@ -11,10 +11,7 @@ import com.olegtoropoff.petcareappointment.repository.ReviewRepository;
 import com.olegtoropoff.petcareappointment.repository.UserRepository;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +32,6 @@ public class ReviewService implements IReviewService {
     private final ReviewRepository reviewRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
-    private final CacheManager cacheManager;
 
     /**
      * Saves a new review for a veterinarian.
@@ -50,23 +46,19 @@ public class ReviewService implements IReviewService {
      * If all conditions are met, the review is saved and associated with both the veterinarian and the patient.
      * <p>
      * <b>Cache Eviction:</b>
-     * - Clears `veterinarians_with_details` and `veterinarian_ratings` caches to ensure fresh data.
-     * - Removes `user_reviews` cache entries for both the reviewer and the veterinarian.
+     * - Clears `veterinarians_with_details` caches to ensure fresh data.
      *
-     * @param review the review to save.
-     * @param reviewerId the ID of the patient submitting the review.
+     * @param review         the review to save.
+     * @param reviewerId     the ID of the patient submitting the review.
      * @param veterinarianId the ID of the veterinarian being reviewed.
      * @return the saved review.
-     * @throws IllegalArgumentException if the reviewer is the veterinarian.
-     * @throws AlreadyExistsException  if the patient has already reviewed the veterinarian.
+     * @throws IllegalArgumentException  if the reviewer is the veterinarian.
+     * @throws AlreadyExistsException    if the patient has already reviewed the veterinarian.
      * @throws ResourceNotFoundException if the veterinarian or patient does not exist.
-     * @throws IllegalStateException if the patient has no completed appointments with the veterinarian.
+     * @throws IllegalStateException     if the patient has no completed appointments with the veterinarian.
      */
     @Caching(evict = {
             @CacheEvict(value = "veterinarians_with_details", allEntries = true),
-            @CacheEvict(value = "veterinarian_ratings", allEntries = true),
-            @CacheEvict(value = "user_reviews", key = "#reviewerId"),
-            @CacheEvict(value = "user_reviews", key = "#veterinarianId")
     })
     @Transactional
     @Override
@@ -102,27 +94,16 @@ public class ReviewService implements IReviewService {
      * Deletes a review by its ID.
      * <p>
      * <b>Cache Eviction:</b>
-     * - Clears `veterinarians_with_details` and `veterinarian_ratings` caches.
-     * - Explicitly removes `user_reviews` cache entries for both the reviewer and the veterinarian.
+     * - Clears `veterinarians_with_details` caches.
      *
      * @param reviewId the ID of the review to delete.
      * @throws ResourceNotFoundException if the review does not exist.
      */
-    @Caching(evict = {
-            @CacheEvict(value = "veterinarians_with_details", allEntries = true),
-            @CacheEvict(value = "veterinarian_ratings", allEntries = true)
-    })
+    @CacheEvict(value = "veterinarians_with_details", allEntries = true)
     @Override
     public void deleteReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.REVIEW_NOT_FOUND));
-
-        Cache cache = cacheManager.getCache("user_reviews");
-        if (cache != null) {
-            cache.evict(review.getPatient().getId());
-            cache.evict(review.getVeterinarian().getId());
-        }
-
         review.removeRelationShip();
         reviewRepository.deleteById(reviewId);
     }
@@ -143,13 +124,8 @@ public class ReviewService implements IReviewService {
      *     </li>
      * </ul>
      * <p>
-     * <b>Cache Usage:</b>
-     * - Cached under `veterinarian_ratings` to avoid unnecessary queries.
-     * - Used in scenarios where displaying aggregated review data for veterinarians is needed.
-     *
      * @return a {@link Map} containing the average rating and review count for each veterinarian.
      */
-    @Cacheable(value = "veterinarian_ratings")
     @Override
     public Map<Long, VeterinarianReviewProjection> getAverageRatingsAndTotalReviews() {
         List<VeterinarianReviewProjection> averageRatingsAndTotalReviews = reviewRepository.findAllAverageRatingsAndTotalReviews();
@@ -162,14 +138,10 @@ public class ReviewService implements IReviewService {
      * <p>
      * This method queries all reviews where the given user is either the reviewer or the veterinarian.
      * <p>
-     * <b>Cache Usage:</b>
-     * - Cached under `user_reviews` with the user ID as the key.
-     * - Useful for quickly fetching a user's reviews without hitting the database frequently.
      *
      * @param userId the ID of the user whose reviews are to be retrieved.
      * @return a {@link List} of {@link Review} containing all reviews for the specified user.
      */
-    @Cacheable(value = "user_reviews", key = "#userId")
     @Override
     public List<Review> findAllReviewsByUserId(Long userId) {
         return reviewRepository.findAllByUserId(userId);

@@ -69,4 +69,29 @@ public class PhoneValidator {
         }
         return PHONE_PATTERN.matcher(phoneNumber).matches();
     }
+
+    /**
+     * Formats a valid Russian phone number into the standard format: +7 (XXX) XXX-XX-XX.
+     *
+     * @param phoneNumber the raw phone number string.
+     * @return the formatted phone number, or null if the input is invalid.
+     */
+    public static String format(String phoneNumber) {
+        String cleanNumber = phoneNumber.replaceAll("[^\\d+]", "");
+
+        if (cleanNumber.startsWith("8")) {
+            cleanNumber = "+7" + cleanNumber.substring(1);
+        } else if (!cleanNumber.startsWith("+7")) {
+            return null;
+        }
+
+        String digits = cleanNumber.substring(2);
+
+        return String.format("+7 (%s) %s-%s-%s",
+                digits.substring(0, 3),
+                digits.substring(3, 6),
+                digits.substring(6, 8),
+                digits.substring(8, 10)
+        );
+    }
 }

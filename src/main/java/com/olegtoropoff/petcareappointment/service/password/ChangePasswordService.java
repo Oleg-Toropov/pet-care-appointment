@@ -37,27 +37,38 @@ public class ChangePasswordService implements IChangePasswordService {
      */
     @Override
     public void changePassword(Long userId, ChangePasswordRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
-        if (request.getCurrentPassword().isEmpty() || request.getNewPassword().isEmpty()) {
+        if (request.getCurrentPassword() == null || request.getNewPassword() == null || request.getConfirmNewPassword() == null) {
             throw new IllegalArgumentException(FeedBackMessage.EMPTY_PASSWORD);
         }
 
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+        String currentPassword = request.getCurrentPassword().trim();
+        String newPassword = request.getNewPassword().trim();
+        String confirmNewPassword = request.getConfirmNewPassword().trim();
+
+        if (currentPassword.isEmpty() || newPassword.isEmpty()) {
+            throw new IllegalArgumentException(FeedBackMessage.EMPTY_PASSWORD);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(FeedBackMessage.USER_NOT_FOUND));
+
+        if (!newPassword.equals(confirmNewPassword)) {
+            throw new IllegalArgumentException(FeedBackMessage.PASSWORD_MISMATCH);
+        }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new IllegalArgumentException(FeedBackMessage.CURRENT_PASSWORD_WRONG);
         }
 
-        if (request.getCurrentPassword().equals(request.getNewPassword())) {
+        if (currentPassword.equals(newPassword)) {
             throw new IllegalArgumentException(FeedBackMessage.NEW_PASSWORD_MUST_DIFFER);
         }
 
-        if (!PasswordValidator.isValid(request.getNewPassword())) {
+        if (!PasswordValidator.isValid(newPassword)) {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
         }
 
-        if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {
-            throw new IllegalArgumentException(FeedBackMessage.PASSWORD_MISMATCH);
-        }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 }

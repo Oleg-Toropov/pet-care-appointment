@@ -82,6 +82,7 @@ public class VeterinarianService implements IVeterinarianService {
     private final VeterinarianRepository veterinarianRepository;
     private final IUserService userService;
 
+
     /**
      * Retrieves a list of all enabled veterinarians with detailed information.
      * This method fetches veterinarians with the user type "VET" and {@code isEnabled} status set to {@code true},

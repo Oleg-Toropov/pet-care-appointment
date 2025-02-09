@@ -143,6 +143,11 @@ public class RabbitMQConsumer {
                 "<p>С уважением,<br> Doctor Aibolit";
 
         emailService.sendEmail(user.getEmail(), subject, senderName, mailContent);
+        // FOR ADMIN
+        emailService.sendEmail("toropovoleg1987@gmail.com",
+                "Регистрация нового пользователя на сайте \"Doctor Aibolit\"",
+                "Doctor Aibolit", "Электронная почта нового пользователя: " +
+                                  user.getEmail() + " тип пользователя: " + user.getUserType());
     }
 
     /**

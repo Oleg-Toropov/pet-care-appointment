@@ -45,7 +45,7 @@ public class PasswordResetService implements IPasswordResetService {
             throw new IllegalArgumentException(FeedBackMessage.MISSING_PASSWORD);
         }
 
-        if (!PasswordValidator.isValid(password)) {
+        if (!PasswordValidator.isValid(password.trim())) {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
         }
 
@@ -91,7 +91,7 @@ public class PasswordResetService implements IPasswordResetService {
     @Override
     public String resetPassword(String password, User user) {
         try {
-            user.setPassword(passwordEncoder.encode(password));
+            user.setPassword(passwordEncoder.encode(password.trim()));
             userRepository.save(user);
             return FeedBackMessage.PASSWORD_RESET_SUCCESS;
         } catch (Exception e) {

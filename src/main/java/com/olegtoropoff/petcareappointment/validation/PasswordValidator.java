@@ -41,6 +41,6 @@ public class PasswordValidator {
         if (password == null) {
             return false;
         }
-        return PASSWORD_PATTERN.matcher(password).matches();
+        return PASSWORD_PATTERN.matcher(password.trim()).matches();
     }
 }

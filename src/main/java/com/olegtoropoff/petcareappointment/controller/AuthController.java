@@ -55,7 +55,7 @@ public class AuthController {
         try {
             Authentication authentication =
                     authenticationManager
-                            .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                            .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail().trim(), request.getPassword().trim()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateTokenForUser(authentication);
             UPCUserDetails userDetails = (UPCUserDetails) authentication.getPrincipal();

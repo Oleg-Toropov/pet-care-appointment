@@ -17,8 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 
 import java.util.List;
 import java.util.Map;
@@ -43,12 +41,6 @@ class ReviewServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private CacheManager cacheManager;
-
-    @Mock
-    private Cache cache;
 
     @Test
     void saveReview_Success() {
@@ -117,23 +109,11 @@ class ReviewServiceTest {
     void deleteReview_Success() {
         Long reviewId = 1L;
         Review review = new Review();
-
-        User patient = new User();
-        patient.setId(10L);
-        review.setPatient(patient);
-
-        User veterinarian = new User();
-        veterinarian.setId(20L);
-        review.setVeterinarian(veterinarian);
-
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
-        when(cacheManager.getCache("user_reviews")).thenReturn(cache);
 
         reviewService.deleteReview(reviewId);
 
         verify(reviewRepository).deleteById(reviewId);
-        verify(cache).evict(10L);
-        verify(cache).evict(20L);
     }
 
     @Test

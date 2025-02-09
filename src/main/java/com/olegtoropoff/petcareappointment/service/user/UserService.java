@@ -25,7 +25,6 @@ import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
 import com.olegtoropoff.petcareappointment.validation.PhoneValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.time.Month;
@@ -88,7 +87,7 @@ public class UserService implements IUserService {
      * @param request the update request containing new user details.
      * @return the updated {@link UserDto} with the modified user details.
      * @throws ResourceNotFoundException if the user does not exist.
-     * @throws IllegalArgumentException if the update request is invalid.
+     * @throws IllegalArgumentException  if the update request is invalid.
      */
     @CacheEvict(value = {"veterinarians_with_details", "specializations"}, allEntries = true)
     @Override
@@ -127,20 +126,14 @@ public class UserService implements IUserService {
      * <p>
      * <b>Cache Eviction:</b>
      * <ul>
-     *     <li>Clears `veterinarians_with_details`, `specializations`, `veterinarian_ratings`, and `user_reviews` caches.</li>
-     *     <li>Removes the `veterinarian_biography` entry for the deleted user.</li>
+     *     <li>Clears `veterinarians_with_details` and `specializations` caches.</li>
      * </ul>
      *
      * @param userId the ID of the user to delete.
      * @throws ResourceNotFoundException if the user is not found.
      */
-    @Caching(evict = {
-            @CacheEvict(value = "veterinarians_with_details", allEntries = true),
-            @CacheEvict(value = "specializations", allEntries = true),
-            @CacheEvict(value = "veterinarian_ratings", allEntries = true),
-            @CacheEvict(value = "user_reviews", allEntries = true),
-            @CacheEvict(value = "veterinarian_biography", key = "#userId")
-    })
+
+    @CacheEvict(value = {"veterinarians_with_details", "specializations"}, allEntries = true)
     @Override
     public void deleteById(Long userId) {
         userRepository.findById(userId)
@@ -186,7 +179,7 @@ public class UserService implements IUserService {
      * </ul>
      *
      * @param userDto the {@link UserDto} to populate with review details.
-     * @param userId the ID of the user whose review details should be populated.
+     * @param userId  the ID of the user whose review details should be populated.
      */
     @Override
     public void populateUserReviewDetails(UserDto userDto, Long userId) {
@@ -317,6 +310,7 @@ public class UserService implements IUserService {
     /**
      * Validates the registration request to ensure all required fields are valid.
      * Formats the first name and last name to have proper capitalization.
+     * Formats the phone number.
      *
      * @param request the {@link RegistrationRequest} containing user details for registration.
      * @throws IllegalArgumentException if any field in the request is invalid.
@@ -337,11 +331,14 @@ public class UserService implements IUserService {
 
         request.setFirstName(NameValidator.format(request.getFirstName()));
         request.setLastName(NameValidator.format(request.getLastName()));
+        request.setPhoneNumber(PhoneValidator.format(request.getPhoneNumber()));
+        request.setPassword(request.getPassword().trim());
     }
 
     /**
      * Validates the user update request to ensure all required fields are valid.
      * Formats the first name and last name to have proper capitalization.
+     * Formats the phone number.
      *
      * @param request the {@link UserUpdateRequest} containing updated user details.
      * @throws IllegalArgumentException if any field in the request is invalid.
@@ -356,6 +353,7 @@ public class UserService implements IUserService {
 
         request.setFirstName(NameValidator.format(request.getFirstName()));
         request.setLastName(NameValidator.format(request.getLastName()));
+        request.setPhoneNumber(PhoneValidator.format(request.getPhoneNumber()));
     }
 
     /**
