@@ -123,7 +123,6 @@ public class ReviewService implements IReviewService {
      *         </ul>
      *     </li>
      * </ul>
-     * <p>
      * @return a {@link Map} containing the average rating and review count for each veterinarian.
      */
     @Override
@@ -137,7 +136,6 @@ public class ReviewService implements IReviewService {
      * Retrieves all reviews associated with a specific user.
      * <p>
      * This method queries all reviews where the given user is either the reviewer or the veterinarian.
-     * <p>
      *
      * @param userId the ID of the user whose reviews are to be retrieved.
      * @return a {@link List} of {@link Review} containing all reviews for the specified user.

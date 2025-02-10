@@ -85,7 +85,7 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.data.id").value(4))
                 .andExpect(jsonPath("$.data.firstName").value("Updatedname"))
                 .andExpect(jsonPath("$.data.lastName").value("Updatedlastname"))
-                .andExpect(jsonPath("$.data.phoneNumber").value("89124000000"));
+                .andExpect(jsonPath("$.data.phoneNumber").value("+7 (912) 400-00-00"));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.data.firstName").value("Иван"))
                 .andExpect(jsonPath("$.data.lastName").value("Иванов"))
                 .andExpect(jsonPath("$.data.gender").value("Male"))
-                .andExpect(jsonPath("$.data.phoneNumber").value("89124000000"))
+                .andExpect(jsonPath("$.data.phoneNumber").value("+7 (912) 400-00-00"))
                 .andExpect(jsonPath("$.data.email").value("test@gmail.com"))
                 .andExpect(jsonPath("$.data.userType").value("VET"))
                 .andExpect(jsonPath("$.data.specialization").value("Хирург"));

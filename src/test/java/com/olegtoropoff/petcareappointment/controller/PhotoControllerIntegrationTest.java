@@ -47,7 +47,7 @@ class PhotoControllerIntegrationTest {
                 Mockito.any(),
                 Mockito.anyLong(),
                 Mockito.anyString()
-        )).thenReturn("https://fake-s3-url.com/test.jpg");
+        )).thenReturn("https://storage.yandexcloud.net/bucket-pet-care-appointment/2/test-key.png");
     }
 
     @Test

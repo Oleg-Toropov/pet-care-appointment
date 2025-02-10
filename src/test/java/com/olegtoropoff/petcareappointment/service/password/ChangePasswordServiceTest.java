@@ -35,6 +35,9 @@ class ChangePasswordServiceTest {
     void changePassword_WhenUserNotFound_ThrowsResourceNotFoundException() {
         Long userId = 1L;
         ChangePasswordRequest request = new ChangePasswordRequest();
+        request.setCurrentPassword("Password123");
+        request.setNewPassword("Password1234");
+        request.setConfirmNewPassword("Password1234");
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -53,12 +56,9 @@ class ChangePasswordServiceTest {
         request.setNewPassword("NewPass123!");
         request.setConfirmNewPassword("NewPass123!");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
-
         assertThrows(IllegalArgumentException.class,
                 () -> changePasswordService.changePassword(userId, request));
 
-        verify(userRepository, times(1)).findById(userId);
         verifyNoMoreInteractions(userRepository, passwordEncoder);
     }
 
@@ -70,12 +70,9 @@ class ChangePasswordServiceTest {
         request.setNewPassword("");
         request.setConfirmNewPassword("");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
-
         assertThrows(IllegalArgumentException.class,
                 () -> changePasswordService.changePassword(userId, request));
 
-        verify(userRepository, times(1)).findById(userId);
         verifyNoMoreInteractions(userRepository, passwordEncoder);
     }
 
@@ -150,17 +147,11 @@ class ChangePasswordServiceTest {
         request.setNewPassword("NewPass123!");
         request.setConfirmNewPassword("MismatchPass123!");
 
-        User user = new User();
-        user.setPassword("EncodedPass");
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())).thenReturn(true);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
 
         assertThrows(IllegalArgumentException.class,
                 () -> changePasswordService.changePassword(userId, request));
-
         verify(userRepository, times(1)).findById(userId);
-        verify(passwordEncoder, times(1)).matches(request.getCurrentPassword(), user.getPassword());
     }
 
     @Test

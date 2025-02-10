@@ -115,10 +115,10 @@ class PhotoServiceTest {
         Long userId = 2L;
         User user = new User();
         Photo photo = new Photo();
-        photo.setS3Url("s3-url");
+        photo.setS3Url("https://storage.yandexcloud.net/bucket-pet-care-appointment/2/old-key.png");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(photoRepository.findById(photoId)).thenReturn(Optional.of(photo));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         Long result = photoService.deletePhoto(photoId, userId);
 
@@ -164,29 +164,40 @@ class PhotoServiceTest {
     void updatePhoto_Success() throws IOException {
         Long photoId = 1L;
         Photo photo = new Photo();
-        photo.setS3Url("old/s3-url");
         photo.setId(photoId);
         User user = new User();
         user.setId(2L);
         photo.setUser(user);
+        photo.setS3Url("https://storage.yandexcloud.net/bucket-pet-care-appointment/2/old-key.png");
 
         when(photoRepository.findById(photoId)).thenReturn(Optional.of(photo));
         when(mockFile.getBytes()).thenReturn(new byte[]{1, 2, 3});
         when(mockFile.getContentType()).thenReturn("image/png");
         when(mockFile.getOriginalFilename()).thenReturn("updated.png");
-
-        when(yandexS3Service.uploadFile(anyString(), anyString(), any(FileInputStream.class), anyLong(), anyString()))
-                .thenReturn("new-s3-url");
+        when(yandexS3Service.uploadFile(
+                eq("bucket-pet-care-appointment"),
+                anyString(),
+                any(FileInputStream.class),
+                anyLong(),
+                eq("image/png"))
+        ).thenReturn("https://storage.yandexcloud.net/bucket-pet-care-appointment/2/new-key.png");
 
         Long result = photoService.updatePhoto(photoId, mockFile);
 
         assertEquals(photoId, result);
-        assertEquals("new-s3-url", photo.getS3Url());
+        assertEquals("https://storage.yandexcloud.net/bucket-pet-care-appointment/2/new-key.png", photo.getS3Url());
         verify(photoRepository).findById(photoId);
+        verify(yandexS3Service).deleteFile(eq("bucket-pet-care-appointment"), eq("2/old-key.png"));
+        verify(yandexS3Service).uploadFile(
+                eq("bucket-pet-care-appointment"),
+                anyString(),
+                any(FileInputStream.class),
+                anyLong(),
+                eq("image/png")
+        );
         verify(photoRepository).save(photo);
-        verify(yandexS3Service).deleteFile(anyString(), anyString());
-        verify(yandexS3Service).uploadFile(anyString(), anyString(), any(FileInputStream.class), anyLong(), anyString());
     }
+
 
     @Test
     void updatePhoto_NotFound() {

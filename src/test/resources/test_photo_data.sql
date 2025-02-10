@@ -21,8 +21,8 @@ VALUES (1),
 -- Photo
 INSERT INTO photo (id, file_type, file_name, s3Url)
 VALUES
-    (2, 'image/jpeg', 'fake1.jpg', 'urlTest_1'),
-    (3, 'image/png', 'fake2.png', 'urlTest_2');
+    (2, 'image/jpeg', 'fake1.jpg', 'https://storage.yandexcloud.net/bucket-pet-care-appointment/2/test-key.png'),
+    (3, 'image/png', 'fake2.png', 'https://storage.yandexcloud.net/bucket-pet-care-appointment/2/test-key.png');
 
 UPDATE "user" SET photo_id = 2 WHERE id = 2;
 UPDATE "user" SET photo_id = 3 WHERE id = 3;
