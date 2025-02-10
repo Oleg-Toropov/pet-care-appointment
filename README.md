@@ -6,6 +6,12 @@ Pet Care Appointment is a full-featured application designed for managing veteri
 
 ---
 
+## Documentation
+
+The full API documentation (Javadoc) is available [here](https://oleg-toropov.github.io/pet-care-appointment/).
+
+---
+
 ## Key Features
 
 1. **Appointment Management:**
@@ -36,7 +42,7 @@ Pet Care Appointment is a full-featured application designed for managing veteri
 8. **Testing and Quality Assurance:**
     - Comprehensive unit tests using **JUnit 5** to ensure the reliability of individual components.
     - Integration tests with an **H2 in-memory database** to validate end-to-end functionality of APIs.
-   
+
 ---
 
 ## Technology Stack

@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *     <li>Backend: Java 17, Spring Boot, Hibernate, MySQL</li>
  *     <li>Frontend: React, Bootstrap, Axios</li>
  *     <li>Asynchronous processing: RabbitMQ</li>
+ *     <li>Caching: Redis for improved performance and reduced database load</li>
  *     <li>Containerization: Docker</li>
  *     <li>Cloud Storage: Yandex Cloud (S3-compatible)</li>
  * </ul>
