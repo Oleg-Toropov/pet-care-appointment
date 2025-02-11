@@ -2,6 +2,8 @@ package com.olegtoropoff.petcareappointment.request;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Request object for updating user details.
  * <p>
@@ -46,4 +48,16 @@ public class UserUpdateRequest {
      * This field is relevant for certain user types, such as veterinarians.
      */
     private String specialization;
+
+    /**
+     * The cost of the veterinary appointment.
+     * This field represents the price a veterinarian charges for an appointment.
+     */
+    private BigDecimal appointmentCost;
+
+    /**
+     * The address where the veterinarian conducts appointments.
+     * This field stores the location of the clinic or private practice.
+     */
+    private String clinicAddress;
 }

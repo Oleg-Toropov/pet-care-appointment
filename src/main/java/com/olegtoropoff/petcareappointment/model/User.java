@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,6 +90,21 @@ public class User {
      */
     @Transient
     private String specialization;
+
+
+    /**
+     * The cost of the veterinary appointment.
+     * This field represents the price a veterinarian charges for an appointment.
+     */
+    @Transient
+    private BigDecimal appointmentCost;
+
+    /**
+     * The address where the veterinarian conducts appointments.
+     * This field stores the location of the clinic or private practice.
+     */
+    @Transient
+    private String clinicAddress;
 
     /**
      * A list of appointments associated with the user.

@@ -146,6 +146,8 @@ public class DefaultDataInitializer implements ApplicationListener<ApplicationRe
             if (!userRepository.existsByEmail(vetData.getEmail())) {
                 Veterinarian vet = populateUserFields(new Veterinarian(), vetData);
                 vet.setSpecialization(vetData.getSpecialization());
+                vet.setAppointmentCost(vetData.getAppointmentCost());
+                vet.setClinicAddress(vetData.getClinicAddress());
                 Veterinarian theVet = veterinarianRepository.save(vet);
                 theVet.setEnabled(true);
 

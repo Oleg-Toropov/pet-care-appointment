@@ -2,6 +2,7 @@ package com.olegtoropoff.petcareappointment.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,9 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.*;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
@@ -29,13 +32,22 @@ public class RedisConfig {
     private static final Duration CACHE_TTL = Duration.ofMinutes(60);
 
     /**
-     * Creates a {@link RedisConnectionFactory} using Lettuce.
+     * Creates and configures a {@link RedisConnectionFactory} using Lettuce,
+     * with the connection settings obtained from the application's properties.
+     * <p>
+     * The Redis server host and port are injected from the environment using the
+     * properties {@code spring.data.redis.host} and {@code spring.data.redis.port}.
      *
-     * @return a {@link LettuceConnectionFactory} instance that manages Redis connections.
+     * @param redisHost the hostname of the Redis server (configured via {@code spring.data.redis.host})
+     * @param redisPort the port on which the Redis server is listening (configured via {@code spring.data.redis.port})
+     * @return a {@link LettuceConnectionFactory} instance configured with the provided host and port,
+     *         which manages connections to the Redis server.
      */
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+    public RedisConnectionFactory redisConnectionFactory(
+            @Value("${spring.data.redis.host}") String redisHost,
+            @Value("${spring.data.redis.port}") int redisPort) {
+        return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
     /**

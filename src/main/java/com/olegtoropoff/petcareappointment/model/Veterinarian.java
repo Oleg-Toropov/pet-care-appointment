@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * Represents a veterinarian in the system.
  * <p>
@@ -31,6 +33,18 @@ public class Veterinarian extends User{
      * Specialization of the veterinarian (e.g., "Surgery", "Dentistry", "General Practice").
      */
     private String specialization;
+
+    /**
+     * The cost of the veterinary appointment.
+     * This field represents the price a veterinarian charges for an appointment.
+     */
+    private BigDecimal appointmentCost;
+
+    /**
+     * The address where the veterinarian conducts appointments.
+     * This field stores the location of the clinic or private practice.
+     */
+    private String clinicAddress;
 
     /**
      * Biography of the veterinarian.

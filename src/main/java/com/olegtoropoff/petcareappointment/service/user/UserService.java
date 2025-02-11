@@ -19,10 +19,7 @@ import com.olegtoropoff.petcareappointment.service.photo.IPhotoService;
 import com.olegtoropoff.petcareappointment.service.review.IReviewService;
 import com.olegtoropoff.petcareappointment.service.token.IVerificationTokenService;
 import com.olegtoropoff.petcareappointment.utils.FeedBackMessage;
-import com.olegtoropoff.petcareappointment.validation.EmailValidator;
-import com.olegtoropoff.petcareappointment.validation.NameValidator;
-import com.olegtoropoff.petcareappointment.validation.PasswordValidator;
-import com.olegtoropoff.petcareappointment.validation.PhoneValidator;
+import com.olegtoropoff.petcareappointment.validation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -308,25 +305,35 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Validates the registration request to ensure all required fields are valid.
-     * Formats the first name and last name to have proper capitalization.
-     * Formats the phone number.
+     * Validates and formats user details.
+     *
+     * @param firstName   the user's first name
+     * @param lastName    the user's last name
+     * @param phoneNumber the user's phone number
+     * @throws IllegalArgumentException if any field is invalid
+     */
+    private void validateAndFormatUserDetails(String firstName, String lastName, String phoneNumber) {
+        if (!NameValidator.isValid(firstName) || !NameValidator.isValid(lastName)) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_NAME_FORMAT);
+        }
+        if (!PhoneValidator.isValid(phoneNumber)) {
+            throw new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT);
+        }
+    }
+
+    /**
+     * Validates and formats the registration request.
      *
      * @param request the {@link RegistrationRequest} containing user details for registration.
      * @throws IllegalArgumentException if any field in the request is invalid.
      */
     private void validateRegistrationRequest(RegistrationRequest request) {
-        if (!NameValidator.isValid(request.getFirstName()) || !NameValidator.isValid(request.getLastName())) {
-            throw new IllegalArgumentException(FeedBackMessage.INVALID_NAME_FORMAT);
-        }
+        validateAndFormatUserDetails(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
         if (!PasswordValidator.isValid(request.getPassword())) {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_PASSWORD_FORMAT);
         }
         if (!EmailValidator.isValid(request.getEmail())) {
             throw new IllegalArgumentException(FeedBackMessage.INVALID_EMAIL_FORMAT);
-        }
-        if (!PhoneValidator.isValid(request.getPhoneNumber())) {
-            throw new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT);
         }
 
         request.setFirstName(NameValidator.format(request.getFirstName()));
@@ -336,20 +343,13 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Validates the user update request to ensure all required fields are valid.
-     * Formats the first name and last name to have proper capitalization.
-     * Formats the phone number.
+     * Validates and formats the user update request.
      *
      * @param request the {@link UserUpdateRequest} containing updated user details.
      * @throws IllegalArgumentException if any field in the request is invalid.
      */
     private void validateUserUpdateRequest(UserUpdateRequest request) {
-        if (!NameValidator.isValid(request.getFirstName()) || !NameValidator.isValid(request.getLastName())) {
-            throw new IllegalArgumentException(FeedBackMessage.INVALID_NAME_FORMAT);
-        }
-        if (!PhoneValidator.isValid(request.getPhoneNumber())) {
-            throw new IllegalArgumentException(FeedBackMessage.INVALID_PHONE_FORMAT);
-        }
+        validateAndFormatUserDetails(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
 
         request.setFirstName(NameValidator.format(request.getFirstName()));
         request.setLastName(NameValidator.format(request.getLastName()));
@@ -368,6 +368,8 @@ public class UserService implements IUserService {
         user.setGender(request.getGender());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setSpecialization(request.getSpecialization());
+        user.setClinicAddress(request.getClinicAddress());
+        user.setAppointmentCost(request.getAppointmentCost());
     }
 
     /**

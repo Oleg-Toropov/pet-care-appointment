@@ -3,6 +3,7 @@ package com.olegtoropoff.petcareappointment.data;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -60,6 +61,18 @@ public class DefaultUserData {
          * The specialization of the veterinarian (e.g., surgeon, dermatologist).
          */
         private String specialization;
+
+        /**
+         * The cost of the veterinary appointment.
+         * This field represents the price a veterinarian charges for an appointment.
+         */
+        private BigDecimal appointmentCost;
+
+        /**
+         * The address where the veterinarian conducts appointments.
+         * This field stores the location of the clinic or private practice.
+         */
+        private String clinicAddress;
 
         /**
          * A short biography or description of the veterinarian's professional background.

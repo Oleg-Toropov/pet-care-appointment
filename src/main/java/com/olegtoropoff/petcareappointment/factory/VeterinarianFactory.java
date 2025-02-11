@@ -40,6 +40,8 @@ public class VeterinarianFactory {
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setRoles(roleService.setUserRole("VET"));
         userAttributesMapper.setCommonAttributes(request, veterinarian);
+        veterinarian.setClinicAddress(request.getClinicAddress());
+        veterinarian.setAppointmentCost(request.getAppointmentCost());
         veterinarian.setSpecialization(request.getSpecialization());
         return veterinarianRepository.save(veterinarian);
     }

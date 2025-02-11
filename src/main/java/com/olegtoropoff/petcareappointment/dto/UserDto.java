@@ -2,6 +2,7 @@ package com.olegtoropoff.petcareappointment.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +59,18 @@ public class UserDto {
      * The specialization of the user, applicable for veterinarians.
      */
     private String specialization;
+
+    /**
+     * The cost of the veterinary appointment.
+     * This field represents the price a veterinarian charges for an appointment.
+     */
+    private BigDecimal appointmentCost;
+
+    /**
+     * The address where the veterinarian conducts appointments.
+     * This field stores the location of the clinic or private practice.
+     */
+    private String clinicAddress;
 
     /**
      * The date the user was created in the system.

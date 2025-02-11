@@ -453,6 +453,11 @@ public class FeedBackMessage {
      * Message indicating an invalid phone number format.
      */
     public static final String INVALID_PHONE_FORMAT = "Упс! Кажется, в номере телефона ошибка. Проверьте, что номер телефона введён правильно.";
+
+    /**
+     * Message indicating an invalid clinic address format.
+     */
+    public static final String INVALID_ADDRESS_FORMAT = "Упс! Кажется, в адресе места проведения приема ошибка. Проверьте, что адрес введён правильно.";
     /*======================== End Validator =====================================*/
 
     /*======================== Start RabbitMQConsumer =====================================*/
