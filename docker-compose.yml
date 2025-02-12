@@ -71,7 +71,7 @@ services:
 
   client:
     build:
-      context: ../frontend/pet-care-appointment
+      context: ../pet-care-appointment-frontend
       dockerfile: Dockerfile
     container_name: pet-care-client
     ports:
