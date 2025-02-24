@@ -101,7 +101,7 @@ public class VeterinarianService implements IVeterinarianService {
      * @return a list of {@link UserDto} representing enabled veterinarians with detailed information,
      * including their average ratings and total review counts.
      */
-    @Cacheable(value = "veterinarians_with_details")
+    @Cacheable(value = "veterinarians_with_details", unless = "#result == null or #result.isEmpty()")
     @Override
     public List<UserDto> getAllVeterinariansWithDetails() {
         List<Veterinarian> veterinarians = veterinarianRepository.findAllByUserTypeAndIsEnabled("VET", true);
@@ -152,7 +152,7 @@ public class VeterinarianService implements IVeterinarianService {
      * @return a {@link List} of {@link String} representing all unique specializations available for veterinarians.
      * The list is empty if no specializations are found.
      */
-    @Cacheable(value = "specializations")
+    @Cacheable(value = "specializations", unless = "#result == null or #result.isEmpty()")
     @Override
     public List<String> getSpecializations() {
         return veterinarianRepository.getSpecializations();

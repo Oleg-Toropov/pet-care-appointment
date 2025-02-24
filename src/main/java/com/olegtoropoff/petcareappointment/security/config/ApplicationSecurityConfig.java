@@ -120,7 +120,7 @@ public class ApplicationSecurityConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost", "http://localhost:5173")
+                        .allowedOrigins("http://localhost", "http://localhost:5173", "http://51.250.1.8", "https://doctor-aibolit.pro")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
